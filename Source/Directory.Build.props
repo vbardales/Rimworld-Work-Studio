@@ -1,0 +1,18 @@
+<Project>
+
+  <!--
+    Sort les dossiers intermediaires du dossier du mod.
+
+    L'uploader Workshop de RimWorld envoie le dossier entier, sans exclusion possible : laisser
+    obj/ ici, c'est publier la copie publicisee d'Assembly-CSharp.dll qu'il contient - six
+    megaoctets, et surtout une redistribution du code du jeu. La regle doit vivre dans la chaine
+    de build, pas dans la memoire de celui qui publie.
+
+    OutputPath reste fixe a ..\Assemblies\ par le csproj : seule la ferraille part ailleurs.
+  -->
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\..\.build\WorkStudio\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)..\..\.build\WorkStudio\bin\</BaseOutputPath>
+  </PropertyGroup>
+
+</Project>

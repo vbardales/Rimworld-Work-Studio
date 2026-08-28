@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <WorkStudio.Settings.Intro>Réorganise l'onglet Travail sans redémarrer la partie : créez vos propres types de travail, déplacez-y les tâches prises dans d'autres types, renommez, réordonnez et masquez les colonnes.</WorkStudio.Settings.Intro>
+  <WorkStudio.Settings.OpenEditor>Ouvrir l'éditeur des types de travail</WorkStudio.Settings.OpenEditor>
+  <WorkStudio.Settings.SaveNote>Les priorités de vos colons sont enregistrées par nom de travail : vous pouvez modifier cette configuration entre deux sessions sans les mélanger. Retirer le mod rend simplement leurs types d'origine aux tâches déplacées.</WorkStudio.Settings.SaveNote>
+
+  <WorkStudio.OpenEditorShort>Types de travail…</WorkStudio.OpenEditorShort>
+
+  <WorkStudio.Drift.Title>Work Studio — votre liste de mods a changé</WorkStudio.Drift.Title>
+  <WorkStudio.Drift.Intro>Depuis le dernier démarrage, les travaux disponibles ont changé. Votre configuration est intacte : rien n'a été effacé.</WorkStudio.Drift.Intro>
+  <WorkStudio.Drift.GoneTypes>Types de travail disparus : {0}. Les tâches que vous y aviez rangées sont reparties dans leur type d'origine.</WorkStudio.Drift.GoneTypes>
+  <WorkStudio.Drift.MissingTasks>Tâches introuvables, dont votre configuration se souvient : {0}. Elles reprendront leur place si le mod qui les fournit revient.</WorkStudio.Drift.MissingTasks>
+  <WorkStudio.Drift.NewTypes>Nouveaux types de travail : {0}. Ils se placent selon leur propre priorité, donc pas forcément là où vous les attendez dans l'ordre que vous aviez réglé.</WorkStudio.Drift.NewTypes>
+  <WorkStudio.Drift.AndMore>et {0} de plus</WorkStudio.Drift.AndMore>
+
+  <WorkStudio.Types>Types de travail</WorkStudio.Types>
+  <WorkStudio.NewType>+ Nouveau type</WorkStudio.NewType>
+  <WorkStudio.NewTypeLabel>Nouveau travail</WorkStudio.NewTypeLabel>
+  <WorkStudio.ResetOrder>Réinitialiser l'ordre</WorkStudio.ResetOrder>
+  <WorkStudio.VisibleTip>Afficher la colonne dans l'onglet Travail. Un type masqué reste actif : seule sa colonne disparaît.</WorkStudio.VisibleTip>
+  <WorkStudio.PriorityTip>Priorité naturelle : {0}</WorkStudio.PriorityTip>
+  <WorkStudio.CustomTip>Type personnalisé</WorkStudio.CustomTip>
+
+  <WorkStudio.Tasks>Tâches</WorkStudio.Tasks>
+  <WorkStudio.TasksOf>Tâches de « {0} »</WorkStudio.TasksOf>
+  <WorkStudio.NoSelection>Choisissez un type de travail à gauche.</WorkStudio.NoSelection>
+  <WorkStudio.NoTasks>Aucune tâche. La colonne s'affiche quand même, mais aucun colon n'aura rien à y faire.</WorkStudio.NoTasks>
+  <WorkStudio.MoveTip>Déplacer vers un autre type</WorkStudio.MoveTip>
+  <WorkStudio.MoveUp>Monter d'un cran</WorkStudio.MoveUp>
+  <WorkStudio.MoveDown>Descendre d'un cran</WorkStudio.MoveDown>
+  <WorkStudio.OrderTip>Priorité dans le type : {0} — glissez la ligne pour réordonner</WorkStudio.OrderTip>
+  <WorkStudio.OriginTip>Type d'origine : {0}</WorkStudio.OriginTip>
+  <WorkStudio.ResetTaskOrder>Réinitialiser l'ordre des tâches</WorkStudio.ResetTaskOrder>
+  <WorkStudio.BackToOrigin>Remettre dans « {0} » (origine)</WorkStudio.BackToOrigin>
+  <WorkStudio.AddTask>Ajouter une tâche</WorkStudio.AddTask>
+
+  <WorkStudio.Rename>Renommer</WorkStudio.Rename>
+  <WorkStudio.RenameTitle>Nouveau nom du type de travail</WorkStudio.RenameTitle>
+  <WorkStudio.Edit>Modifier</WorkStudio.Edit>
+  <WorkStudio.Delete>Supprimer</WorkStudio.Delete>
+  <WorkStudio.ConfirmDelete>Supprimer le type « {0} » ? Ses tâches retourneront dans leur type d'origine.</WorkStudio.ConfirmDelete>
+  <WorkStudio.ResetTasks>Rétablir les tâches</WorkStudio.ResetTasks>
+
+  <WorkStudio.EditTitle>Fiche du type de travail</WorkStudio.EditTitle>
+  <WorkStudio.Field.Label>Nom</WorkStudio.Field.Label>
+  <WorkStudio.Field.LabelShort>Nom court (en-tête de colonne)</WorkStudio.Field.LabelShort>
+  <WorkStudio.Field.PawnLabel>Nom du colon qui le fait</WorkStudio.Field.PawnLabel>
+  <WorkStudio.Field.Gerund>Forme en -ant</WorkStudio.Field.Gerund>
+  <WorkStudio.Field.Verb>Verbe</WorkStudio.Field.Verb>
+  <WorkStudio.Field.Description>Description</WorkStudio.Field.Description>
+  <WorkStudio.Field.AlwaysStartActive>Actif d'office chez un nouveau colon</WorkStudio.Field.AlwaysStartActive>
+  <WorkStudio.Field.RequireCapable>Avertir si plus aucun colon ne peut le faire</WorkStudio.Field.RequireCapable>
+  <WorkStudio.Field.Skills>Compétences concernées</WorkStudio.Field.Skills>
+  <WorkStudio.Apply>Appliquer</WorkStudio.Apply>
+
+</LanguageData>

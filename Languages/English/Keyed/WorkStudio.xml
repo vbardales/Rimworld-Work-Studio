@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <WorkStudio.Settings.Intro>Reorganize the Work tab without restarting: create your own work types, move tasks into them from other types, rename, reorder and hide columns.</WorkStudio.Settings.Intro>
+  <WorkStudio.Settings.OpenEditor>Open the work type editor</WorkStudio.Settings.OpenEditor>
+  <WorkStudio.Settings.SaveNote>Colonist priorities are saved by work name, so you can change this setup between sessions without scrambling them. Removing the mod simply gives moved tasks their original types back.</WorkStudio.Settings.SaveNote>
+
+  <WorkStudio.OpenEditorShort>Work types…</WorkStudio.OpenEditorShort>
+
+  <WorkStudio.Drift.Title>Work Studio — your mod list changed</WorkStudio.Drift.Title>
+  <WorkStudio.Drift.Intro>The available work has changed since the last startup. Your setup is intact: nothing was erased.</WorkStudio.Drift.Intro>
+  <WorkStudio.Drift.GoneTypes>Work types that are gone: {0}. The tasks you had filed under them went back to their original types.</WorkStudio.Drift.GoneTypes>
+  <WorkStudio.Drift.MissingTasks>Tasks your setup still remembers but cannot find: {0}. They will fall back into place if the mod that provides them comes back.</WorkStudio.Drift.MissingTasks>
+  <WorkStudio.Drift.NewTypes>New work types: {0}. They sit according to their own priority, so not necessarily where you would expect them in the order you had set.</WorkStudio.Drift.NewTypes>
+  <WorkStudio.Drift.AndMore>and {0} more</WorkStudio.Drift.AndMore>
+
+  <WorkStudio.Types>Work types</WorkStudio.Types>
+  <WorkStudio.NewType>+ New type</WorkStudio.NewType>
+  <WorkStudio.NewTypeLabel>New work</WorkStudio.NewTypeLabel>
+  <WorkStudio.ResetOrder>Reset order</WorkStudio.ResetOrder>
+  <WorkStudio.VisibleTip>Show the column in the Work tab. A hidden type stays active; only its column disappears.</WorkStudio.VisibleTip>
+  <WorkStudio.PriorityTip>Natural priority: {0}</WorkStudio.PriorityTip>
+  <WorkStudio.CustomTip>Custom type</WorkStudio.CustomTip>
+
+  <WorkStudio.Tasks>Tasks</WorkStudio.Tasks>
+  <WorkStudio.TasksOf>Tasks of "{0}"</WorkStudio.TasksOf>
+  <WorkStudio.NoSelection>Pick a work type on the left.</WorkStudio.NoSelection>
+  <WorkStudio.NoTasks>No tasks. The column still shows up, but no colonist will have anything to do in it.</WorkStudio.NoTasks>
+  <WorkStudio.MoveTip>Move to another type</WorkStudio.MoveTip>
+  <WorkStudio.MoveUp>Move up one step</WorkStudio.MoveUp>
+  <WorkStudio.MoveDown>Move down one step</WorkStudio.MoveDown>
+  <WorkStudio.OrderTip>Priority within the type: {0} — drag the row to reorder</WorkStudio.OrderTip>
+  <WorkStudio.OriginTip>Original type: {0}</WorkStudio.OriginTip>
+  <WorkStudio.ResetTaskOrder>Reset task order</WorkStudio.ResetTaskOrder>
+  <WorkStudio.BackToOrigin>Move back to "{0}" (original)</WorkStudio.BackToOrigin>
+  <WorkStudio.AddTask>Add a task</WorkStudio.AddTask>
+
+  <WorkStudio.Rename>Rename</WorkStudio.Rename>
+  <WorkStudio.RenameTitle>New name for the work type</WorkStudio.RenameTitle>
+  <WorkStudio.Edit>Edit</WorkStudio.Edit>
+  <WorkStudio.Delete>Delete</WorkStudio.Delete>
+  <WorkStudio.ConfirmDelete>Delete the "{0}" type? Its tasks will return to their original types.</WorkStudio.ConfirmDelete>
+  <WorkStudio.ResetTasks>Restore tasks</WorkStudio.ResetTasks>
+
+  <WorkStudio.EditTitle>Work type sheet</WorkStudio.EditTitle>
+  <WorkStudio.Field.Label>Name</WorkStudio.Field.Label>
+  <WorkStudio.Field.LabelShort>Short name (column header)</WorkStudio.Field.LabelShort>
+  <WorkStudio.Field.PawnLabel>Name of the colonist doing it</WorkStudio.Field.PawnLabel>
+  <WorkStudio.Field.Gerund>Gerund form</WorkStudio.Field.Gerund>
+  <WorkStudio.Field.Verb>Verb</WorkStudio.Field.Verb>
+  <WorkStudio.Field.Description>Description</WorkStudio.Field.Description>
+  <WorkStudio.Field.AlwaysStartActive>Always active on a new colonist</WorkStudio.Field.AlwaysStartActive>
+  <WorkStudio.Field.RequireCapable>Warn when no colonist can do it</WorkStudio.Field.RequireCapable>
+  <WorkStudio.Field.Skills>Relevant skills</WorkStudio.Field.Skills>
+  <WorkStudio.Apply>Apply</WorkStudio.Apply>
+
+</LanguageData>
