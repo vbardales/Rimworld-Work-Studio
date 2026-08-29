@@ -58,6 +58,20 @@ des autres mods. Un type apparu depuis la sauvegarde demarre eteint, comme le fa
 types disparus, taches introuvables, types nouveaux. L'avertissement ne reparait pas tant que
 rien ne bouge, et ne s'affiche pas du tout sans configuration.
 
+## Importer et exporter
+
+Depuis les reglages du mod. Les fichiers vivent dans `WorkStudio/` a cote de `Saves` et de
+`Config`, dans les donnees de sauvegarde du jeu.
+
+Un export ne contient que la part transportable des reglages : types personnalises, affectations
+des taches, ordres, renommages, masquages. Il laisse de cote `knownWorkTypes`, la photographie de
+la liste de mods qui sert a reperer les changements - la partager ferait crier au changement des
+le premier import chez quelqu'un d'autre.
+
+Un import lit d'abord le fichier dans un jeu de reglages neuf et ne l'adopte que s'il a ete lu en
+entier. Un fichier tronque ne laisse donc pas la configuration a moitie remplacee, ce qui serait
+pire que de ne rien importer.
+
 ## Ce que le mod ne fait pas
 
 - **Il ne cree pas de nouvelles taches.** Un type de travail personnalise est un contenant : il

@@ -38,6 +38,21 @@ namespace WorkStudio
 
             listing.Gap();
 
+            if (listing.ButtonText("WorkStudio.Settings.Presets".Translate()))
+            {
+                Find.WindowStack.Add(new Dialog_ConfigFiles());
+            }
+
+            if (WorkTypeRuntime.HasOverrides() && listing.ButtonText("WorkStudio.Settings.ResetAll".Translate()))
+            {
+                Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                    "WorkStudio.Settings.ConfirmResetAll".Translate(),
+                    WorkTypeRuntime.ResetAll,
+                    destructive: true));
+            }
+
+            listing.Gap();
+
             GUI.color = new Color(1f, 1f, 1f, 0.6f);
             listing.Label("WorkStudio.Settings.SaveNote".Translate());
             GUI.color = Color.white;

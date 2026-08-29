@@ -50,17 +50,47 @@ namespace WorkStudio
         {
             base.ExposeData();
             Scribe_Values.Look(ref schemaVersion, "schemaVersion", 1);
+
+            ExposeConfig();
+
+            Scribe_Collections.Look(ref knownWorkTypes, "knownWorkTypes", LookMode.Value);
+            Scribe_Collections.Look(ref reportedMissingTasks, "reportedMissingTasks", LookMode.Value);
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (knownWorkTypes == null)
+                {
+                    knownWorkTypes = new List<string>();
+                }
+                if (reportedMissingTasks == null)
+                {
+                    reportedMissingTasks = new List<string>();
+                }
+            }
+        }
+
+        /// <summary>
+        /// La part transportable des reglages : tout ce qui decrit la configuration voulue, et rien
+        /// de ce qui n'a de sens que sur cette installation.
+        /// <para>
+        /// C'est exactement ce qu'un fichier d'export contient, et la raison pour laquelle cette
+        /// methode existe separement : partager <c>knownWorkTypes</c>, qui photographie une liste de
+        /// mods, ferait crier au changement des le premier import.
+        /// </para>
+        /// </summary>
+        public void ExposeConfig()
+        {
             Scribe_Collections.Look(ref customTypes, "customTypes", LookMode.Deep);
             Scribe_Collections.Look(ref giverAssignments, "giverAssignments", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look(ref priorityOverrides, "priorityOverrides", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look(ref giverOrderOverrides, "giverOrderOverrides", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look(ref labelOverrides, "labelOverrides", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look(ref hiddenTypes, "hiddenTypes", LookMode.Value);
-            Scribe_Collections.Look(ref knownWorkTypes, "knownWorkTypes", LookMode.Value);
-            Scribe_Collections.Look(ref reportedMissingTasks, "reportedMissingTasks", LookMode.Value);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+                // Un noeud absent vaut "rien de surcharge", pas "garder ce qu'il y avait" : un
+                // import doit remplacer la configuration, pas se melanger a elle.
                 if (customTypes == null)
                 {
                     customTypes = new List<CustomWorkTypeEntry>();
@@ -85,20 +115,23 @@ namespace WorkStudio
                 {
                     hiddenTypes = new List<string>();
                 }
-                if (knownWorkTypes == null)
-                {
-                    knownWorkTypes = new List<string>();
-                }
-                if (reportedMissingTasks == null)
-                {
-                    reportedMissingTasks = new List<string>();
-                }
             }
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 customTypes.RemoveAll(t => t == null || t.id.NullOrEmpty());
             }
+        }
+
+        /// <summary>Reprend la configuration d'un autre jeu de reglages, sans toucher au reste.</summary>
+        public void AdoptConfig(WorkStudioSettings other)
+        {
+            customTypes = other.customTypes;
+            giverAssignments = other.giverAssignments;
+            priorityOverrides = other.priorityOverrides;
+            giverOrderOverrides = other.giverOrderOverrides;
+            labelOverrides = other.labelOverrides;
+            hiddenTypes = other.hiddenTypes;
         }
     }
 }

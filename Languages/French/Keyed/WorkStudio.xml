@@ -5,6 +5,24 @@
   <WorkStudio.Settings.OpenEditor>Ouvrir l'éditeur des types de travail</WorkStudio.Settings.OpenEditor>
   <WorkStudio.Settings.SaveNote>Les priorités de vos colons sont enregistrées par nom de travail : vous pouvez modifier cette configuration entre deux sessions sans les mélanger. Retirer le mod rend simplement leurs types d'origine aux tâches déplacées.</WorkStudio.Settings.SaveNote>
 
+  <WorkStudio.Settings.Presets>Importer / exporter une configuration</WorkStudio.Settings.Presets>
+  <WorkStudio.Settings.ResetAll>Réinitialiser toute la configuration</WorkStudio.Settings.ResetAll>
+  <WorkStudio.Settings.ConfirmResetAll>Effacer toute votre configuration ? Les types personnalisés disparaîtront et chaque tâche retrouvera son type d'origine. Pensez à l'exporter d'abord si vous voulez pouvoir y revenir.</WorkStudio.Settings.ConfirmResetAll>
+
+  <WorkStudio.Presets.Title>Configurations enregistrées</WorkStudio.Presets.Title>
+  <WorkStudio.Presets.Export>Exporter la configuration actuelle</WorkStudio.Presets.Export>
+  <WorkStudio.Presets.ExportName>Nom de la configuration</WorkStudio.Presets.ExportName>
+  <WorkStudio.Presets.DefaultName>Ma configuration</WorkStudio.Presets.DefaultName>
+  <WorkStudio.Presets.None>Aucune configuration enregistrée. Celles que vous exporterez iront dans :\n{0}</WorkStudio.Presets.None>
+  <WorkStudio.Presets.ImportTip>Cliquez pour importer cette configuration.</WorkStudio.Presets.ImportTip>
+  <WorkStudio.Presets.DeleteTip>Supprimer ce fichier</WorkStudio.Presets.DeleteTip>
+  <WorkStudio.Presets.ConfirmImport>Importer « {0} » ? Votre configuration actuelle sera entièrement remplacée.</WorkStudio.Presets.ConfirmImport>
+  <WorkStudio.Presets.ConfirmOverwrite>Une configuration nommée « {0} » existe déjà. L'écraser ?</WorkStudio.Presets.ConfirmOverwrite>
+  <WorkStudio.Presets.ConfirmDelete>Supprimer le fichier « {0} » ?</WorkStudio.Presets.ConfirmDelete>
+  <WorkStudio.Presets.Imported>Configuration « {0} » importée.</WorkStudio.Presets.Imported>
+  <WorkStudio.Presets.Exported>Configuration « {0} » enregistrée.</WorkStudio.Presets.Exported>
+  <WorkStudio.Presets.Failed>Échec : {0}</WorkStudio.Presets.Failed>
+
   <WorkStudio.OpenEditorShort>Types de travail…</WorkStudio.OpenEditorShort>
 
   <WorkStudio.Drift.Title>Work Studio — votre liste de mods a changé</WorkStudio.Drift.Title>

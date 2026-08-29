@@ -5,6 +5,24 @@
   <WorkStudio.Settings.OpenEditor>Open the work type editor</WorkStudio.Settings.OpenEditor>
   <WorkStudio.Settings.SaveNote>Colonist priorities are saved by work name, so you can change this setup between sessions without scrambling them. Removing the mod simply gives moved tasks their original types back.</WorkStudio.Settings.SaveNote>
 
+  <WorkStudio.Settings.Presets>Import / export a setup</WorkStudio.Settings.Presets>
+  <WorkStudio.Settings.ResetAll>Reset the whole setup</WorkStudio.Settings.ResetAll>
+  <WorkStudio.Settings.ConfirmResetAll>Erase your whole setup? Custom types will be gone and every task will return to its original type. Export it first if you want to be able to come back to it.</WorkStudio.Settings.ConfirmResetAll>
+
+  <WorkStudio.Presets.Title>Saved setups</WorkStudio.Presets.Title>
+  <WorkStudio.Presets.Export>Export the current setup</WorkStudio.Presets.Export>
+  <WorkStudio.Presets.ExportName>Setup name</WorkStudio.Presets.ExportName>
+  <WorkStudio.Presets.DefaultName>My setup</WorkStudio.Presets.DefaultName>
+  <WorkStudio.Presets.None>No saved setup yet. The ones you export will go to:\n{0}</WorkStudio.Presets.None>
+  <WorkStudio.Presets.ImportTip>Click to import this setup.</WorkStudio.Presets.ImportTip>
+  <WorkStudio.Presets.DeleteTip>Delete this file</WorkStudio.Presets.DeleteTip>
+  <WorkStudio.Presets.ConfirmImport>Import "{0}"? Your current setup will be replaced entirely.</WorkStudio.Presets.ConfirmImport>
+  <WorkStudio.Presets.ConfirmOverwrite>A setup named "{0}" already exists. Overwrite it?</WorkStudio.Presets.ConfirmOverwrite>
+  <WorkStudio.Presets.ConfirmDelete>Delete the file "{0}"?</WorkStudio.Presets.ConfirmDelete>
+  <WorkStudio.Presets.Imported>Setup "{0}" imported.</WorkStudio.Presets.Imported>
+  <WorkStudio.Presets.Exported>Setup "{0}" saved.</WorkStudio.Presets.Exported>
+  <WorkStudio.Presets.Failed>Failed: {0}</WorkStudio.Presets.Failed>
+
   <WorkStudio.OpenEditorShort>Work types…</WorkStudio.OpenEditorShort>
 
   <WorkStudio.Drift.Title>Work Studio — your mod list changed</WorkStudio.Drift.Title>
