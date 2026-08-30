@@ -1,9 +1,25 @@
 # Attribution
 
+## D'ou vient ce mod
+
+Il n'existerait pas sans deux personnes.
+
+**Celle qui a signale la technique publiquement** et explique ou la trouver :
+https://steamcommunity.com/profiles/76561198380244407 — c'est le point de depart de tout ce qui
+suit. Sans ce message, la modification a chaud des types de travail serait restee enfouie dans le
+code d'Achtung!, et ce mod n'aurait pas ete ecrit.
+
+**Densevoid**, pour *Personal Work Categories*, ou ce signalement a ete partage :
+https://steamcommunity.com/sharedfiles/filedetails/?id=2722053051
+
 ## Achtung! - Andreas Pardeike (pardeike / Brrainz)
 
+Workshop : https://steamcommunity.com/sharedfiles/filedetails/?id=730936602
 Depot : https://github.com/pardeike/RimWorld-Achtung-Mod
 Licence : MIT (voir `LICENSE-achtung.txt`)
+
+C'est dans Achtung! que cette technique a ete rendue fonctionnelle la premiere fois. Tout le
+reste de ce mod en decoule.
 
 La sequence de rechargement a chaud des `WorkTypeDef` vient de `Source/DynamicWorkTypes.cs`
 d'Achtung! : purger `workGiversByPriority`, appeler `DefDatabase<T>.ClearCachedData()` puis

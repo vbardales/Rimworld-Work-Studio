@@ -40,9 +40,15 @@ THANKS
 
 Claude Code (Anthropic) and DALL-E (OpenAI).
 
-Andreas Pardeike (pardeike / Brrainz), for Harmony without which none of this would exist, and for Achtung!, whose MIT-licensed DynamicWorkTypes.cs was the starting point for modifying work types at runtime.
+Andreas Pardeike (pardeike / Brrainz), for Harmony without which none of this would exist, and for Achtung!, whose MIT-licensed DynamicWorkTypes.cs is the whole reason work types can be changed without a restart. Achtung! is where this technique was first made to work, and this mod stands on it.
+https://steamcommunity.com/sharedfiles/filedetails/?id=730936602
+https://github.com/pardeike/RimWorld-Achtung-Mod
 
-The mod "Dynamically Modify WorkTypes Without Restarting the Game", which pointed at the technique and the gist documenting it — that is where the idea came from.
+Above all, the person who pointed at that technique publicly and explained where to find it — without that pointer this mod would not exist at all.
+https://steamcommunity.com/profiles/76561198380244407
+
+Densevoid, for Personal Work Categories, where the pointer was shared.
+https://steamcommunity.com/sharedfiles/filedetails/?id=2722053051
 
 What is reused and how it differs is detailed in ATTRIBUTION.md. This mod is MIT licensed.</description>
   <modDependencies>
