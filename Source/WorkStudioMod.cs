@@ -6,7 +6,7 @@ namespace WorkStudio
 {
     public class WorkStudioMod : Mod
     {
-        public const string HarmonyId = "vbardales.workstudio";
+        public const string HarmonyId = "nelim.workstudio";
 
         public static WorkStudioMod Instance { get; private set; }
         public static WorkStudioSettings Settings { get; private set; }
