@@ -51,7 +51,8 @@
   <WorkStudio.OriginTip>Original type: {0}</WorkStudio.OriginTip>
   <WorkStudio.ResetTaskOrder>Reset task order</WorkStudio.ResetTaskOrder>
   <WorkStudio.BackToOrigin>Move back to "{0}" (original)</WorkStudio.BackToOrigin>
-  <WorkStudio.AddTask>Add a task</WorkStudio.AddTask>
+  <WorkStudio.OtherTasks>Tasks from other types</WorkStudio.OtherTasks>
+  <WorkStudio.AddHint>Click a task to bring it into "{0}".</WorkStudio.AddHint>
 
   <WorkStudio.Rename>Rename</WorkStudio.Rename>
   <WorkStudio.RenameTitle>New name for the work type</WorkStudio.RenameTitle>

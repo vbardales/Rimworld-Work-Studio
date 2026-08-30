@@ -781,7 +781,7 @@ namespace WorkStudio
             var inner = rect.ContractedBy(6f);
             var y = inner.y;
 
-            DrawColumnHeader(new Rect(inner.x, y, inner.width, HeaderHeight), "WorkStudio.AddTask".Translate());
+            DrawColumnHeader(new Rect(inner.x, y, inner.width, HeaderHeight), "WorkStudio.OtherTasks".Translate());
             y += HeaderHeight + 4f;
 
             if (selectedType == null)
@@ -790,7 +790,17 @@ namespace WorkStudio
             }
 
             addSearch = Widgets.TextField(new Rect(inner.x, y, inner.width, SearchHeight), addSearch);
-            y += SearchHeight + 6f;
+            y += SearchHeight + 4f;
+
+            // Le geste n'est devinable ni depuis l'en-tete ni depuis les lignes : on le dit.
+            var color = GUI.color;
+            GUI.color = new Color(1f, 1f, 1f, 0.5f);
+            Text.Font = GameFont.Tiny;
+            Widgets.Label(new Rect(inner.x, y, inner.width, 20f),
+                "WorkStudio.AddHint".Translate(TypeLabel(selectedType)));
+            Text.Font = GameFont.Small;
+            GUI.color = color;
+            y += 22f;
 
             var candidates = Candidates();
             var listRect = new Rect(inner.x, y, inner.width, inner.yMax - y);
@@ -840,8 +850,25 @@ namespace WorkStudio
             var anchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
 
+            // Les deux colonnes listent des taches : sans le type d'appartenance affiche en clair,
+            // rien ne distingue "ce qui est dans ce type" de "tout le reste".
+            var labelRect = rect;
+            if (showCurrent && giver.workType != null)
+            {
+                var typeRect = new Rect(rect.xMax - rect.width * 0.42f, rect.y, rect.width * 0.42f,
+                    rect.height);
+                labelRect = new Rect(rect.x, rect.y, typeRect.x - rect.x - 6f, rect.height);
+
+                var color = GUI.color;
+                GUI.color = new Color(1f, 1f, 1f, 0.45f);
+                Text.Anchor = TextAnchor.MiddleRight;
+                Widgets.Label(typeRect, TypeLabel(giver.workType).Truncate(typeRect.width));
+                GUI.color = color;
+                Text.Anchor = TextAnchor.MiddleLeft;
+            }
+
             var label = GiverLabel(giver);
-            Widgets.Label(rect, label.Truncate(rect.width));
+            Widgets.Label(labelRect, label.Truncate(labelRect.width));
 
             Text.Anchor = anchor;
 

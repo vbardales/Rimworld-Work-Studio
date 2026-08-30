@@ -3,6 +3,13 @@
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 Ce fichier sert au dépôt et à rédiger les notes de version Steam ; RimWorld ne l'affiche pas en jeu.
 
+## [1.0.1] — non publié
+
+### Modifié
+
+- La colonne de droite de l'éditeur affiche désormais, en gris, le type auquel chaque tâche appartient déjà, et s'intitule « Tâches des autres types ». Les deux colonnes listaient des tâches sans que rien ne les distingue : l'appartenance n'apparaissait qu'en infobulle.
+- Une ligne d'aide sous la recherche indique ce que produit un clic.
+
 ## [1.0.0] — 2026-08-30
 
 Première version. RimWorld 1.6.

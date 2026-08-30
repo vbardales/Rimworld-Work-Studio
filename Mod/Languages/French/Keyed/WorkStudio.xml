@@ -51,7 +51,8 @@
   <WorkStudio.OriginTip>Type d'origine : {0}</WorkStudio.OriginTip>
   <WorkStudio.ResetTaskOrder>Réinitialiser l'ordre des tâches</WorkStudio.ResetTaskOrder>
   <WorkStudio.BackToOrigin>Remettre dans « {0} » (origine)</WorkStudio.BackToOrigin>
-  <WorkStudio.AddTask>Ajouter une tâche</WorkStudio.AddTask>
+  <WorkStudio.OtherTasks>Tâches des autres types</WorkStudio.OtherTasks>
+  <WorkStudio.AddHint>Cliquez sur une tâche pour l'amener dans « {0} ».</WorkStudio.AddHint>
 
   <WorkStudio.Rename>Renommer</WorkStudio.Rename>
   <WorkStudio.RenameTitle>Nouveau nom du type de travail</WorkStudio.RenameTitle>
