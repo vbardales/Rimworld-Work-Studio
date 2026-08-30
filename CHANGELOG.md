@@ -3,7 +3,9 @@
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 Ce fichier sert au dépôt et à rédiger les notes de version Steam ; RimWorld ne l'affiche pas en jeu.
 
-## [Non publié] — 1.0.0
+## [1.0.0] — non publié
+
+À la publication : créer le tag `v1.0.0` et la release GitHub correspondante.
 
 Première version. RimWorld 1.6.
 

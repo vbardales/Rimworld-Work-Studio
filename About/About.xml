@@ -6,58 +6,41 @@
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>
-  <description>Réorganisez l'onglet Travail depuis le jeu, sans redémarrer.
+  <description>Reorganize the Work tab from inside the game, without restarting.
 
-• Créez vos propres types de travail et remplissez-les de tâches prises dans d'autres types — sortez « soigner les animaux » de Manieur, taillez un travail de cuisine séparé du service.
-• Renommez, réordonnez et masquez les colonnes, y compris celles du jeu de base.
-• Glisser-déposer sur deux niveaux : l'ordre des types entre eux, et l'ordre des tâches à l'intérieur d'un type. Des flèches haut/bas doublent le glisser, pensées pour la Steam Deck.
-• Importez et exportez vos configurations pour les transporter d'une partie à l'autre.
-
-Tout s'applique immédiatement. Aucun fichier de def à écrire, aucun redémarrage.
-
-VOS PRIORITÉS SONT EN SÉCURITÉ
-
-RimWorld range les priorités de vos colons dans une liste indexée par position, sans jamais écrire à quel travail chaque valeur appartient. Ajouter ou retirer un type de travail — le vôtre, ou celui d'un mod que vous venez d'installer — décale donc toute la colonne. Ce mod enregistre ces priorités par nom dans la sauvegarde et les remet en face du bon travail au chargement, ce qui protège aussi les travaux du jeu de base et ceux des autres mods.
-
-À SAVOIR
-
-• Ce mod ne crée pas de nouvelles tâches : il redistribue celles qui existent déjà.
-• Un type nourri par plusieurs sources hérite des incapacités de chacune. Un travail mêlant médecine et manutention sera désactivé chez un colon incapable de l'un ou de l'autre.
-• Incompatible avec Work Tab, qui reconstruit lui aussi les colonnes de l'onglet Travail.
-• Retirer ce mod rend leurs types d'origine aux tâches déplacées.
-
-GÉNÉRÉ PAR IA
-
-Le code de ce mod a été écrit avec Claude Code (Anthropic) et ses images générées avec DALL·E (OpenAI), sous direction, relecture et test humains. C'est assumé : concevoir avec ces outils est mon métier.
-
-REMERCIEMENTS
-
-Claude Code (Anthropic) et DALL·E (OpenAI).
-
-Andreas Pardeike (pardeike / Brrainz), pour Harmony sans lequel rien de tout ceci n'existerait, et pour Achtung! dont le fichier DynamicWorkTypes.cs, sous licence MIT, a servi de point de départ à la modification à chaud des types de travail.
-
-Le mod « Dynamically Modify WorkTypes Without Restarting the Game », qui a signalé cette technique et le gist qui la documente — c'est de là qu'est partie l'idée.
-
-Détail de ce qui est repris et de ce qui en diffère dans ATTRIBUTION.md. Ce mod est sous licence MIT.
-
----
-
-Reorganize the Work tab from inside the game, without restarting.
-
-• Create your own work types and fill them with tasks taken from other types.
+• Create your own work types and fill them with tasks taken from other types — pull "tend animals" out of Handler, carve a cooking job apart from serving.
 • Rename, reorder and hide columns, vanilla ones included.
 • Drag and drop on two levels: the order of the types themselves, and the order of tasks within a type. Up/down arrows double the drag, with the Steam Deck in mind.
-• Import and export your setups.
+• Import and export your setups to carry them from one game to the next.
 
-Colonist priorities are stored by name in the save, so changing your work setup — or your mod list — between sessions will not scramble them. Vanilla and other mods' work types are protected too.
+Everything applies immediately. No def file to write, no restart.
 
-Does not add new tasks, only redistributes existing ones. Incompatible with Work Tab. Removing the mod gives moved tasks their original types back.
+YOUR PRIORITIES ARE SAFE
+
+RimWorld stores colonist priorities in a list indexed by position, without ever recording which work each value belongs to. Adding or removing a work type — yours, or one from a mod you just installed — therefore shifts the whole column. This mod stores those priorities by name in the save and puts them back against the right work on load, which protects vanilla and other mods' work types too.
+
+GOOD TO KNOW
+
+• This mod does not create new tasks: it redistributes the ones that already exist.
+• A type fed from several sources inherits the disabling rules of each. A work mixing medicine and hauling will be disabled for a colonist incapable of either.
+• Incompatible with Work Tab, which also rebuilds the Work tab columns.
+• Removing this mod gives moved tasks their original types back.
+
+Interface in English and French.
 
 AI-GENERATED
 
-This mod's code was written with Claude Code (Anthropic) and its images generated with DALL·E (OpenAI), under human direction, review and testing. Stated openly: designing with these tools is my job.
+This mod's code was written with Claude Code (Anthropic) and its images generated with DALL-E (OpenAI), under human direction, review and testing. Stated openly: designing with these tools is my job.
 
-Thanks to Claude Code (Anthropic) and DALL·E (OpenAI). Thanks to Andreas Pardeike for Harmony, and for Achtung!, whose MIT-licensed DynamicWorkTypes.cs was the starting point. See ATTRIBUTION.md. This mod is MIT licensed.</description>
+THANKS
+
+Claude Code (Anthropic) and DALL-E (OpenAI).
+
+Andreas Pardeike (pardeike / Brrainz), for Harmony without which none of this would exist, and for Achtung!, whose MIT-licensed DynamicWorkTypes.cs was the starting point for modifying work types at runtime.
+
+The mod "Dynamically Modify WorkTypes Without Restarting the Game", which pointed at the technique and the gist documenting it — that is where the idea came from.
+
+What is reused and how it differs is detailed in ATTRIBUTION.md. This mod is MIT licensed.</description>
   <modDependencies>
     <li>
       <packageId>brrainz.harmony</packageId>
