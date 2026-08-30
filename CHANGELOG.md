@@ -3,9 +3,7 @@
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 Ce fichier sert au dépôt et à rédiger les notes de version Steam ; RimWorld ne l'affiche pas en jeu.
 
-## [1.0.0] — non publié
-
-À la publication : créer le tag `v1.0.0` et la release GitHub correspondante.
+## [1.0.0] — 2026-08-30
 
 Première version. RimWorld 1.6.
 
@@ -23,5 +21,5 @@ Première version. RimWorld 1.6.
 
 - Ce mod ne crée pas de nouvelles tâches, il redistribue celles qui existent.
 - Un type nourri par plusieurs sources hérite des incapacités de chacune.
-- Incompatible avec Work Tab, qui reconstruit lui aussi les colonnes de l'onglet Travail.
+- Incompatible avec Work Tab (`Fluffy.WorkTab`) et Compact Work Tab (`Mlie.CompactWorkTab`), qui reconstruisent eux aussi les colonnes de l'onglet Travail. L'incompatibilité est déclarée dans `About.xml`, donc le jeu prévient de lui-même.
 - Retirer le mod rend leurs types d'origine aux tâches déplacées.
