@@ -31,7 +31,7 @@ namespace WorkStudio
             }
             catch (Exception exception)
             {
-                Log.Warning("[Work Studio] Dossier de configurations illisible : " + exception.Message);
+                Log.Warning("[Work Studio] Could not read the setups folder: " + exception.Message);
                 return new List<FileInfo>();
             }
         }
@@ -72,7 +72,7 @@ namespace WorkStudio
             {
                 Scribe.ForceStop();
                 error = exception.Message;
-                Log.Error("[Work Studio] Export impossible : " + exception);
+                Log.Error("[Work Studio] Export failed: " + exception);
                 return false;
             }
         }
@@ -113,7 +113,7 @@ namespace WorkStudio
             {
                 Scribe.ForceStop();
                 error = exception.Message;
-                Log.Error("[Work Studio] Import impossible : " + exception);
+                Log.Error("[Work Studio] Import failed: " + exception);
                 return false;
             }
         }

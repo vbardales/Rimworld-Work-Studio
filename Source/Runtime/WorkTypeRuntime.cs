@@ -231,8 +231,10 @@ namespace WorkStudio
                     // effacer l'affectation, au cas ou la cible reviendrait.
                     if (desired == null && warnedMissing.Add(target))
                     {
-                        Log.Warning("[Work Studio] Type de travail introuvable : '" + target +
-                                    "'. Les taches concernees reprennent leur type d'origine.");
+                        // En anglais, comme tout ce qui part au journal : ce sont d'autres
+                        // moddeurs qui le lisent dans les rapports de bug.
+                        Log.Warning("[Work Studio] Work type not found: '" + target +
+                                    "'. The tasks assigned to it fall back to their original type.");
                     }
                 }
 
