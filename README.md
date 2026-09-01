@@ -1,101 +1,111 @@
 # Work Studio
 
-Editeur des types de travail de RimWorld 1.6, applicable **a chaud** : creer ses propres types,
-y deplacer les taches prises dans d'autres types, renommer, masquer une colonne.
-Aucun redemarrage, aucun fichier de def a ecrire.
+A work type editor for RimWorld 1.6, applied **live**: create your own work types, move tasks
+into them from other types, rename them, hide a column. No restart, no def file to write.
 
-Le glisser-deposer joue sur les deux niveaux d'ordre du jeu, qui n'ont rien a voir entre eux :
+Drag and drop acts on the game's two orders, which have nothing to do with each other:
 
-- **la colonne de gauche** reordonne les types de travail, en reaffectant leurs
-  `naturalPriority` - c'est l'ordre des colonnes de l'onglet Travail, et l'ordre dans lequel un
-  colon passe d'un travail au suivant ;
-- **la liste des taches d'un type** reordonne les `WorkGiverDef.priorityInType` - c'est l'ordre
-  dans lequel il attrape les taches une fois qu'il s'est mis a ce travail.
+- **the left column** reorders the work types by reassigning their `naturalPriority` — that is
+  both the order of the Work tab columns and the order in which a colonist moves from one job to
+  the next;
+- **the task list of a type** reorders `WorkGiverDef.priorityInType` — the order in which a
+  colonist picks up tasks once already busy with that job.
 
-Dans les deux cas on redistribue les valeurs deja en place au lieu d'inventer une echelle, pour
-qu'un mod charge plus tard puisse encore se glisser au milieu de la liste.
+In both cases the values already in place are redistributed rather than a new scale invented, so
+that a mod loaded later can still slot into the middle of the list.
 
-Chaque ligne porte aussi deux fleches haut/bas, qui deplacent d'un cran. Le glisser-deposer est
-peu praticable au pave tactile d'une Steam Deck, et les fleches restent visibles - grisees - aux
-extremites de liste : un bouton qui disparait deplacerait tous les autres sous le doigt.
+Every row also carries up/down arrows that move it one step. Drag and drop is awkward on a Steam
+Deck trackpad, and the arrows stay visible — greyed out — at the ends of a list: a button that
+disappeared would shift every other one under your finger.
 
-Le mod s'ouvre depuis le bouton **Types de travail...** en haut a droite de l'onglet Travail,
-ou depuis ses reglages.
+Open it from the **Work types…** button at the top right of the Work tab, or from the mod
+settings.
 
-## Comment ca marche
+## How it works
 
-Les defs ne sont pas rejoues : ils sont mutes en memoire puis le jeu est force a se reindexer.
-`WorkTypeRuntime.Apply()` est une reconciliation complete et idempotente - le resultat ne depend
-que de la configuration, jamais de l'ordre des modifications.
+Defs are not replayed: they are mutated in memory and the game is then forced to reindex.
+`WorkTypeRuntime.Apply()` is a full, idempotent reconciliation — the result depends only on the
+configuration, never on the order in which changes were made.
 
-Le point delicat n'est pas de creer un `WorkTypeDef`, c'est de ne pas melanger les priorites des
-colons. `DefMap<D,V>` - la structure qui porte `Pawn_WorkSettings.priorities` - ne stocke aucune
-cle : c'est une `List<V>` indexee par `def.index`, serialisee telle quelle. Ajouter, retirer ou
-reordonner un seul type de travail decalerait donc les priorites de tous les types suivants,
-chez tous les pions de la partie, et personne ne s'en apercevrait avant de retrouver un medecin
-en train de miner. D'ou deux garde-fous :
+The delicate part is not creating a `WorkTypeDef`, it is not scrambling colonist priorities.
+`DefMap<D,V>` — the structure behind `Pawn_WorkSettings.priorities` — stores no keys: it is a
+`List<V>` indexed by `def.index`, serialised as such. Adding, removing or reordering a single
+work type would therefore shift the priorities of every type after it, for every pawn in the
+game, and nobody would notice until they found a doctor down a mine shaft. Hence two safeguards:
 
-- `PriorityMemory` capture les priorites **par defName** avant chaque reconfiguration et les
-  remet en face du bon type apres. Un type nouveau herite de la priorite du type dont ses taches
-  ont ete extraites : scinder un travail en deux ne change rien au comportement du colon.
-- `Patch_WorkSettingsExposeData` ecrit les memes priorites, nommees, dans la sauvegarde. On peut
-  donc modifier la configuration entre deux sessions sans rien melanger.
+- `PriorityMemory` captures priorities **by defName** before each reconfiguration and puts them
+  back against the right type afterwards. A new type inherits the priority of the type its tasks
+  were taken from: splitting a job in two changes nothing about what the colonist does.
+- `Patch_WorkSettingsExposeData` writes those same priorities, named, into the save. The
+  configuration can therefore change between two sessions without anything being scrambled.
 
-## Quand la liste de mods change
+## When the mod list changes
 
-Une affectation pointe sur un `defName`, jamais sur un objet : un mod retire fait donc disparaitre
-la tache, pas le reglage. L'affectation reste en reserve et reprend seule si le mod revient. Une
-cible de type de travail introuvable retombe sur le type d'origine, avec un avertissement au
-journal.
+An assignment points at a `defName`, never at an object: removing a mod makes the task disappear,
+not the setting. The assignment stays in reserve and resumes on its own if the mod comes back. A
+work type target that cannot be found falls back to the original type, with a warning in the log.
 
-Le cas vraiment dangereux est ailleurs, et il ne vient pas de ce mod : ajouter ou retirer
-n'importe quel mod qui declare un `WorkTypeDef` decale la `DefMap` des priorites de toute la
-colonie. `Patch_WorkSettingsExposeData` ecrit ces priorites nommees dans la sauvegarde et les
-remet en face du bon travail au chargement, ce qui protege donc aussi les travaux vanilla et ceux
-des autres mods. Un type apparu depuis la sauvegarde demarre eteint, comme le fait le jeu seul.
+The genuinely dangerous case is elsewhere, and it does not come from this mod: adding or removing
+any mod that declares a `WorkTypeDef` shifts the priority `DefMap` of the whole colony.
+`Patch_WorkSettingsExposeData` writes those priorities by name into the save and puts them back
+against the right job on load, which protects vanilla and other mods' work types too. A type that
+appeared since the save starts switched off, as it would without this mod.
 
-`ConfigDrift` compare le paysage de defs a celui du dernier demarrage et l'annonce une fois -
-types disparus, taches introuvables, types nouveaux. L'avertissement ne reparait pas tant que
-rien ne bouge, et ne s'affiche pas du tout sans configuration.
+`ConfigDrift` compares the def landscape with the one from the previous startup and reports it
+once — types gone, tasks not found, types added. The warning does not come back while nothing
+moves, and does not show at all without a configuration.
 
-## Importer et exporter
+## Import and export
 
-Depuis les reglages du mod. Les fichiers vivent dans `WorkStudio/` a cote de `Saves` et de
-`Config`, dans les donnees de sauvegarde du jeu.
+From the mod settings. The files live in `WorkStudio/`, next to `Saves` and `Config` in the
+game's save data.
 
-Un export ne contient que la part transportable des reglages : types personnalises, affectations
-des taches, ordres, renommages, masquages. Il laisse de cote `knownWorkTypes`, la photographie de
-la liste de mods qui sert a reperer les changements - la partager ferait crier au changement des
-le premier import chez quelqu'un d'autre.
+An export carries only the portable part of the settings: custom types, task assignments, orders,
+renames, hidden columns. It leaves out `knownWorkTypes`, the snapshot of the mod list used to
+detect changes — sharing that would raise a false alarm on somebody else's first import.
 
-Un import lit d'abord le fichier dans un jeu de reglages neuf et ne l'adopte que s'il a ete lu en
-entier. Un fichier tronque ne laisse donc pas la configuration a moitie remplacee, ce qui serait
-pire que de ne rien importer.
+An import reads the file into a fresh settings object first and adopts it only once it has been
+read in full. A truncated file therefore does not leave the configuration half replaced, which
+would be worse than importing nothing.
 
-## Ce que le mod ne fait pas
+## What this mod does not do
 
-- **Il ne cree pas de nouvelles taches.** Un type de travail personnalise est un contenant : il
-  faut lui donner des `WorkGiverDef` existants, pris a d'autres types.
-- **Un type mixte est plus restrictif que ses parties.** Un type nourri par Docteur et Manieur
-  est desactive chez un colon incapable de l'un *ou* de l'autre. C'est le seul choix qui ne
-  laisse jamais un colon faire un travail dont le jeu l'avait ecarte.
-- **Work Tab n'est pas gere.** Ce mod reconstruit lui aussi les colonnes de l'onglet Travail ;
-  les deux se marcheraient dessus. Achtung! contourne le probleme par reflexion sur
-  `WorkTab.Controller`, ce qui n'a pas ete repris ici faute de pouvoir le tester.
-- **Les types masques restent actifs.** Masquer retire la colonne, pas le travail. Pour arreter
-  un travail, il faut mettre sa priorite a zero comme d'habitude.
+- **It does not create new tasks.** A custom work type is a container: it has to be given
+  existing `WorkGiverDef`s, taken from other types.
+- **A mixed type is more restrictive than its parts.** A type fed from both Doctor and Handling
+  is disabled for a colonist incapable of one *or* the other. That is the only choice that never
+  lets a colonist do work the game had ruled out for them.
+- **Other Work tab replacements are not supported.** `Fluffy.WorkTab` and `Mlie.CompactWorkTab`
+  rebuild the Work tab columns as well, so the two would fight over them. Both are declared in
+  `incompatibleWith`, so the game warns on its own. Achtung! works around the problem through
+  reflection on `WorkTab.Controller`; that was not reused here for lack of a way to test it.
+- **Hidden types stay active.** Hiding removes the column, not the job. To stop a job, set its
+  priority to zero as usual.
 
-## Desinstallation
+## Uninstalling
 
-Retirer le mod rend leurs types d'origine aux taches deplacees. Les types personnalises
-disparaissent avec lui : les priorites que les colons y avaient sont perdues, celles de tous les
-autres travaux sont conservees.
+Removing the mod gives moved tasks their original types back. Custom types go with it: the
+priorities colonists had on them are lost, every other job's priorities are kept.
+
+## Repository layout
+
+```
+Mod/       published to the Workshop; target of the junction into RimWorld/Mods
+Source/    never published
+.build/    build intermediates, ignored by git
+```
+
+The Workshop uploader sends the mod folder as it stands, with no filtering — `SteamUGC.SetItemContent`
+takes the root directory and nothing else. Keeping the sources out of `Mod/` is the only way not
+to publish them, and `Source/Directory.Build.props` keeps `obj/` out too: without it, the
+publicised `Assembly-CSharp.dll` it contains — about 6 MB — would ship to every subscriber.
 
 ## Build
 
-    dotnet build WorkStudio/Source/WorkStudio.csproj -c Release
+    dotnet build Source/WorkStudio.csproj -c Release
 
-La DLL sort directement dans `WorkStudio/Assemblies/`, et une jonction NTFS relie
-`RimWorld\Mods\WorkStudio` a ce dossier : il n'y a rien a copier.
+The assembly lands in `Mod/Assemblies/`. Reference assemblies come from NuGet
+(`Krafs.Rimworld.Ref`), so no RimWorld installation is needed to compile.
 
-Voir `ATTRIBUTION.md` pour ce qui vient d'Achtung! (MIT) et pour ce qui en differe.
+See `ATTRIBUTION.md` for what comes from Achtung! (MIT), for what differs from it, and for who
+pointed at the technique in the first place.
