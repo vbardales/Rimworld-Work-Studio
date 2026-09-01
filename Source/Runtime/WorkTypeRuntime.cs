@@ -137,6 +137,7 @@ namespace WorkStudio
 
             PriorityMemory.Restore(snapshot, seeds);
             RefreshWorkTab();
+            WorkTypeTagCompat.Notify();
         }
 
         /// <summary>Efface toute la configuration et remet les defs dans leur etat d'origine.</summary>

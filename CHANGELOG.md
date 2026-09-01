@@ -5,6 +5,10 @@ Ce fichier sert au dépôt et à rédiger les notes de version Steam ; RimWorld 
 
 ## [1.0.1] — non publié
 
+### Ajouté
+
+- Compatibilité avec [baku] Work Type Tag, qui affiche le nom du travail devant l'action d'un colon et colore l'en-tête de colonne assorti. Il gérait déjà les types créés ici — il indexe par `defName` et dérive une couleur du nom — mais gardait ses libellés dans un cache que rien ne vidait : renommer un travail laissait l'ancien nom devant l'action des colons jusqu'au redémarrage. Liaison molle par réflexion, aucune dépendance ajoutée.
+
 ### Modifié
 
 - La colonne de droite de l'éditeur affiche désormais, en gris, le type auquel chaque tâche appartient déjà, et s'intitule « Tâches des autres types ». Les deux colonnes listaient des tâches sans que rien ne les distingue : l'appartenance n'apparaissait qu'en infobulle.
