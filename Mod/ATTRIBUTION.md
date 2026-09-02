@@ -1,48 +1,47 @@
 # Attribution
 
-## D'ou vient ce mod
+## Where this mod comes from
 
-Il n'existerait pas sans deux personnes.
+It would not exist without two people.
 
-**0。0**, qui a signale la technique publiquement et explique ou la trouver :
-https://steamcommunity.com/profiles/76561198380244407 — c'est le point de depart de tout ce qui
-suit. Sans ce message, la modification a chaud des types de travail serait restee enfouie dans le
-code d'Achtung!, et ce mod n'aurait pas ete ecrit.
+**0。0**, who reported the technique publicly and explained where to find it:
+https://steamcommunity.com/profiles/76561198380244407 — that is the starting point of everything
+below. Without that message, hot-editing work types would have stayed buried in Achtung!'s code
+and this mod would not have been written.
 
-**Densevoid**, pour *Personal Work Categories*, ou ce signalement a ete partage :
+**Densevoid**, for *Personal Work Categories*, where that report was shared:
 https://steamcommunity.com/sharedfiles/filedetails/?id=2722053051
 
 ## Achtung! - Andreas Pardeike (pardeike / Brrainz)
 
-Workshop : https://steamcommunity.com/sharedfiles/filedetails/?id=730936602
-Depot : https://github.com/pardeike/RimWorld-Achtung-Mod
-Licence : MIT (voir `LICENSE-achtung.txt`)
+Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=730936602
+Repository: https://github.com/pardeike/RimWorld-Achtung-Mod
+Licence: MIT (see `LICENSE-achtung.txt`)
 
-C'est dans Achtung! que cette technique a ete rendue fonctionnelle la premiere fois. Tout le
-reste de ce mod en decoule.
+Achtung! is where this technique was first made to work. Everything else in this mod follows from
+it.
 
-La sequence de rechargement a chaud des `WorkTypeDef` vient de `Source/DynamicWorkTypes.cs`
-d'Achtung! : purger `workGiversByPriority`, appeler `DefDatabase<T>.ClearCachedData()` puis
-`ResolveAllReferences(false, true)` pour reindexer, regenerer les colonnes de la table Travail,
-et rafraichir chaque pion. Le meme fichier circule aussi sous forme de gist :
-https://gist.github.com/pardeike/6ae015b86e5f909be93bdabd8316b078 (sans licence explicite,
-c'est donc la version du depot Achtung!, sous MIT, qui a servi de reference).
+The hot-reload sequence for `WorkTypeDef`s comes from Achtung!'s `Source/DynamicWorkTypes.cs`:
+clear `workGiversByPriority`, call `DefDatabase<T>.ClearCachedData()` then
+`ResolveAllReferences(false, true)` to reindex, regenerate the Work table's columns, and refresh
+every pawn. The same file also circulates as a gist:
+https://gist.github.com/pardeike/6ae015b86e5f909be93bdabd8316b078 (with no explicit licence, so
+the Achtung! repository version, under MIT, is what served as the reference).
 
-Ce qui a ete repris tel quel : l'ordre des appels de rechargement, l'idee du postfix sur
-`Pawn.GetDisabledWorkTypes` pour qu'un type derive herite des incapacites de son type source,
-et la reconstruction des colonnes de `PawnTableDefOf.Work`.
+What was taken as is: the order of the reload calls, the idea of a postfix on
+`Pawn.GetDisabledWorkTypes` so that a derived type inherits the incapabilities of its source type,
+and the rebuilding of `PawnTableDefOf.Work`'s columns.
 
-Ce qui differe volontairement :
+What deliberately differs:
 
-- **Les priorites des pions sont rememorees par `defName`**, pas par index. `DefMap<D,V>` stocke
-  ses valeurs dans une simple `List<V>` alignee sur l'ordre des defs (`DefMap.ExposeData` ecrit
-  `vals` positionnellement), donc toute insertion ou suppression decale les priorites de tout le
-  monde. Achtung! gere ce decalage par un `Insert`/`Remove` a l'index calcule, ce qui ne tient que
-  pour une modification unitaire a la fois ; Work Studio applique une configuration entiere d'un
-  coup et doit donc capturer puis restaurer par nom.
-- **`values.Remove(index)` d'Achtung! n'est pas repris** : sur une `List<int>`, cet appel supprime
-  la premiere valeur *egale* a l'index, pas l'element *situe* a cet index.
-- **Tous les pions sont traites** (`PawnsFinder.All_AliveOrDead`), pas seulement les pions
-  spawnes : une caravane ou un pion en nacelle a lui aussi des priorites a recaler.
-- **Les incapacites derivees passent d'abord par `workTags`**, l'union des tags des types sources,
-  ce qui fait fonctionner sans rien patcher le filtrage par histoire et par trait.
+- **Pawn priorities are remembered by `defName`**, not by index. `DefMap<D,V>` stores its values in
+  a plain `List<V>` aligned on def order (`DefMap.ExposeData` writes `vals` positionally), so any
+  insertion or removal shifts everyone's priorities. Achtung! handles that shift with an
+  `Insert`/`Remove` at the computed index, which only holds for one change at a time; Work Studio
+  applies a whole configuration at once and therefore has to capture and restore by name.
+- **Achtung!'s `values.Remove(index)` is not reused**: on a `List<int>`, that call removes the first
+  value *equal to* the index, not the element *at* that index.
+- **Every pawn is handled** (`PawnsFinder.All_AliveOrDead`), not only spawned ones: a caravan or a
+  pawn in a pod also has priorities to realign.
+- **Derived incapabilities go through `workTags` first**, the union of the source types' tags, which
+  makes filtering by backstory and by trait work without patching anything.

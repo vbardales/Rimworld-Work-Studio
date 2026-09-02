@@ -1,36 +1,36 @@
-# Journal des modifications
+# Changelog
 
-Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
-Ce fichier sert au dépôt et à rédiger les notes de version Steam ; RimWorld ne l'affiche pas en jeu.
+Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+This file serves the repository and the writing of Steam patch notes; RimWorld does not display it in game.
 
-## [1.0.1] — non publié
+## [1.0.1] — unreleased
 
-### Ajouté
+### Added
 
-- Compatibilité avec [baku] Work Type Tag, qui affiche le nom du travail devant l'action d'un colon et colore l'en-tête de colonne assorti. Il gérait déjà les types créés ici — il indexe par `defName` et dérive une couleur du nom — mais gardait ses libellés dans un cache que rien ne vidait : renommer un travail laissait l'ancien nom devant l'action des colons jusqu'au redémarrage. Liaison molle par réflexion, aucune dépendance ajoutée.
+- Compatibility with [baku] Work Type Tag, which shows the work type's name in front of a colonist's current job and colours the matching column header. It already handled types created here — it indexes by `defName` and derives a colour from the name — but kept its labels in a cache nothing cleared: renaming a work type left the old name in front of colonists' jobs until a restart. Soft-linked by reflection, with no dependency added.
 
-### Modifié
+### Changed
 
-- La colonne de droite de l'éditeur affiche désormais, en gris, le type auquel chaque tâche appartient déjà, et s'intitule « Tâches des autres types ». Les deux colonnes listaient des tâches sans que rien ne les distingue : l'appartenance n'apparaissait qu'en infobulle.
-- Une ligne d'aide sous la recherche indique ce que produit un clic.
+- The editor's right-hand column now shows, in grey, the type each task already belongs to, and is titled "Tasks from other types". Both columns listed tasks with nothing to tell them apart: membership only showed in a tooltip.
+- A help line under the search box says what a click will do.
 
 ## [1.0.0] — 2026-08-30
 
-Première version. RimWorld 1.6.
+First version. RimWorld 1.6.
 
-### Ajouté
+### Added
 
-- Création de types de travail depuis le jeu, sans redémarrer.
-- Déplacement des tâches d'un type à l'autre, y compris depuis les types du jeu de base.
-- Renommage, réordonnancement et masquage des colonnes de l'onglet Travail.
-- Glisser-déposer sur deux niveaux : l'ordre des types entre eux, l'ordre des tâches dans un type.
-- Flèches haut/bas doublant le glisser-déposer, pour l'usage sans souris.
-- Import et export des configurations.
-- Priorités des colons enregistrées par nom dans la sauvegarde, au lieu de la liste indexée par position du jeu de base : changer de configuration ou de liste de mods ne les décale plus. Protège aussi les travaux du jeu de base et ceux des autres mods.
+- Creating work types from inside the game, without restarting.
+- Moving tasks from one type to another, including out of base game types.
+- Renaming, reordering and hiding the Work tab's columns.
+- Drag and drop on two levels: the order of types among themselves, the order of tasks within a type.
+- Up/down arrows doubling for drag and drop, for mouseless use.
+- Importing and exporting configurations.
+- Colonist priorities saved by name in the save file, instead of the base game's position-indexed list: changing configuration or mod list no longer shifts them. This also protects base game work types and those from other mods.
 
 ### Notes
 
-- Ce mod ne crée pas de nouvelles tâches, il redistribue celles qui existent.
-- Un type nourri par plusieurs sources hérite des incapacités de chacune.
-- Incompatible avec Work Tab (`Fluffy.WorkTab`) et Compact Work Tab (`Mlie.CompactWorkTab`), qui reconstruisent eux aussi les colonnes de l'onglet Travail. L'incompatibilité est déclarée dans `About.xml`, donc le jeu prévient de lui-même.
-- Retirer le mod rend leurs types d'origine aux tâches déplacées.
+- This mod does not create new tasks, it redistributes the ones that exist.
+- A type fed from several sources inherits the incapabilities of each.
+- Incompatible with Work Tab (`Fluffy.WorkTab`) and Compact Work Tab (`Mlie.CompactWorkTab`), which also rebuild the Work tab's columns. The incompatibility is declared in `About.xml`, so the game warns you itself.
+- Removing the mod returns moved tasks to their original types.
