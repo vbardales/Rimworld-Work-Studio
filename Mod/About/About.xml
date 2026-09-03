@@ -29,11 +29,11 @@ GOOD TO KNOW
 
 WITH BETTER WORK TAB
 
-Everything works except one thing: the order of the work types themselves. Better Work Tab keeps its own column order, saved per game, and it decides both the columns and the order in which a colonist moves from one job to the next. Reorder your types there rather than here.
+The two agree as long as you leave its columns alone. Better Work Tab only records a column order once you drag a column there; until then it has none, and the order you set here drives both the columns and the order in which a colonist moves from one job to the next.
 
-Worth knowing: a type you have just created is not yet in that order, so it goes last until you place it in Better Work Tab. Create it here, then position it there.
+Once you have reordered columns in Better Work Tab, its order wins for the types it recorded, and reordering them here stops having an effect. A type created afterwards is not in its list, so it goes last until you place it there.
 
-Everything else is unaffected — creating types, moving tasks between them, the order of tasks within a type, renaming, hiding, and the priority protection.
+Everything else is unaffected either way — creating types, moving tasks between them, the order of tasks within a type, renaming, hiding, and the priority protection.
 
 Interface in English and French.
 

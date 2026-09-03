@@ -96,10 +96,14 @@ if (indexA != indexB) return indexA.CompareTo(indexB);
 return b.naturalPriority.CompareTo(a.naturalPriority);
 ```
 
-Three consequences. A type Better Work Tab already lists is ordered by it, and reordering here
-does nothing. A save where it has recorded nothing yet falls through to `naturalPriority`, so
-this mod drives the order normally. And a type just created here is absent from that list, hence
-`int.MaxValue`: it sorts **last** until it is positioned in Better Work Tab.
+What matters is that the list starts **empty** and is only written when the player drags a column
+there — `ApplySaved` bails out on `Count == 0`. So on a game where its columns have never been
+reordered, every lookup misses, and the comparator falls straight through to `naturalPriority`:
+this mod drives both the columns and the execution order, with no conflict at all.
+
+Once columns have been reordered there, its order wins for every type it recorded, and reordering
+those here has no effect. A type created afterwards is absent from the list, hence `int.MaxValue`:
+it sorts **last** until it is positioned in Better Work Tab.
 
 Everything else composes: the two mods both read `PawnTableDefOf.Work`, so created types, moved
 tasks, `priorityInType` ordering, renames and hidden columns all come through.
