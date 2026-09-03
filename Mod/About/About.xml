@@ -24,8 +24,16 @@ GOOD TO KNOW
 
 • This mod does not create new tasks: it redistributes the ones that already exist.
 • A type fed from several sources inherits the disabling rules of each. A work mixing medicine and hauling will be disabled for a colonist incapable of either.
-• Incompatible with Work Tab, which also rebuilds the Work tab columns.
+• Incompatible with Work Tab and Compact Work Tab, which also rebuild the Work tab columns.
 • Removing this mod gives moved tasks their original types back.
+
+WITH BETTER WORK TAB
+
+Everything works except one thing: the order of the work types themselves. Better Work Tab keeps its own column order, saved per game, and it decides both the columns and the order in which a colonist moves from one job to the next. Reorder your types there rather than here.
+
+Worth knowing: a type you have just created is not yet in that order, so it goes last until you place it in Better Work Tab. Create it here, then position it there.
+
+Everything else is unaffected — creating types, moving tasks between them, the order of tasks within a type, renaming, hiding, and the priority protection.
 
 Interface in English and French.
 

@@ -82,6 +82,28 @@ would be worse than importing nothing.
 - **Hidden types stay active.** Hiding removes the column, not the job. To stop a job, set its
   priority to zero as usual.
 
+## With Better Work Tab
+
+Better Work Tab replaces the Work tab window and puts a prefix returning `false` on
+`Pawn_WorkSettings.CacheWorkGiversInOrder`, rebuilding the execution order from its own saved
+column order — a list of defNames held in a `GameComponent`, so per save. Its comparator falls
+back to `naturalPriority` only when two types share a colonist priority *and* the same position
+in that list:
+
+```csharp
+indexA = indexMap[a.defName] ?? int.MaxValue;
+if (indexA != indexB) return indexA.CompareTo(indexB);
+return b.naturalPriority.CompareTo(a.naturalPriority);
+```
+
+Three consequences. A type Better Work Tab already lists is ordered by it, and reordering here
+does nothing. A save where it has recorded nothing yet falls through to `naturalPriority`, so
+this mod drives the order normally. And a type just created here is absent from that list, hence
+`int.MaxValue`: it sorts **last** until it is positioned in Better Work Tab.
+
+Everything else composes: the two mods both read `PawnTableDefOf.Work`, so created types, moved
+tasks, `priorityInType` ordering, renames and hidden columns all come through.
+
 ## Uninstalling
 
 Removing the mod gives moved tasks their original types back. Custom types go with it: the
