@@ -7,7 +7,7 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ### Fixed
 
-- The **Work types…** button did not appear when another mod replaces the Work tab. Those mods declare their own window in the `MainButtonDef`'s `tabWindowClass`: they inherit from the vanilla class but override `DoWindowContents` without calling `base`, so the patched method never ran. The patch now targets whichever class is actually in use. Checked against Better Work Tab.
+- The **Work types…** button did not appear when another mod replaces the Work tab. Those mods declare their own window in the `MainButtonDef`'s `tabWindowClass`: they inherit from the vanilla class but override `DoWindowContents` without calling `base`, so the patched method never ran. The patch now targets whichever class is actually in use, and takes the rectangle by position rather than by name — Harmony injects parameters by name, and the parameter is called `rect` in vanilla but `inRect` in Better Work Tab, which was enough for the patch to be refused outright. Checked against Better Work Tab, in game.
 - The up/down arrows at the ends of a list still placed an invisible clickable area, which swallowed the click and played its sound. A disabled arrow is now only a drawing.
 
 ### Added

@@ -73,8 +73,16 @@ namespace WorkStudio
             return null;
         }
 
-        public static void Postfix(MainTabWindow __instance, Rect rect)
+        /// <summary>
+        /// Le rectangle est pris par position (<c>__0</c>) et non par nom. Harmony injecte les
+        /// parametres d'apres leur nom, et celui-ci n'est pas le meme partout : <c>rect</c> chez
+        /// vanilla, <c>inRect</c> chez Better Work Tab. Demander <c>rect</c> faisait rejeter le
+        /// patch avec « Parameter "rect" not found », donc pas de bouton du tout.
+        /// </summary>
+        public static void Postfix(MainTabWindow __instance, Rect __0)
         {
+            var rect = __0;
+
             if (Event.current.type == EventType.Layout || __instance.def?.defName != WorkButtonDefName)
             {
                 return;
