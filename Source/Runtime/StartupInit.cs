@@ -18,6 +18,11 @@ namespace WorkStudio
         {
             LongEventHandler.ExecuteWhenFinished(delegate
             {
+                // Avant Apply : le tabWindowClass de l'onglet Travail n'est resolu qu'une fois les
+                // defs charges, et les patchs XML des onglets de remplacement s'y sont deja
+                // appliques.
+                Patch_WorkTabButton.Apply(WorkStudioMod.HarmonyInstance);
+
                 WorkTypeRuntime.Apply();
 
                 // Apres Apply : le bilan doit porter sur le paysage tel qu'il est vraiment, une fois

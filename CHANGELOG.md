@@ -3,7 +3,12 @@
 Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This file serves the repository and the writing of Steam patch notes; RimWorld does not display it in game.
 
-## [1.0.1] — unreleased
+## [1.0.1] — 2026-09-02
+
+### Fixed
+
+- The **Work types…** button did not appear when another mod replaces the Work tab. Those mods declare their own window in the `MainButtonDef`'s `tabWindowClass`: they inherit from the vanilla class but override `DoWindowContents` without calling `base`, so the patched method never ran. The patch now targets whichever class is actually in use. Checked against Better Work Tab.
+- The up/down arrows at the ends of a list still placed an invisible clickable area, which swallowed the click and played its sound. A disabled arrow is now only a drawing.
 
 ### Added
 

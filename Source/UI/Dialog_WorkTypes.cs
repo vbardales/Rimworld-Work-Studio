@@ -338,25 +338,37 @@ namespace WorkStudio
             var down = new Rect(up.xMax + 2f, up.y, ArrowSize, ArrowSize);
             var delta = 0;
 
-            // ButtonImage impose lui-meme GUI.color : le grisage doit passer par ses parametres,
-            // pas par une couleur posee autour de l'appel.
-            if (Widgets.ButtonImage(up, TexButton.ReorderUp,
-                    canGoUp ? Color.white : DisabledArrowColor,
-                    canGoUp ? GenUI.MouseoverColor : DisabledArrowColor,
-                    canGoUp, "WorkStudio.MoveUp".Translate()) && canGoUp)
+            if (DrawArrow(up, TexButton.ReorderUp, canGoUp, "WorkStudio.MoveUp"))
             {
                 delta = -1;
             }
 
-            if (Widgets.ButtonImage(down, TexButton.ReorderDown,
-                    canGoDown ? Color.white : DisabledArrowColor,
-                    canGoDown ? GenUI.MouseoverColor : DisabledArrowColor,
-                    canGoDown, "WorkStudio.MoveDown".Translate()) && canGoDown)
+            if (DrawArrow(down, TexButton.ReorderDown, canGoDown, "WorkStudio.MoveDown"))
             {
                 delta = 1;
             }
 
             return delta;
+        }
+
+        /// <summary>
+        /// Une fleche inactive se dessine estompee mais ne pose <b>aucune zone cliquable</b> : la
+        /// filtrer apres coup laisserait un bouton invisible avaler le clic et jouer son son aux
+        /// extremites de liste.
+        /// </summary>
+        private static bool DrawArrow(Rect rect, Texture2D texture, bool enabled, string tooltipKey)
+        {
+            if (!enabled)
+            {
+                var color = GUI.color;
+                GUI.color = DisabledArrowColor;
+                GUI.DrawTexture(rect, texture);
+                GUI.color = color;
+                return false;
+            }
+
+            return Widgets.ButtonImage(rect, texture, Color.white, GenUI.MouseoverColor, true,
+                tooltipKey.Translate());
         }
 
         /// <summary>Le type a-t-il des taches dont l'ordre a ete retouche ?</summary>
