@@ -16,8 +16,8 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      # Les assemblies de reference viennent de NuGet (Krafs.Rimworld.Ref) :
-      # aucune installation de RimWorld n'est necessaire pour compiler.
+      # Reference assemblies come from NuGet (Krafs.Rimworld.Ref): no RimWorld installation
+      # is needed to compile.
       - name: Build
         run: dotnet build Source/WorkStudio.csproj -c Release --nologo
 

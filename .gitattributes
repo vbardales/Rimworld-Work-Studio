@@ -1,4 +1,4 @@
-# Normalise les fins de ligne dans le depot, en laissant chaque poste garder les siennes.
+# Normalise line endings in the repository, while each machine keeps its own.
 * text=auto
 
 *.cs   text diff=csharp
@@ -7,7 +7,7 @@
 *.props text
 *.yml  text
 
-# Binaires : ni normalisation, ni diff textuel.
+# Binaries: neither normalised nor diffed as text.
 *.png binary
 *.jpg binary
 *.dll binary
