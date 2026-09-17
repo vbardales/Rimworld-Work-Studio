@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Work Studio - Pickle tests</name>
+  <author>nelim</author>
+  <packageId>nelim.workstudio.pickletests</packageId>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <description>In-game functional tests for Work Studio, run by Pickle. Development only: never published.
+
+The scenarios reset Work Studio's settings before each run and restore them afterwards. If the game stops in the middle of a scenario, the next scenario restores them first.</description>
+  <modDependencies>
+    <li>
+      <packageId>nelim.workstudio</packageId>
+      <displayName>Work Studio</displayName>
+    </li>
+    <li>
+      <packageId>rimworks.pickle</packageId>
+      <displayName>Pickle</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3791648678</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>nelim.workstudio</li>
+    <li>rimworks.pickle</li>
+  </loadAfter>
+</ModMetaData>

@@ -211,6 +211,12 @@ Untick Work Studio, load a colony that used it. Moved tasks are back in their or
 every remaining priority is intact. The custom types are gone and the priorities held on them with
 them; that is expected and is the only loss.
 
+## Automated in game: Pickle
+
+Scenarios 1, 2 and 4 to 10 are also written in Gherkin under `Tests/Pickle/`, played inside
+RimWorld by the Pickle test mod. Its README says how to run them and which parts stay manual. Not
+run yet.
+
 ## What a pass means
 
 **Scenarios 1, 2, 4 and 5 gate publishing.** They cover loading, the button that failed twice, the

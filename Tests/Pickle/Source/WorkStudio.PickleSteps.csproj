@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Step definitions for the Pickle suite in ../Mod/Pickle/Features. Only Pickle loads this
+    assembly: it lives in the companion test mod, never in the Work Studio folder that goes to
+    the Workshop.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>WorkStudio.PickleSteps</AssemblyName>
+    <RootNamespace>WorkStudio.PickleSteps</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <Deterministic>true</Deterministic>
+    <DebugType>none</DebugType>
+    <OutputPath>..\Mod\Pickle\Assemblies\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Compile-time stubs only: the game, Harmony and the Pickle mod supply the real assemblies. -->
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.*-*" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Lib.Harmony" Version="2.*" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="RimWorks.Pickle.Ref" Version="4.*" ExcludeAssets="runtime" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Bound by name at run time: RimWorld loads the mod before Pickle loads this assembly. -->
+    <Reference Include="WorkStudio">
+      <HintPath>..\..\..\Mod\Assemblies\WorkStudio.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

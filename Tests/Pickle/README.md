@@ -1,0 +1,78 @@
+# In-game scenarios, run by Pickle
+
+The scenarios of [TESTING.md](../../TESTING.md), written in Gherkin and played inside a running
+RimWorld by [Pickle](https://github.com/RimWorks/Rimworld-Pickle) (`rimworks.pickle`,
+Workshop 3791648678).
+
+`Mod/` is a companion mod, **Work Studio - Pickle tests**, never published. It holds the feature
+files and the step assembly, so nothing test-related ships in the Workshop folder.
+
+## Setup, once
+
+1. Subscribe to Pickle and RimLogging, and enable both.
+2. Link both this repository's `Mod/` and the companion mod into RimWorld's `Mods` folder. The local
+   link matters: with the Workshop copy subscribed too, the game names that one
+   `nelim.workstudio_steam`, and the steps are built against the local assembly.
+
+   ```powershell
+   $mods = "C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods"
+   New-Item -ItemType Junction -Path "$mods\WorkStudio" -Target "<repo>\Mod"
+   New-Item -ItemType Junction -Path "$mods\WorkStudioPickleTests" -Target "<repo>\Tests\Pickle\Mod"
+   ```
+
+3. Enable Work Studio, then the companion mod below it and Pickle.
+
+## Build
+
+```powershell
+dotnet build Tests/Pickle/Source/WorkStudio.PickleSteps.csproj -c Release
+```
+
+The output goes to `Mod/Pickle/Assemblies/`. It binds to `Mod/Assemblies/WorkStudio.dll`, so build
+the mod first. Feature files need no build.
+
+## Run
+
+- **In game**: dev mode on, debug actions menu, *Pickle*. Tick the Work Studio suite, *Run selected*.
+- **Unattended**: `RimWorldWin64.exe "-pickle-run=Work Studio - Pickle tests"`. The filter is the
+  companion mod's name, exactly. Reports land in `PickleReports` beside the saves.
+
+Scenario 02 clicks real buttons through OS input: the pointer moves on its own while it runs.
+
+## What the suite does to your files
+
+- **Settings.** Before each scenario the suite copies `Mod_WorkStudio_WorkStudioMod.xml` to a
+  `.pickle-backup` beside it and resets the mod; afterwards it restores the file and reapplies it.
+  If the game dies mid-scenario the next scenario restores the backup first. **A `.pickle-backup`
+  left in `Config/` with no further run planned must be copied back by hand.**
+- **Saves and exports.** Scenario 05 writes saves and scenario 09 writes exports, all prefixed
+  `pickle-workstudio-`, deleted after each scenario.
+- **The fixture.** Scenarios needing a colony load Pickle's own `test-colony` save. Nothing is
+  written back to it.
+
+## How the scenarios reach the mod
+
+The editor keeps its mutations in private methods of `Dialog_WorkTypes` (`CreateType`, `MoveTask`,
+`DeleteType`, `Rename`, `SetVisible`, `ShiftType`, `ShiftTask`). The steps call those by name, so
+they run the code the buttons run. A renamed method fails the step with its name.
+
+Drags are replayed through the method each column registers with `ReorderableWidget` on its last
+repaint, captured by a Harmony postfix, with rows named rather than numbered.
+
+## Why scenario 05 is built the way it is
+
+A created work type is appended at the end of the def database, so creating one shifts no index,
+and a test that only creates a type passes with or without the mod's protection. The scenario
+creates two, saves, deletes the first and loads the save: without the named priorities, the second
+type would read the first one's value.
+
+## What stays manual
+
+| TESTING.md | Why |
+| --- | --- |
+| 3, the column titles | Wording on screen, for a person to read |
+| 6, the pointer starting a drag | Only the drop is replayed |
+| 7, Work Type Tag's current-job label | Not written |
+| 10, a real mod list change and restart | The startup check is run on a recorded list instead |
+| 11, what Better Work Tab owns | Documented behaviour of another mod |
+| 12, removing the mod | Needs a restart without it |
