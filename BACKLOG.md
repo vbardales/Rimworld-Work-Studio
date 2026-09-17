@@ -28,8 +28,40 @@ The icon and colour then show up in five places, each owned by whichever mod dra
 | In front of the current job | **[baku] Work Type Tag** (3779138895) | Linked in 1.0.1 for its label cache only. Its per-type RGB record is reachable, through one internal field, see below. Colour only — it has no icon. |
 | Marker above the pawn, on the map | **Busywork** (3775253009), on **Useful Marks** (3506573327), both by Andromeda | `MarkerProvider.WorkMarkers`, a public static `Dictionary<WorkTypeDef, MarkerSettings>`. 104 icons in `Textures/Marks/`: 81 from Useful Marks, 23 from Busywork. |
 | Colonist bar portrait | **Busywork** | A postfix on `ColonistBarColonistDrawer.DrawColonist` draws `GetMarkerFor(colonist)` in the portrait's top-left corner — the same work marker, read 2026-09-17. In side alignments Useful Marks draws it instead, see below. |
-| Work tab column header | **GrimWorks: Work Manager** (3761759348) | `WorkTypeCategoryUtility.SetCategoryOverride(WorkTypeDef, GW_WorkManager_WorkTypeCategory)`, public static. It colours by **category** and named palette, not by type: we would pick a category, not a colour — and a category also moves the column, see below. |
+| Work tab column header | **GrimWorks: Work Manager** (3761759348) | `WorkTypeCategoryUtility.SetCategoryOverride(WorkTypeDef, GW_WorkManager_WorkTypeCategory)`, public static. It colours by **category** and named palette, not by type: a category also moves the column. **Not linked**, see the rule below. |
 | Right-click action menu | nobody | Our own patch, see below. |
+
+### When to link another mod, when to write our own code
+
+Agreed 2026-09-17, from the four assemblies read below. One question per place: who already draws
+there, and does it store what we store?
+
+1. **A mod draws there and stores one icon or colour per work type, like us.** Hand it our choice
+   through a soft link, and write no drawing code. Without the mod, nothing shows in that place:
+   redrawing it would mean maintaining a worse copy of someone else's mod.
+   - Map marker and colonist bar: **Busywork**, through `WorkMarkers`.
+   - Job tag and header label colour: **Work Type Tag**, through its RGB record.
+2. **A mod draws there but stores something else.** No link, and no code of our own either.
+   Translating our choice into its model would distort both, and drawing beside it would double
+   the place.
+   - Header plate: **GrimWorks**. Its "colour" is a category, which also moves the column, and its
+     own header menu already sets it for our types.
+3. **Nobody draws there.** Write our own code.
+   - Action menu, the only such place today.
+
+Two rules on top:
+
+- **Never a dependency.** Every link is silent when the mod is absent, and switches itself off
+  when a signature changes, as `WorkTypeTagCompat` already does.
+- **Never two drawings in one place.** If we ever draw a place a mod also covers, our code stands
+  down as soon as that mod is detected.
+
+**Who has the last word.** Work Studio writes to another mod only when the player edits the type
+sheet, never on every `Apply()`. A choice made in Busywork's or Work Type Tag's own screen is
+overwritten only by an explicit choice made in Work Studio.
+
+**What it means for the icon.** Without Useful Marks, only our action menu would show an icon. So
+without it the sheet offers a colour alone, and the action menu shows a dot in that colour.
 
 ### What was verified for Busywork
 
@@ -158,17 +190,12 @@ stay bare.
 
 ### Before starting
 
-1. **Where the icons come from without Busywork.** The picker lists the 104 marks when Useful
-   Marks is present. Without it, the action menu still needs a texture: ship a small set, or
-   offer only a colour.
-2. **Whether to link GrimWorks at all.** Its own header menu already sets the category of our
-   types, and a category moves columns as well as colouring them. Three choices: no link; write
-   only when `HasCategoryOverride` is false, once, when a type is created; or a category field in
-   the type sheet, kept apart from the colour. Mapping our colour to the nearest category is ruled
-   out — the palette belongs to the player and changes under us.
-   **Work Type Tag raises the same question** with less at stake: its record is a plain RGB, the
-   exact field we would own, and moving it moves nothing else. Decide who holds the colour when
-   both screens can edit it.
+1. **The dot's texture.** Settled that without Useful Marks the sheet offers a colour alone and
+   the action menu shows a dot. Still to pick: a vanilla texture that tints cleanly, or one small
+   white disc shipped with the mod.
+2. **GrimWorks: settled, no link** (rule 2 above). What stays open is only whether a new custom
+   type's column lands somewhere sensible in GrimWorks' order when it falls into `Unsupported`,
+   which is an ordering question for Work Studio, not a colour one.
 3. **Vanilla types too, or only custom ones.** The 1.1.0 plan was the custom-type sheet. Letting a
    player restyle Construction is the same code and a larger save footprint.
 4. **Whether to expose `showMode`.** The colonist bar and the map can be told apart per marker
