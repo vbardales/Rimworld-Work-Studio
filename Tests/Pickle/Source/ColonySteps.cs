@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using RimWorld;
 using RimWorks.Pickle;
 using Verse;
@@ -124,6 +126,74 @@ namespace WorkStudio.PickleSteps
             finally
             {
                 suppress?.SetValue(null, false);
+            }
+        }
+
+        // ---------------------------------------------------------------- raw save inspection
+
+        /// <summary>
+        /// Scenario 12, without an actual restart: a companion mod bound to Work Studio's own
+        /// assembly cannot script "and now the mod is gone" from inside itself. What it can do is
+        /// prove, from the save Work Studio just wrote, that a mod-less load would read every
+        /// non-custom priority correctly - because custom types are appended at the END of
+        /// <see cref="DefDatabase{WorkTypeDef}"/> (never inserted among the earlier ones, see the
+        /// README's note on scenario 05), a mod-less database is simply this same list with its
+        /// tail cut off, and vanilla's own positional <c>DefMap</c> loading reads the same leading
+        /// values into the same leading types either way. Only the trailing, custom-type values
+        /// would have nowhere to go - the one loss TESTING.md documents.
+        /// </summary>
+        [Then("in the raw save {string}, the custom types sit at the end of {string}'s vanilla priority list, and nothing else would shift if the mod were gone")]
+        public void SurvivesRemoval(PickleContext ctx, string saveName, string nickname)
+        {
+            var path = GenFilePaths.FilePathForSavedGame(SettingsSandbox.FilePrefix + saveName);
+            ctx.Require(File.Exists(path), $"no save '{saveName}' to inspect");
+
+            var doc = XDocument.Load(path);
+            var nick = doc.Descendants("nick").FirstOrDefault(e => e.Value == nickname);
+            ctx.Require(nick != null, $"no pawn named '{nickname}' found in the raw save '{saveName}'");
+            var pawnElement = nick.Ancestors().FirstOrDefault(a => a.Element("workSettings") != null);
+            ctx.Require(pawnElement != null, $"'{nickname}' has no <workSettings> in the raw save");
+
+            var workSettings = pawnElement.Element("workSettings");
+            var vals = workSettings.Element("priorities")?.Element("vals")?.Elements("li")
+                .Select(e => int.Parse(e.Value)).ToList();
+            ctx.Require(vals != null, $"'{nickname}' has no <priorities><vals> in the raw save - vanilla's own node is missing");
+
+            var named = workSettings.Element("workStudioPriorities")?.Elements("li")
+                .ToDictionary(e => e.Element("key")?.Value, e => int.Parse(e.Element("value")?.Value ?? "0"));
+            ctx.Require(named != null,
+                $"'{nickname}' has no <workStudioPriorities> in the raw save - Patch_WorkSettingsExposeData did not run");
+
+            // The order PriorityMemory and the ExposeData patch actually iterate: DefDatabase's own
+            // list, aligned with def.index and therefore with the positional save - not the
+            // priority-sorted order Driver.TypesInOrder() gives the editor's left column.
+            var typesInOrder = DefDatabase<WorkTypeDef>.AllDefsListForReading;
+            var nonCustom = typesInOrder.Where(t => !WorkTypeRuntime.IsCustom(t)).ToList();
+            var custom = typesInOrder.Where(WorkTypeRuntime.IsCustom).ToList();
+            ctx.Require(custom.Count > 0, "no custom type exists in this scenario to prove the point with");
+
+            ctx.Assert(typesInOrder.Skip(nonCustom.Count).SequenceEqual(custom),
+                "a custom type is not at the end of DefDatabase<WorkTypeDef> - removing the mod would shift more than just the tail");
+            ctx.Assert(vals.Count == typesInOrder.Count,
+                $"the raw priorities list has {vals.Count} entries for {typesInOrder.Count} work types");
+
+            for (var i = 0; i < nonCustom.Count; i++)
+            {
+                var type = nonCustom[i];
+                named.TryGetValue(type.defName, out var expected);
+                ctx.Assert(vals[i] == expected,
+                    $"position {i} ({type.defName}) holds {vals[i]} positionally but {expected} by name - " +
+                    "a mod-less load reading this position would misassign it");
+            }
+
+            for (var i = 0; i < custom.Count; i++)
+            {
+                var type = custom[i];
+                named.TryGetValue(type.defName, out var expected);
+                var position = nonCustom.Count + i;
+                ctx.Assert(vals[position] == expected,
+                    $"the trailing position {position} for custom type '{type.defName}' holds {vals[position]} " +
+                    $"positionally but {expected} by name - it would not simply drop off the end as expected");
             }
         }
     }

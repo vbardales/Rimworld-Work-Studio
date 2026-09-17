@@ -19,7 +19,7 @@ remaining:
   - unverified: the MainButtonDef shortcut (WorkStudio_Settings) is code- and mutation-verified off-game (Tests/OffGame) but has never been exercised at runtime - no RIMMSQOL or other MainButtons customization mod test revealing it, activating it, and confirming it opens the same settings with the same values as Mod options -> Work Studio
   - unverified: settings otherwise have no recorded functional pass at all - no documented run of Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across reload, or the "Reset the whole setup" confirmation
   - unverified: ConfigFile.PathFor/Folder/Export/Import stay untested even off-game - they all reach GenFilePaths.SaveDataFolderPath, and merely JIT-compiling that property throws outside a running Unity player; Tests/OffGame exercises the WorkStudioSettings/CustomWorkTypeEntry Scribe contract they wrap instead, at a path it computes itself
-  - unverified: Tests/Pickle (Gherkin, played in game by the Pickle mod) covers scenarios 1, 2 and 4 to 10 of TESTING.md and has never been run - TESTING.md's own note says so explicitly ("Not run yet")
+  - unverified: Tests/Pickle (Gherkin, played in game by the Pickle mod) covers scenarios 1, 2, 4 to 10, and half of 12 (the raw-save half, not an actual restart) of TESTING.md, and has never been run - TESTING.md's own note says so explicitly ("Not run yet")
   - unverified: never seen running for anything beyond v1.0.0 - TESTING.md states the up/down arrows, import/export, the startup drift warning, the right-hand column and task ordering, and three successive attempts at the Work tab button have only ever been compiled
   - unverified: no in-game pass of English or French display yet (raw keys, clipping, fallback text) - the static localization gate is certified complete, but TRANSLATIONS.md tracks this runtime check separately and it must pass before claiming the translations tested in game
 session:      local_df8ae659-1a8e-4bf8-a74a-ff90c6c7ada7
@@ -251,9 +251,15 @@ launch it. Prepared and ready to hand off:
    confirmation); change something and confirm it survives a reload.
 3. **`Tests/Pickle/`**: run the suite per `Tests/Pickle/README.md` (dev mode -> debug actions ->
    Pickle -> the Work Studio suite -> Run selected, or the `-pickle-run=` command line). It covers
-   TESTING.md scenarios 1, 2 and 4 to 10 unattended.
-4. **The four scenarios Pickle does not cover** (3, 7, 11, 12 — see the README's "What stays
-   manual" table) and the general FR/EN display pass from the localization audit above.
+   TESTING.md scenarios 1, 2, 4 to 10 unattended, plus the raw-save half of 12
+   (`12-removing-the-mod.feature`, added 2026-09-17: proves from the saved XML that custom types
+   sit at the tail of `DefDatabase<WorkTypeDef>`, so a mod-less load would only lose their own
+   priorities and shift nothing else - see `Tests/Pickle/README.md` for what that check does and
+   does not establish).
+4. **What still needs an actual restart**: scenarios 3, 7, 11 (see the README's "What stays
+   manual" table), the other half of 12 (a real restart without the mod, confirming the game
+   tolerates the unread `<workStudioPriorities>` node and that moved tasks read their original
+   `workType`), and the general FR/EN display pass from the localization audit above.
 
 Paste back `Player.log` (prefixed `[Work Studio]`) and whatever Pickle's report says; that is
 enough to fill in `tested_on` and clear the `remaining` list above without guessing at a result.

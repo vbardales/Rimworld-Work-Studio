@@ -75,4 +75,15 @@ type would read the first one's value.
 | 7, Work Type Tag's current-job label | Not written |
 | 10, a real mod list change and restart | The startup check is run on a recorded list instead |
 | 11, what Better Work Tab owns | Documented behaviour of another mod |
-| 12, removing the mod | Needs a restart without it |
+
+**12, removing the mod, is covered a different way.** A companion mod bound to Work Studio's own
+assembly cannot script "and now the mod is gone" from inside itself, so `12-removing-the-mod.feature`
+does not restart RimWorld without it. It saves a colony with a custom type in place, then reads
+the raw `.rws` XML directly and proves the fact TESTING.md's claim rests on: custom types are
+always appended at the end of `DefDatabase<WorkTypeDef>` (see "Why scenario 05 is built the way it
+is" above), so a mod-less database is this same list with its tail cut off, and vanilla's own
+positional `DefMap` loading would read the same leading values into the same leading types either
+way — only the trailing, custom-type values would have nowhere to go. What still needs an actual
+restart without the mod: confirming the game tolerates the now-unread `<workStudioPriorities>`
+node without complaint, and that moved tasks really do read from their XML-declared `workType`
+once nothing overrides it at runtime.

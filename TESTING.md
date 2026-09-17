@@ -211,6 +211,10 @@ Untick Work Studio, load a colony that used it. Moved tasks are back in their or
 every remaining priority is intact. The custom types are gone and the priorities held on them with
 them; that is expected and is the only loss.
 
+The priority half is also proven from the raw save, without an actual restart, by
+`Tests/Pickle/Mod/Pickle/Features/12-removing-the-mod.feature`: see
+`Tests/Pickle/README.md`'s "What stays manual" section for what that does and does not cover.
+
 ## Automated off game
 
 `Tests/OffGame/` instances the shipped `Mod/Assemblies/WorkStudio.dll` against the installed
@@ -228,9 +232,9 @@ dotnet build Tests/OffGame/WorkStudio.Tests.csproj -c Release
 
 ## Automated in game: Pickle
 
-Scenarios 1, 2 and 4 to 10 are also written in Gherkin under `Tests/Pickle/`, played inside
-RimWorld by the Pickle test mod. Its README says how to run them and which parts stay manual. Not
-run yet.
+Scenarios 1, 2, 4 to 10, and half of 12 (the raw-save half, not an actual restart) are also written
+in Gherkin under `Tests/Pickle/`, played inside RimWorld by the Pickle test mod. Its README says
+how to run them and which parts stay manual. Not run yet.
 
 ## What a pass means
 
