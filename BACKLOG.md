@@ -198,6 +198,43 @@ Read in full 2026-09-17, and the simple postfix is **not enough**:
   slot now holds a different option — the one just built for this work giver — and decorates it.
   A later giver of the same group can replace it (a disabled option yields to an enabled one), and
   the replacement is decorated with its own work type the same way.
+- **The slot pair, verified 2026-09-17.**
+  - *The array.* `private static FloatMenuOption[] equivalenceGroupTempStorage`, one slot per
+    `WorkGiverEquivalenceGroupDef` (an empty `Def`; the slot is `group.index`). `GetOptions`
+    (re)creates it when its length does not match the def count, and `FloatMenuMakerMap` always
+    calls a provider's `GetOptions` before its `GetOptionsFor`, so the array exists when a
+    thing is clicked. Guard for `null` anyway. `AccessTools.StaticFieldRefAccess` reads it.
+  - *Only thing targets.* The slot is written only when `target.HasThing` and the giver has a
+    group; every other path returns before it or returns the option.
+  - *Who wins.* An option takes the slot when the slot is empty, or when the slot holds a disabled
+    option and the new one is not (`Disabled` is `action == null`). An enabled option is never
+    displaced. Each call builds a new `FloatMenuOption`, so a reference comparison between the
+    prefix's copy and the slot afterwards is exact.
+  - *What is at stake in vanilla.* Three groups. `AssistInConstruction` holds five givers across
+    **two work types**: Construction (finish frames, deliver to frames, deliver to blueprints) and
+    Hauling (deliver to frames, deliver to blueprints). The winner decides whether the option shows
+    Construction's icon or Hauling's — and Work Studio can move any of the five elsewhere.
+    `FeedPatientAnimals` (Doctor) and `ReleasePrisoner` (Warden) have one giver each in vanilla.
+  - *Harmony will run our prefix.* Read in `HarmonyLib.MethodCreator.AddPrefixes` (Harmony
+    2009463077): once a prefix returns `false`, later prefixes are skipped **only if they can
+    affect the original** — a `bool` return, or an `out`/`ref` parameter other than `__state`,
+    the instance or the original method. A `void` prefix taking the giver and target by value plus
+    `out object __state` always runs, whatever LarvaParasite, VEF or Hauler's Dream do before it.
+    When they skip the method, the slot does not change and the postfix does nothing.
+  - *Both, not either.* A postfix that replaces `__result` (Children, School and Learning) can
+    hand back an option while the slot also changed. Decorate `__result` when it is non-null,
+    and the slot when it changed; the two are independent.
+- **Our icon would hide the target's icon.** `FloatMenuMakerMap.GetProviderOptions` sets
+  `iconThing` to the clicked thing on every option from `GetOptionsFor` that has none — so every
+  work order on a thing already shows that thing's icon. `DoGUI` draws one icon only, in this
+  order: `shownItem`, then `iconTex`, then `iconThing`. Setting `iconTex` would replace the wall or
+  the plant with our mark. Options from `GetOptions` (a clicked cell) have no icon to lose.
+  The alternative that loses nothing is the **extra part**: `extraPartWidth`,
+  `extraPartOnGUI` and `extraPartRightJustified` are public fields, the width is counted by
+  `SetSizeMode` like the icon, and vanilla's work-giver options leave them empty (Better Work
+  Tab's too). A delegate drawing our tinted mark in a right-justified square and returning
+  `false` — `true` would swallow the click — adds the work type's mark without touching the
+  thing's. Leave any option whose `extraPartOnGUI` is already set alone.
 - **Duplicates are dropped by label.** `tmpUsedLabels` discards an option whose label another giver
   already produced. Whichever giver wins, the icon follows its work type; nothing to handle.
 - **Disabled options too.** Everything that reaches the end of the method gets through, including
@@ -291,9 +328,12 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
 4. **Whether to expose `showMode`.** The colonist bar and the map can be told apart per marker
    for free; decide whether the type sheet offers it or leaves Busywork's default.
 5. **Equivalence groups in the action menu.** Handled by the prefix/postfix pair above, not by a
-   plain postfix. Still check in play, on a thing with two equivalent givers, that the option
-   shown carries the icon of the giver that won.
-6. **One mod or several.** Considered 2026-09-17: a style core with one display mod per place.
+   plain postfix. Still check in play on a frame, where Construction and Hauling givers compete,
+   that the option shown carries the mark of the giver that won.
+6. **Where the mark sits in the action menu.** `iconTex` on the left would hide the target
+   thing's icon on every order given on a thing; the extra part on the right keeps both. Decide
+   before writing the patch — the two share nothing but the texture.
+7. **One mod or several.** Considered 2026-09-17: a style core with one display mod per place.
    The mods above already split it that way, so Work Studio stays the one place the player
    chooses, and the action menu patch lives in Work Studio unless it proves to conflict with a
    float-menu mod (Useful Marks ships `FloatSubMenu.dll`).
