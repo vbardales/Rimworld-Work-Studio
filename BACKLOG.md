@@ -607,6 +607,29 @@ only.
 2. Decide who owns the order when both are installed: Work Studio stands down (and says so in its
    window), writes GrimWorks' list through its public `MoveWorkTypeToIndex`, or re-applies its
    own values after GrimWorks' hooks.
+   **Settled 2026-09-17: Work Studio writes GrimWorks' list.** Re-applying its own values would not
+   reach pawns, and standing down would give up the mod's purpose. What the code already read
+   says about doing it:
+   - *Entry point.* `GW_WorkManager_WorkTypeOrderUtility.MoveWorkTypeToIndex(WorkTypeDef, int
+     targetIndex, bool applyImmediately)`, public static; `ApplySavedOrder(bool, bool)`, public, to
+     apply once at the end. Placing Work Studio's order type by type — the first at index 0, the
+     next at 1, and so on — works with its index arithmetic: every type not yet placed sits at or
+     after the target, so no index shifts under us. Pass `applyImmediately: false` and call
+     `ApplySavedOrder` once, not once per type.
+   - *Only in a game.* The list lives in GrimWorks' `GameComponent`, one per save. With no game
+     loaded, `MoveWorkTypeToIndex` returns `false` and nothing happens: an order edited from the
+     main menu has to be written when a game is loaded.
+   - *Timing on load.* GrimWorks applies its list in `LoadedGame` and `StartedNewGame`. Work
+     Studio's write must come after, and two game components run in an order Work Studio does not
+     control. A postfix on GrimWorks' `ApplySavedOrder`, guarded against re-entering itself, is the
+     sure way; to be decided when writing the code.
+   - *It also moves GrimWorks' global template.* Each move calls its private
+     `RememberCurrentOrderAsGlobalTemplate`, so new saves start from Work Studio's order too. That
+     is the intent.
+   - *Categories break up.* GrimWorks groups columns by category for collapsing; an order that
+     interleaves categories is legal for it, but its collapsed groups will no longer be contiguous.
+   - *The column cache still needs clearing* (question 3 below), or a type created mid-game keeps
+     vanishing whatever the order.
 3. The column cache is the one to fix whatever the choice: clearing `completeWorkColumns` by
    reflection after Work Studio rebuilds the columns would let GrimWorks capture them afresh.
 4. Check the lot in play: create a type mid-game with GrimWorks installed, then drag a header.
