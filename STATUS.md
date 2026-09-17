@@ -16,9 +16,10 @@ showcase:     complete
 tested_on:
 workshop:     3792836684
 remaining:
-  - unverified: the MainButtonDef shortcut added 2026-09-17 (WorkStudio_Settings, hidden by buttonVisible=false, worker opens Dialog_WorkStudioSettings) has never been exercised at runtime - no RIMMSQOL or other MainButtons customization mod test revealing it, activating it, and confirming it opens the same settings with the same values as Mod options -> Work Studio
+  - unverified: the MainButtonDef shortcut (WorkStudio_Settings) is code- and mutation-verified off-game (Tests/OffGame) but has never been exercised at runtime - no RIMMSQOL or other MainButtons customization mod test revealing it, activating it, and confirming it opens the same settings with the same values as Mod options -> Work Studio
   - unverified: settings otherwise have no recorded functional pass at all - no documented run of Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across reload, or the "Reset the whole setup" confirmation
-  - unverified: Tests/Pickle (Gherkin, played in game by the Pickle mod) now covers scenarios 1, 2 and 4 to 10 of TESTING.md, written 2026-09-17 and never run - TESTING.md's own note says so explicitly ("Not run yet")
+  - unverified: ConfigFile.PathFor/Folder/Export/Import stay untested even off-game - they all reach GenFilePaths.SaveDataFolderPath, and merely JIT-compiling that property throws outside a running Unity player; Tests/OffGame exercises the WorkStudioSettings/CustomWorkTypeEntry Scribe contract they wrap instead, at a path it computes itself
+  - unverified: Tests/Pickle (Gherkin, played in game by the Pickle mod) covers scenarios 1, 2 and 4 to 10 of TESTING.md and has never been run - TESTING.md's own note says so explicitly ("Not run yet")
   - unverified: never seen running for anything beyond v1.0.0 - TESTING.md states the up/down arrows, import/export, the startup drift warning, the right-hand column and task ordering, and three successive attempts at the Work tab button have only ever been compiled
   - unverified: no in-game pass of English or French display yet (raw keys, clipping, fallback text) - the static localization gate is certified complete, but TRANSLATIONS.md tracks this runtime check separately and it must pass before claiming the translations tested in game
 session:      local_df8ae659-1a8e-4bf8-a74a-ff90c6c7ada7
@@ -135,6 +136,26 @@ Net: `partial`, not `not_applicable` (the settings are real and useful) and not 
 shortcut now exists and is code- and DefInjected-verified, but no functional or RIMMSQOL pass has
 been run).
 
+### A real defect this settings work surfaced, found and fixed off-game
+
+Building the shortcut led to writing `Tests/OffGame/` (see `preTest -> done` below), which caught
+a genuine, pre-existing bug unrelated to the shortcut itself: `Source/WorkStudio.csproj` combines
+`<Publicize Include="Assembly-CSharp" />` with `<GenerateAssemblyInfo>false</GenerateAssemblyInfo>`,
+the exact pairing that silently drops the `IgnoresAccessChecksTo` waiver
+(`rimworld-tests-hors-jeu`, "the mod publicises" chapter). `WorkStudio.dll` had the type embedded
+but the waiver never applied. `PriorityMemory.Restore` reads the private
+`Pawn_WorkSettings.priorities` and writes its private `workGiversDirty` on every `Apply()` — every
+startup, every edit — so this was a live `FieldAccessException` risk on the mod's most central
+path, not a cosmetic gap.
+
+Fixed with `Source/AccessChecks.cs` (one line, the established pattern from `ContentedLivestock`
+and others). Confirmed by mutation: removing that file and rebuilding turns `Tests/OffGame`'s
+first two checks red with a real `FieldAccessException` thrown from inside
+`PriorityMemory.Restore`; restoring it and rebuilding turns them green again. Whether the game's
+own Mono runtime enforces this check at all was never established either way in this codebase
+(same memory chapter, "severity not established" note) — a reason to fix it for free, not a reason
+it would necessarily have been visible in play.
+
 ## Translation audit (TRANSLATIONS.md)
 
 At audit time the mod shipped no `Defs` and no `DefInjected` folder — every player-facing string
@@ -181,19 +202,35 @@ and none exists. No defect found on this transition itself.
 
 ## preTest -> done, and beyond
 
-Not reached. `TESTING.md` names four gating scenarios (1, 2, 4, 5) and states plainly that
-everything past v1.0.0 "has only ever been compiled" — never played. `Tests/Pickle/`, an in-game
-Gherkin harness for the Pickle mod, was written today and now covers most of the twelve scenarios,
-but its own new note in `TESTING.md` says "Not run yet". No automated off-game test project exists
-for this mod (its logic is UI- and Harmony-patch-heavy rather than data-driven, unlike mods that
-keep a `Check-*.ps1`/xUnit suite); the Pickle harness is the intended substitute and has not been
-exercised even once.
+Not reached, but no longer for lack of an off-game harness. `TESTING.md` names four gating
+scenarios (1, 2, 4, 5) and states plainly that everything past v1.0.0 "has only ever been
+compiled" — never played, and that half of the gate (execution in game) is still missing.
+
+**`Tests/OffGame/`** (added 2026-09-17, `WorkStudio.Tests.csproj` + `ModTests.cs`, following the
+established `rimworld-tests-hors-jeu` pattern) instances the shipped `WorkStudio.dll` against the
+installed `Assembly-CSharp.dll` and actually executes real mod and game code, no RimWorld process
+involved: the publicizer waiver (see above), `PriorityMemory.Restore`'s two private-member touches
+performed for real via a Harmony-faked pawn list, the three Harmony patch targets' continued
+existence and signatures in 1.6, the `WorkStudio_Settings` MainButtonDef's declared content and
+its worker's override slot, `PriorityMemory.PriorityFor`'s full fallback chain, a real
+`WorkStudioSettings`/`CustomWorkTypeEntry` Scribe export-then-load round trip, and Keyed key/
+placeholder parity between English and French. Result: **25 PASS, 0 FAIL, 1 SKIP** (documented:
+`MainButtonWorker.Visible`'s real getter is unreachable off-game the same way `ConfigFile` is —
+see `remaining`). Full output in `Tests/OffGame/RESULTS-2026-09-17.md`.
+
+`Tests/Pickle/`, an in-game Gherkin harness for the Pickle mod, was written 2026-09-17 and covers
+most of the twelve TESTING.md scenarios, but its own note in `TESTING.md` says "Not run yet" — this
+is the half `Tests/OffGame` cannot reach (real map/pawn/save state).
 
 A rebuild (`dotnet build Source/WorkStudio.csproj -c Release`) was run as part of this audit to
 confirm the distributed assembly matches current source, since every `.cs` file's mtime post-dates
 `Mod/Assemblies/WorkStudio.dll`. The build succeeded and produced a byte-identical DLL: the stale
 mtime came from comment-only and documentation commits, not from unbuilt functional changes. No
 defect there.
+
+Net: closer to `preTest -> done` than before, but not there — "written, executed and green"
+now holds for the off-game half only; the in-game half (Pickle, and the four scenarios it does
+not cover) is written but not executed.
 
 ## Next: an in-game pass
 

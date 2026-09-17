@@ -1,0 +1,9 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Intermediates stay out of the shipped mod folder, as they do for Source/ and for Pickle. -->
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\..\.build\offgame\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)..\..\.build\offgame\bin\</BaseOutputPath>
+  </PropertyGroup>
+
+</Project>

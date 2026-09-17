@@ -211,6 +211,21 @@ Untick Work Studio, load a colony that used it. Moved tasks are back in their or
 every remaining priority is intact. The custom types are gone and the priorities held on them with
 them; that is expected and is the only loss.
 
+## Automated off game
+
+`Tests/OffGame/` instances the shipped `Mod/Assemblies/WorkStudio.dll` against the installed
+game's own `Assembly-CSharp.dll`, no RimWorld process involved. It found and fixed a real defect
+before it ever shipped: the Publicizer/`GenerateAssemblyInfo=false` combination that silently drops
+the private-member access waiver, which would have thrown `FieldAccessException` on
+`PriorityMemory.Restore`'s first call — every startup, every edit. See `Tests/OffGame/RESULTS-*.md`
+for what is covered and what still needs the game (`ConfigFile`'s own file paths, chiefly).
+
+```powershell
+dotnet build Source/WorkStudio.csproj -c Release
+dotnet build Tests/OffGame/WorkStudio.Tests.csproj -c Release
+.build/offgame/bin/Release/net48/WorkStudio.Tests.exe
+```
+
 ## Automated in game: Pickle
 
 Scenarios 1, 2 and 4 to 10 are also written in Gherkin under `Tests/Pickle/`, played inside

@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Checks the SHIPPED Mod/Assemblies/WorkStudio.dll against the INSTALLED RimWorld, outside the
+    game, per rimworld-tests-hors-jeu: the mod's own C# is instanced and called for real, and the
+    installed Assembly-CSharp.dll (not the Krafs.Rimworld.Ref package, which carries no method
+    bodies) is what a Harmony patch target, a MainButtonDef mechanism or a private-member access is
+    checked against.
+
+    Needs a RimWorld installation, unlike the mod itself. If yours is elsewhere, override the
+    RimWorldManaged property on the command line, or pass the Managed folder as the first argument
+    to the built executable.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>WorkStudio.Tests</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <RimWorldManaged Condition="'$(RimWorldManaged)' == ''">C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed</RimWorldManaged>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Absolute paths resolved at build time, so the test does not have to guess how deep the
+         output folder sits relative to the repository. -->
+    <AssemblyMetadata Include="RimWorldManaged" Value="$(RimWorldManaged)" />
+    <AssemblyMetadata Include="ModAssembly" Value="$(MSBuildThisFileDirectory)..\..\Mod\Assemblies\WorkStudio.dll" />
+    <AssemblyMetadata Include="ModFolder" Value="$(MSBuildThisFileDirectory)..\..\Mod" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- To fake the pawn list PriorityMemory walks, and to silence what a fake pawn cannot survive
+         calling for real (Notify_DisabledWorkTypesChanged's own chain). -->
+    <PackageReference Include="Lib.Harmony" Version="2.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldManaged)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(RimWorldManaged)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldManaged)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
