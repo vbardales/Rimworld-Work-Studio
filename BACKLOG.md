@@ -510,7 +510,7 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
      setting. It must join the four places the other dictionaries already go — `ExposeConfig`
      (settings and export), `AdoptConfig` (import), the full reset in `WorkTypeRuntime`, and
      `DeleteType`, which removes a deleted type's keys.
-   Recommended: the swatch in the list, opening the shared dialog.
+   **Settled 2026-09-17: the swatch in the list, opening the shared dialog.**
 
 ---
 
