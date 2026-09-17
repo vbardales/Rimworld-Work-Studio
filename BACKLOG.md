@@ -28,7 +28,7 @@ The icon and colour then show up in five places, each owned by whichever mod dra
 | In front of the current job | **[baku] Work Type Tag** (3779138895) | Already linked in 1.0.1. It derives a colour from the `defName`; its per-type RGB setting is what we would write. |
 | Marker above the pawn, on the map | **Busywork** (3775253009), on **Useful Marks** (3506573327), both by Andromeda | `MarkerProvider.WorkMarkers`, a public static `Dictionary<WorkTypeDef, MarkerSettings>`. 104 icons in `Textures/Marks/`: 81 from Useful Marks, 23 from Busywork. |
 | Colonist bar portrait | **Busywork** | A postfix on `ColonistBarColonistDrawer.DrawColonist` draws `GetMarkerFor(colonist)` in the portrait's top-left corner — the same work marker, read 2026-09-17. In side alignments Useful Marks draws it instead, see below. |
-| Work tab column header | **GrimWorks: Work Manager** (3761759348) | `SetCategoryOverride(WorkTypeDef, GW_WorkManager_WorkTypeCategory)`, public static. It colours by **category** and named palette, not by type: we would pick a category, not a colour. |
+| Work tab column header | **GrimWorks: Work Manager** (3761759348) | `WorkTypeCategoryUtility.SetCategoryOverride(WorkTypeDef, GW_WorkManager_WorkTypeCategory)`, public static. It colours by **category** and named palette, not by type: we would pick a category, not a colour — and a category also moves the column, see below. |
 | Right-click action menu | nobody | Our own patch, see below. |
 
 ### What was verified for Busywork
@@ -86,6 +86,32 @@ Read 2026-09-17 in `Busywork.dll` and `UsefulColonistBar.dll`.
   `atSide` to `GlobalAlignment` — `ApplyGlobalAlignmentToAll()` does it for everyone, and runs
   again on each game load.
 
+### What was verified for GrimWorks
+
+Read 2026-09-17 in `GW_WorkManager.dll`.
+
+- **The entry point exists as described.** `GW_WorkManager.WorkTypeCategoryUtility` is a public
+  static class; `CategoryFor` returns the player's override if there is one, else
+  `AutomaticCategoryFor`. `SetCategoryOverride`, `ClearCategoryOverride` and
+  `HasCategoryOverride` are public. The category is an enum, so reflection has to build the value
+  with `Enum.Parse` on GrimWorks' own type.
+- **Keyed by `defName`, as a string.** No hash trap here, unlike Busywork, and a rename in Work
+  Studio keeps the override.
+- **A custom type starts grey.** The automatic category is a fixed table of vanilla and GrimWorks
+  `defName`s; anything else is `Unsupported`, the eleventh colour of the palette.
+- **The colour is not ours to give.** `ColorFor(category)` indexes one of eight palettes of eleven
+  colours, chosen by the player. We can pick one of eleven categories, never an RGB.
+- **A category is more than a colour.** It is also the group a column collapses into
+  (`GW_WorkManager_WorkCategoryCollapseUtility`), and where GrimWorks inserts a new work type in
+  its own order: after the last column of the same category (`InsertNewWorkTypeIntoCategory`).
+  Choosing a category for its colour moves the column, which is Work Studio's job too.
+- **It is a setting, not save data.** Overrides live in GrimWorks' `ModSettings`, per install, and
+  every `SetCategoryOverride` call writes the settings file to disk. Its header reset clears them
+  all, ours included.
+- **The player can already do it.** GrimWorks' own header menu (`GW_WorkManager_WorkTypeColorMenu`)
+  lists the eleven categories for any work type, ours included, since it only needs a `defName`.
+  Writing from Work Studio would overwrite that choice.
+
 ### The action menu, which no mod covers
 
 Read in the 1.6 assembly, not assumed. `FloatMenuOption` already draws a tinted icon: a private
@@ -103,8 +129,11 @@ stay bare.
 1. **Where the icons come from without Busywork.** The picker lists the 104 marks when Useful
    Marks is present. Without it, the action menu still needs a texture: ship a small set, or
    offer only a colour.
-2. **GrimWorks' categories are not colours.** Decide whether the header link maps our colour to
-   the nearest category, or asks the player to pick a category as a separate field.
+2. **Whether to link GrimWorks at all.** Its own header menu already sets the category of our
+   types, and a category moves columns as well as colouring them. Three choices: no link; write
+   only when `HasCategoryOverride` is false, once, when a type is created; or a category field in
+   the type sheet, kept apart from the colour. Mapping our colour to the nearest category is ruled
+   out — the palette belongs to the player and changes under us.
 3. **Vanilla types too, or only custom ones.** The 1.1.0 plan was the custom-type sheet. Letting a
    player restyle Construction is the same code and a larger save footprint.
 4. **Whether to expose `showMode`.** The colonist bar and the map can be told apart per marker
