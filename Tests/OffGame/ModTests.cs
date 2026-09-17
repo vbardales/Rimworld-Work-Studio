@@ -76,6 +76,7 @@ internal static class Program
         TheKeyedCoverage();
         TheWorkTypeTagCompat();
         TheBetterWorkTabColumnOrder();
+        TheHideColumnRegression();
     }
 
     // --- the publicizer waiver -----------------------------------------------------------------
@@ -792,6 +793,107 @@ internal static class Program
             workType = type,
         };
         return column;
+    }
+
+    // --- TESTING.md scenario 8, off-game: does hiding a type ever touch its priority? ----------
+
+    // The live Pickle run on 2026-09-17 found "the column goes, the work stays" and "showing it
+    // again..." both failing: a colonist's priority for a hidden type read back as 0, not the 2 it
+    // was given right before. Reading WorkTypeRuntime.Apply()'s own steps end to end finds nothing
+    // that keys off Settings.hiddenTypes except ApplyTypeOverrides' own `type.visible` line - the
+    // type stays in DefDatabase<WorkTypeDef>, keeps its index, and PriorityMemory.Capture/Restore
+    // both iterate every def regardless of visibility, keyed by defName. On paper, hiding a type
+    // should be a pure no-op for every pawn's priorities.
+    //
+    // This drives that exact pipeline for real, against a single fake WorkTypeDef and a single fake
+    // pawn, the same way TheAccessTheModMakes does for PriorityMemory.Restore alone - except this
+    // calls the whole WorkTypeRuntime.Apply(), including SyncCustomTypes, ApplyTypeOverrides,
+    // RebuildDefs and RebuildWorkColumns, exactly as SetVisible's own Commit() does. If this passes,
+    // the live failure is not a defect in this pipeline - it wants a live re-run to find where it
+    // actually comes from (environment noise, or something outside Apply() entirely).
+    private static void TheHideColumnRegression()
+    {
+        Console.WriteLine();
+        Console.WriteLine("TESTING.md scenario 8 (hide a column), reproduced against the real WorkTypeRuntime.Apply():");
+
+        Type runtimeType = ModType("WorkStudio.WorkTypeRuntime", true);
+        Type modType = ModType("WorkStudio.WorkStudioMod", true);
+        Type settingsType = ModType("WorkStudio.WorkStudioSettings", true);
+        if (runtimeType == null || modType == null || settingsType == null)
+        {
+            Skip("hide-a-column regression: WorkTypeRuntime, WorkStudioMod or WorkStudioSettings not found");
+            return;
+        }
+
+        try
+        {
+            RunHideColumnRegression(runtimeType, modType, settingsType);
+        }
+        catch (Exception e)
+        {
+            Exception inner = Innermost(e);
+            Console.WriteLine("DIAG: " + e);
+            Skip("hide-a-column regression: " + inner.GetType().Name + " - " + inner.Message);
+        }
+    }
+
+    private static void RunHideColumnRegression(Type runtimeType, Type modType, Type settingsType)
+    {
+        // A WorkTypeDef the same way vanilla's own would sit in the database - not one of the
+        // mod's own customTypes, so SyncCustomTypes leaves it alone, exactly like "Cleaning".
+        var cleaning = new WorkTypeDef { defName = "PickleHideReproCleaning" };
+        DefDatabase<WorkTypeDef>.Add(cleaning);
+
+        // RebuildWorkColumns reads PawnTableDefOf.Work directly; nothing off-game ever sets it.
+        var workTable = new PawnTableDef { columns = new List<PawnColumnDef>() };
+        FieldInfo workOf = typeof(PawnTableDefOf).GetField("Work", BindingFlags.Public | BindingFlags.Static);
+        workOf.SetValue(null, workTable);
+
+        // A fresh settings object, standing in for WorkStudioMod.Settings, with nothing hidden yet.
+        object settings = Activator.CreateInstance(settingsType);
+        FieldInfo settingsBacking = modType.GetField("<Settings>k__BackingField", BindingFlags.NonPublic | BindingFlags.Static);
+        settingsBacking.SetValue(null, settings);
+
+        // A bare pawn, the same way TheAccessTheModMakes builds one - constructor-skipped, since
+        // Pawn's real one needs a live Game. PriorityMemory.AllPawns() is already routed to a fake
+        // list by that earlier check's Harmony patch, still active: reusing it here, rather than
+        // patching AllPawns a second time, is what keeps this test from installing a duplicate patch.
+        var pawn = (Pawn)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(Pawn));
+        // Pawn.Equals reads def.defName - PriorityMemory.Restore keys its snapshot dictionary by
+        // pawn, so even a bare pawn needs this much to be usable as a dictionary key at all.
+        // ThingDef's own constructor hits the same ECall trap ThingDef always does off-game
+        // (rimworld-tester-la-logique-hors-du-jeu): constructor-skipped, like everything else here.
+        var pawnDef = (ThingDef)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(ThingDef));
+        pawnDef.defName = "PickleHideReproPawnDef";
+        pawn.def = pawnDef;
+        var workSettings = (Pawn_WorkSettings)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(Pawn_WorkSettings));
+        SetField(workSettings, "pawn", pawn);
+        var priorities = (DefMap<WorkTypeDef, int>)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(DefMap<WorkTypeDef, int>));
+        var values = new List<int> { 2 }; // Cleaning = 2, at the one and only index that exists here.
+        SetField(priorities, "values", values);
+        SetField(workSettings, "priorities", priorities);
+        pawn.workSettings = workSettings;
+        fakePawns = new List<Pawn> { pawn };
+
+        // The action under test: hide the type, then run the exact reconciliation SetVisible's own
+        // Commit() calls.
+        var hiddenTypes = (System.Collections.IList)settingsType.GetField("hiddenTypes").GetValue(settings);
+        hiddenTypes.Add(cleaning.defName);
+
+        MethodInfo apply = AccessTools.Method(runtimeType, "Apply");
+        apply.Invoke(null, null);
+
+        Check("the type is actually hidden after Apply() (visible=false), so this is a real exercise of the hide path",
+            !cleaning.visible);
+        Check("hiding the type does not touch the priority the colonist already had for it",
+            values[0] == 2);
+
+        // And the reverse half of the scenario: showing it again keeps the priority too.
+        hiddenTypes.Remove(cleaning.defName);
+        apply.Invoke(null, null);
+
+        Check("showing the type again still keeps the priority",
+            values[0] == 2 && cleaning.visible);
     }
 
     // --- silencing Verse.Log ------------------------------------------------------------------

@@ -17,7 +17,7 @@ tested_on:    2026-09-17
 workshop:     3792836684
 remaining:
   - defect: TESTING.md scenario 5 ("deleting a type in a running game keeps every other priority in place") failed in the 2026-09-17 Pickle run - Pickle second's priority dropped from 3 to 0 after deleting Pickle first, even though PriorityMemory.Restore looks up saved priorities by name and tracing Apply()/SyncCustomTypes step by step found no fault on paper. Root cause not found; needs a live re-run with the SetPriority/HasPriority diagnostics added the same day, or a cleaner mod list to rule out interference from the 150+ other mods active in this run
-  - defect: TESTING.md scenario 8 ("hide a column"), both scenarios, failed the same way in the same run - Cleaning's priority dropped from 2 to 0 after hide/show, reproducibly. Root cause not found by tracing Apply()'s pipeline by hand; needs the same live re-run
+  - defect: TESTING.md scenario 8 ("hide a column"), both scenarios, failed the same way in the same run - Cleaning's priority dropped from 2 to 0 after hide/show, reproducibly. Tracing Apply()'s pipeline by hand found no fault, and Tests/OffGame's TheHideColumnRegression (added 2026-09-17) now proves that by driving the real WorkTypeRuntime.Apply() against a fake WorkTypeDef and pawn: hiding and re-showing the type leaves its priority untouched, and the check is mutation-confirmed sensitive (breaking PriorityMemory.Capture() turns it red). This rules out Apply()'s own reconciliation as the cause; the live failure needs a re-run with the SetPriority/HasPriority diagnostics to find where it actually comes from - most likely something outside Apply() entirely, or environment noise from the 150+ other mods active in that run
   - defect: TESTING.md scenario 6 ("the arrows move a type one place") failed - Research landed right after Patient instead of where the test expected. Not yet distinguished from interference by another loaded mod touching Research or the Work tab's ordering
   - unverified: several other 2026-09-17 Pickle failures trace to environment, not Work Studio - "Work types… opens the editor" hit the Concord/OS-click conflict TESTING.md's own note documents ("no tags recorded this frame"), and two of the three scenario-5 sub-scenarios failed on a ReflectionOnly UnityEngine.InputLegacyModule error that also broke the unrelated generic "save and reload steps" testsuite in the same run - a Pickle-framework issue
   - fixed: Tests/Pickle's own scenario 12 step had an ambiguous raw-save pawn lookup (a large save can carry more than one <nick>Keeper</nick>) and failed on that basis in the same run, not on a real Work Studio defect - Patch_WorkSettingsExposeData.Save() writes the positional list and the named dictionary in the same lockstep loop, so they cannot disagree if the lookup is correct. Narrowed 2026-09-17 to require a <workStudioPriorities> sibling and, if still ambiguous, a matching def count; not yet re-run
@@ -228,9 +228,11 @@ continued existence and signatures in 1.6, the `WorkStudio_Settings` MainButtonD
 content and its worker's override slot, `PriorityMemory.PriorityFor`'s full fallback chain, a real
 `WorkStudioSettings`/`CustomWorkTypeEntry` Scribe export-then-load round trip, Keyed key/
 placeholder parity between English and French, TESTING.md scenario 7's [baku] Work Type Tag
-label-cache claim, and scenario 11's Better Work Tab column-order rule — the latter two each
-proven against that third-party mod's real installed assembly, skipping cleanly if not subscribed.
-Result: **32 PASS, 0 FAIL, 1 SKIP** (documented: `MainButtonWorker.Visible`'s real getter is
+label-cache claim, scenario 11's Better Work Tab column-order rule — the latter two each proven
+against that third-party mod's real installed assembly, skipping cleanly if not subscribed — and,
+added the same day after the live Pickle run below surfaced a real-looking failure, scenario 8's
+"hiding is not disabling" claim driven end to end through the real `WorkTypeRuntime.Apply()`.
+Result: **35 PASS, 0 FAIL, 1 SKIP** (documented: `MainButtonWorker.Visible`'s real getter is
 unreachable off-game the same way `ConfigFile` is — see `remaining`). Full output in
 `Tests/OffGame/RESULTS-2026-09-17.md`.
 
@@ -297,7 +299,16 @@ yet re-run.
   removed, so no reindexing even happens. Same result twice removes coincidence as an explanation.
   Traced `ApplyTypeOverrides`, `RebuildWorkColumns` and the `Notify_DisabledWorkTypesChanged` /
   `Patch_GetDisabledWorkTypes` chain by hand and found nothing that should zero a type the colonist
-  can do and never asked to disable.
+  can do and never asked to disable. **Followed up off-game the same day**: `Tests/OffGame`'s new
+  `TheHideColumnRegression` drives the real `WorkTypeRuntime.Apply()` against a fake `WorkTypeDef`
+  and a fake pawn holding priority 2, hides it, shows it again, and reads the priority back from the
+  live `DefMap` values list at each step — both times the priority survives, and the check is
+  mutation-confirmed sensitive (forcing `PriorityMemory.Capture()` to return an empty snapshot turns
+  it red, as expected). That rules out `Apply()`'s own reconciliation as the cause of this failure:
+  whatever zeroed Cleaning's priority in the live run happened somewhere this synthetic exercise
+  does not reach - most plausibly something specific to a live `Game`/save (real
+  `GetDisabledWorkTypes()`, another mod's patch, a UI-thread timing issue) rather than a logic fault
+  in the code this mod's own hide/show path runs.
 - **Scenario 6** ("the arrows move a type one place"): `Research` lands right after `Patient`
   instead of at the position the test expects. Plausibly another loaded mod reordering Research
   independently (several in this list touch the Work tab or the Research menu), but not confirmed.

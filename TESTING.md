@@ -169,6 +169,12 @@ Untick a type in the left column. Its column leaves the Work tab. The colonists 
 work** at the priority they had — hiding is not disabling. Re-tick it and the column returns with
 the priorities intact.
 
+The "hiding is not disabling" half is also proven off-game, against the real
+`WorkTypeRuntime.Apply()`, by `Tests/OffGame`'s `TheHideColumnRegression` (mutation-confirmed
+sensitive). What still needs the game: the live run on 2026-09-17 found a colonist's priority
+zeroed after hide/show anyway — see `STATUS.md`'s "In-game pass" section for why the off-game proof
+rules out this mod's own reconciliation logic as the cause, and what is still open.
+
 ## 9 — Export, reset, import
 
 **Proves** the settings round trip and, more importantly, that a failed import does not leave half
