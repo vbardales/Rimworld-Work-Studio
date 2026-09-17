@@ -8,16 +8,16 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Lecture et ecriture de la configuration dans des fichiers autonomes, a cote des
-    /// sauvegardes : de quoi transporter un reglage d'une partie a l'autre, d'une machine a l'autre,
-    /// ou simplement le mettre de cote avant d'essayer autre chose.
+    /// Reads and writes the configuration to standalone files, next to the saves: a way to carry a
+    /// setup from one game to another, from one machine to another, or simply to set it aside
+    /// before trying something else.
     /// </summary>
     public static class ConfigFile
     {
         private const string Extension = ".xml";
         private const string RootNode = "workStudioConfig";
 
-        /// <summary>Dossier des configurations, cree au besoin, voisin de Saves et de Config.</summary>
+        /// <summary>Configurations folder, created when needed, next to Saves and Config.</summary>
         public static string Folder => GenFilePaths.FolderUnderSaveData("WorkStudio");
 
         public static List<FileInfo> AllFiles()
@@ -54,8 +54,8 @@ namespace WorkStudio
                 Scribe.saver.InitSaving(PathFor(name), RootNode);
                 try
                 {
-                    // La version du jeu ne sert a rien au chargement, mais elle rend le fichier
-                    // lisible par un humain qui se demande d'ou il sort.
+                    // The game version is useless on load, but it makes the file readable by a
+                    // human wondering where it came from.
                     var version = VersionControl.CurrentVersionStringWithRev;
                     Scribe_Values.Look(ref version, "gameVersion");
 
@@ -78,11 +78,11 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Charge un fichier et, seulement s'il est lu en entier, l'adopte.
+        /// Loads a file and adopts it, but only if it was read in full.
         /// <para>
-        /// La lecture se fait dans un jeu de reglages neuf : un fichier tronque ou mal forme
-        /// laisserait sinon la configuration courante a moitie remplacee, ce qui est pire que de ne
-        /// rien importer du tout.
+        /// Reading goes into a fresh settings instance: otherwise a truncated or malformed file
+        /// would leave the current configuration half replaced, which is worse than importing
+        /// nothing at all.
         /// </para>
         /// </summary>
         public static bool Import(string path, out string error)

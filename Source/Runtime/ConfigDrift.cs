@@ -7,19 +7,18 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Compare le paysage de defs a celui du dernier demarrage, et previent une fois si la liste de
-    /// mods a bouge sous la configuration.
+    /// Compares the def landscape with the one from the last startup, and warns once if the mod
+    /// list has shifted under the configuration.
     /// <para>
-    /// Rien de tout cela n'est une panne : une tache disparue est simplement ignoree, et son
-    /// affectation reste en reserve au cas ou le mod reviendrait. Mais un type personnalise qui se
-    /// vide sans un mot, ou une nouvelle colonne surgie au milieu d'un ordre patiemment regle, se
-    /// remarquent tard et s'expliquent mal. D'ou cet avertissement, qui ne reparait pas tant que
-    /// rien ne bouge.
+    /// None of this is a failure: a vanished task is simply ignored, and its assignment is kept in
+    /// reserve in case the mod comes back. But a custom type that empties without a word, or a new
+    /// column popping up in the middle of a patiently tuned order, gets noticed late and is hard to
+    /// explain. Hence this warning, which does not show again as long as nothing moves.
     /// </para>
     /// </summary>
     public static class ConfigDrift
     {
-        /// <summary>Au-dela, on resume plutot que d'aligner cinquante noms dans une boite de dialogue.</summary>
+        /// <summary>Beyond this, summarize rather than line up fifty names in a dialog box.</summary>
         private const int MaxNamesListed = 8;
 
         public static void ReportAtStartup()
@@ -30,8 +29,8 @@ namespace WorkStudio
                 .Where(e => e != null && !e.id.NullOrEmpty())
                 .Select(e => e.id));
 
-            // Nos propres types sont recrees a chaque demarrage : les compter comme des nouveautes
-            // ferait sonner l'alarme a chaque lancement.
+            // Our own types are recreated at every startup: counting them as new arrivals would
+            // sound the alarm at every launch.
             var currentTypes = DefDatabase<WorkTypeDef>.AllDefsListForReading
                 .Select(t => t.defName)
                 .Where(name => !ourTypes.Contains(name))
@@ -52,8 +51,8 @@ namespace WorkStudio
             settings.reportedMissingTasks = missingTasks;
             WorkStudioMod.Instance?.WriteSettings();
 
-            // Premier demarrage : on ne fait qu'enregistrer le paysage, il n'y a rien a comparer.
-            // Et sans configuration, un changement de liste de mods ne concerne personne.
+            // First startup: only record the landscape, there is nothing to compare against.
+            // And without a configuration, a mod list change concerns no one.
             if (firstRun || !WorkTypeRuntime.HasOverrides())
             {
                 return;

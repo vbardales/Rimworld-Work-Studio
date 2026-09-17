@@ -7,10 +7,9 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Editeur des types de travail : trois colonnes - les types dans leur ordre reel, les taches du
-    /// type selectionne, et de quoi lui en ajouter. Chaque modification est appliquee immediatement.
-    /// La fenetre n'est ni modale ni bloquante, pour qu'on voie l'onglet Travail se reorganiser en
-    /// direct derriere.
+    /// Work type editor: three columns - the types in their real order, the tasks of the selected
+    /// type, and what to add to it. Every change is applied immediately. The window is neither
+    /// modal nor blocking, so the Work tab can be seen rearranging itself live behind it.
     /// </summary>
     public class Dialog_WorkTypes : Window
     {
@@ -26,7 +25,7 @@ namespace WorkStudio
         private const float ArrowsWidth = ArrowSize * 2f + 2f;
         private const int MaxAddResults = 200;
 
-        /// <summary>Plafond que <c>WorkTypeDef.ConfigErrors</c> accepte pour une priorite naturelle.</summary>
+        /// <summary>Ceiling that <c>WorkTypeDef.ConfigErrors</c> accepts for a natural priority.</summary>
         private const int MaxNaturalPriority = 10000;
 
         private static readonly Color DisabledArrowColor = new Color(1f, 1f, 1f, 0.25f);
@@ -39,11 +38,11 @@ namespace WorkStudio
         private Vector2 addScroll;
 
         /// <summary>
-        /// Identifiants des groupes de glisser-deposer. Ils doivent survivre d'une passe d'evenement
-        /// a l'autre : <see cref="ReorderableWidget.NewGroup"/> ne rend un identifiant qu'en
-        /// <c>Repaint</c> et renvoie -1 partout ailleurs. Les garder dans une variable locale ferait
-        /// donc passer -1 a <see cref="ReorderableWidget.Reorderable"/> lors du <c>MouseDown</c>, et
-        /// le glisser ne demarrerait jamais - le clic, lui, continuerait de fonctionner.
+        /// Drag-and-drop group identifiers. They must survive from one event pass to the next:
+        /// <see cref="ReorderableWidget.NewGroup"/> only returns an identifier during
+        /// <c>Repaint</c> and returns -1 everywhere else. Keeping them in a local variable would
+        /// therefore pass -1 to <see cref="ReorderableWidget.Reorderable"/> on <c>MouseDown</c>, and
+        /// the drag would never start - while the click would keep working.
         /// </summary>
         private int typeReorderGroup = -1;
         private int taskReorderGroup = -1;
@@ -64,9 +63,9 @@ namespace WorkStudio
 
         private static WorkStudioSettings Settings => WorkStudioMod.Settings;
 
-        // ---------------------------------------------------------------- donnees
+        // ---------------------------------------------------------------- data
 
-        /// <summary>Les types dans l'ordre ou ils apparaissent reellement, du plus prioritaire au moins.</summary>
+        /// <summary>The types in the order they really appear, from highest to lowest priority.</summary>
         private List<WorkTypeDef> Types =>
             typesCache ??= WorkTypeDefsUtility.WorkTypeDefsInPriorityOrder.ToList();
 
@@ -117,9 +116,9 @@ namespace WorkStudio
                 Settings.giverAssignments[giver.defName] = target.defName;
             }
 
-            // Le rang d'une tache n'a de sens qu'au sein d'une liste donnee. En changeant de type
-            // elle reprend sa priorite d'origine, qui la situe correctement parmi les taches
-            // vanilla, plutot qu'une valeur reglee pour une liste qu'elle vient de quitter.
+            // A task's rank only makes sense within a given list. When it changes type it gets its
+            // original priority back, which places it correctly among the vanilla tasks, rather
+            // than a value tuned for a list it has just left.
             Settings.giverOrderOverrides.Remove(giver.defName);
 
             Commit();
@@ -162,21 +161,21 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Redistribue sur une liste reordonnee les valeurs de priorite qu'elle portait deja.
+        /// Spreads over a reordered list the priority values it already carried.
         /// <para>
-        /// On reutilise ces valeurs plutot que d'inventer une echelle : le jeu et les mods
-        /// travaillent avec des ordres de grandeur precis - de 0 a 1400 pour les types de travail -
-        /// et un mod charge plus tard doit pouvoir se glisser au milieu de la liste plutot que de
-        /// se retrouver relegue en queue. Les egalites sont ecartees d'une unite, sans quoi l'ordre
-        /// relatif de deux voisins resterait indefini.
+        /// Those values are reused rather than inventing a scale: the game and mods work with
+        /// precise orders of magnitude - 0 to 1400 for work types - and a mod loaded later must be
+        /// able to slot into the middle of the list rather than end up relegated to the tail. Ties
+        /// are pulled apart by one unit, otherwise the relative order of two neighbours would stay
+        /// undefined.
         /// </para>
         /// </summary>
         private static List<int> Redistribute(IEnumerable<int> current)
         {
             var values = current.OrderByDescending(v => v).ToList();
 
-            // Zero ou une seule valeur : rien a departager, et les deux boucles ci-dessous ne
-            // tournent pas. On sort tel quel plutot que de laisser les garde-fous s'en charger.
+            // Zero or one value: nothing to break ties on, and the two loops below do not run.
+            // Return as is rather than leaving it to the guards.
             if (values.Count < 2)
             {
                 return values;
@@ -190,8 +189,8 @@ namespace WorkStudio
                 }
             }
 
-            // Ecarter les egalites fait descendre la queue de liste : si des types partagaient tous
-            // la meme priorite, elle plonge sous zero. On remonte l'echelle entiere.
+            // Pulling ties apart pushes the tail of the list down: if types all shared the same
+            // priority, it dips below zero. Shift the whole scale back up.
             var lowest = values[values.Count - 1];
             if (lowest < 0)
             {
@@ -201,11 +200,11 @@ namespace WorkStudio
                 }
             }
 
-            // Et si le sommet deborde, on retombe sur une echelle reguliere. La borne n'est pas
-            // decorative : Pawn_WorkSettings.CacheWorkGiversInOrder classe les travaux sur
-            // naturalPriority + (4 - priorite du colon) * 100000. Une priorite naturelle assez
-            // grande passerait donc par-dessus une bande de priorite entiere, et un travail regle
-            // sur 4 se ferait avant un travail regle sur 1.
+            // And if the top overflows, fall back to an even scale. The bound is not decorative:
+            // Pawn_WorkSettings.CacheWorkGiversInOrder sorts work on
+            // naturalPriority + (4 - colonist priority) * 100000. A large enough natural priority
+            // would therefore jump over a whole priority band, and work set to 4 would be done
+            // before work set to 1.
             if (values[0] > MaxNaturalPriority)
             {
                 for (var i = 0; i < values.Count; i++)
@@ -218,9 +217,9 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Deplace un element selon la convention de <see cref="ReorderableWidget"/> : <paramref
-        /// name="to"/> est la position d'insertion <b>avant</b> retrait, pas la position finale.
-        /// Retirer d'abord decalerait la cible d'un cran pour tout deplacement vers le bas.
+        /// Moves an item following the <see cref="ReorderableWidget"/> convention: <paramref
+        /// name="to"/> is the insertion position <b>before</b> removal, not the final position.
+        /// Removing first would shift the target by one for any downward move.
         /// </summary>
         private static bool DragMove<T>(List<T> list, int from, int to)
         {
@@ -269,7 +268,7 @@ namespace WorkStudio
             Commit();
         }
 
-        /// <summary>Reordonne les types de travail en reaffectant leurs priorites naturelles.</summary>
+        /// <summary>Reorders the work types by reassigning their natural priorities.</summary>
         private void ReorderTypes(int from, int to)
         {
             var ordered = Types.ToList();
@@ -280,9 +279,9 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Reordonne les taches a l'interieur du type selectionne, en reaffectant leurs
-        /// <see cref="WorkGiverDef.priorityInType"/> : c'est l'ordre dans lequel un colon les
-        /// attrape une fois qu'il s'est mis a ce travail.
+        /// Reorders the tasks inside the selected type, by reassigning their
+        /// <see cref="WorkGiverDef.priorityInType"/>: this is the order in which a colonist grabs
+        /// them once they have taken up that work.
         /// </summary>
         private void ReorderTasks(int from, int to)
         {
@@ -299,8 +298,8 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Deplace un type d'un cran. Les fleches doublent le glisser-deposer, qui n'est pas
-        /// praticable au pave tactile d'une Steam Deck.
+        /// Moves a type by one step. The arrows back up drag-and-drop, which is not practical on a
+        /// Steam Deck trackpad.
         /// </summary>
         private void ShiftType(WorkTypeDef type, int delta)
         {
@@ -328,9 +327,9 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Dessine les deux fleches de deplacement et signale le cran demande, 0 si rien n'est
-        /// clique. Les extremites de liste restent cliquables mais grisees : un bouton qui
-        /// disparait deplace tous les autres sous le doigt.
+        /// Draws the two move arrows and reports the requested step, 0 if nothing is clicked. The
+        /// ends of the list stay clickable but greyed out: a button that disappears moves all the
+        /// others under the finger.
         /// </summary>
         private static int DrawArrows(Rect rect, bool canGoUp, bool canGoDown)
         {
@@ -352,9 +351,9 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Une fleche inactive se dessine estompee mais ne pose <b>aucune zone cliquable</b> : la
-        /// filtrer apres coup laisserait un bouton invisible avaler le clic et jouer son son aux
-        /// extremites de liste.
+        /// An inactive arrow is drawn faded but sets <b>no clickable area</b>: filtering it out
+        /// afterwards would leave an invisible button swallowing the click and playing its sound at
+        /// the ends of the list.
         /// </summary>
         private static bool DrawArrow(Rect rect, Texture2D texture, bool enabled, string tooltipKey)
         {
@@ -371,7 +370,7 @@ namespace WorkStudio
                 tooltipKey.Translate());
         }
 
-        /// <summary>Le type a-t-il des taches dont l'ordre a ete retouche ?</summary>
+        /// <summary>Does the type have tasks whose order has been adjusted?</summary>
         private static bool HasTaskOrder(WorkTypeDef type)
         {
             return TasksOf(type).Any(g => Settings.giverOrderOverrides.ContainsKey(g.defName));
@@ -396,9 +395,9 @@ namespace WorkStudio
             var entry = new CustomWorkTypeEntry(NewTypeId(), "WorkStudio.NewTypeLabel".Translate());
             Settings.customTypes.Add(entry);
 
-            // Un type neuf se pose juste sous le type selectionne : c'est presque toujours de lui
-            // qu'on s'apprete a extraire des taches. Si ce voisin est deja au plancher, on s'y pose
-            // a egalite plutot que dans le negatif - a charge pour l'utilisatrice de trancher.
+            // A new type lands just below the selected type: it is almost always the one tasks are
+            // about to be taken from. If that neighbour is already at the floor, land level with it
+            // rather than in the negatives - it is up to the user to settle it.
             var anchor = selectedType?.naturalPriority ?? WorkTypeRuntime.DefaultCustomPriority + 1;
             Settings.priorityOverrides[entry.id] = Mathf.Max(anchor - 1, 0);
 
@@ -430,9 +429,9 @@ namespace WorkStudio
                 return;
             }
 
-            // Les taches du type supprime doivent retrouver un toit : on les renvoie a leur origine.
-            // Leur ordre part avec le type : il avait ete regle pour cette liste-la, le garder
-            // reordonnerait le type d'accueil sans que personne l'ait demande.
+            // The deleted type's tasks need a home again: send them back to their origin. Their
+            // order goes with the type: it was tuned for that particular list, and keeping it would
+            // reorder the receiving type without anyone asking.
             foreach (var key in Settings.giverAssignments
                          .Where(pair => pair.Value == type.defName)
                          .Select(pair => pair.Key)
@@ -455,7 +454,7 @@ namespace WorkStudio
             Commit();
         }
 
-        /// <summary>Remet toutes les taches de ce type la ou le jeu les avait mises.</summary>
+        /// <summary>Puts every task of this type back where the game had put it.</summary>
         private void ResetTasks(WorkTypeDef type)
         {
             foreach (var giver in DefDatabase<WorkGiverDef>.AllDefsListForReading)
@@ -476,16 +475,16 @@ namespace WorkStudio
             Commit();
         }
 
-        // ---------------------------------------------------------------- rendu
+        // ---------------------------------------------------------------- rendering
 
         public override void DoWindowContents(Rect inRect)
         {
-            // La liste est reconstruite a chaque passe : les defs peuvent bouger sous nos pieds
-            // (reinitialisation depuis la fenetre de reglages, mod recharge). Elle reste stable au
-            // sein d'une passe, ce dont le glisser-deposer a besoin pour que ses index collent.
+            // The list is rebuilt on every pass: defs can move under our feet (reset from the
+            // settings window, mod reloaded). It stays stable within a pass, which drag-and-drop
+            // needs for its indices to line up.
             InvalidateCaches();
 
-            // Le type selectionne a pu disparaitre entre-temps.
+            // The selected type may have disappeared in the meantime.
             if (selectedType != null && !Types.Contains(selectedType))
             {
                 selectedType = null;
@@ -519,7 +518,7 @@ namespace WorkStudio
             DrawColumnHeader(new Rect(inner.x, y, inner.width, HeaderHeight), "WorkStudio.Types".Translate());
             y += HeaderHeight + 4f;
 
-            // Le pied de colonne s'empile depuis le bas : la liste prend ce qui reste.
+            // The column footer stacks up from the bottom: the list takes what is left.
             var footerY = inner.yMax - ButtonHeight;
             var newRow = new Rect(inner.x, footerY, inner.width, ButtonHeight);
             footerY -= 6f;
@@ -538,8 +537,8 @@ namespace WorkStudio
 
             Widgets.BeginScrollView(listRect, ref typeScroll, viewRect);
 
-            // Le groupe se declare a l'interieur de la zone defilante : NewGroup ancre son rectangle
-            // sur l'origine GUI courante, donc les coordonnees ecran suivent le defilement.
+            // The group is declared inside the scroll area: NewGroup anchors its rectangle on the
+            // current GUI origin, so the screen coordinates follow the scrolling.
             if (Event.current.type == EventType.Repaint)
             {
                 typeReorderGroup = ReorderableWidget.NewGroup(
@@ -595,8 +594,8 @@ namespace WorkStudio
             Widgets.Checkbox(checkRect.x, checkRect.y, ref visible, 20f);
             TooltipHandler.TipRegion(checkRect, "WorkStudio.VisibleTip".Translate());
 
-            // Un glisser qui se termine sur une ligne ne doit pas valoir clic : sans ce garde-fou,
-            // relacher au-dessus d'une case a cocher la bascule au passage.
+            // A drag that ends on a row must not count as a click: without this guard, releasing
+            // over a checkbox toggles it along the way.
             if (visible != wasVisible && !ReorderableWidget.Dragging)
             {
                 SetVisible(type, visible);
@@ -689,8 +688,8 @@ namespace WorkStudio
                 GUI.color = Color.white;
             }
 
-            // Glisser une tache change sa priorite au sein du type : l'ordre affiche est deja
-            // l'ordre reel, puisque la liste vient de workGiversByPriority.
+            // Dragging a task changes its priority within the type: the order shown is already the
+            // real order, since the list comes from workGiversByPriority.
             if (Event.current.type == EventType.Repaint)
             {
                 taskReorderGroup = ReorderableWidget.NewGroup(
@@ -804,7 +803,7 @@ namespace WorkStudio
             addSearch = Widgets.TextField(new Rect(inner.x, y, inner.width, SearchHeight), addSearch);
             y += SearchHeight + 4f;
 
-            // Le geste n'est devinable ni depuis l'en-tete ni depuis les lignes : on le dit.
+            // The gesture cannot be guessed from the header or from the rows: say so.
             var color = GUI.color;
             GUI.color = new Color(1f, 1f, 1f, 0.5f);
             Text.Font = GameFont.Tiny;
@@ -862,8 +861,8 @@ namespace WorkStudio
             var anchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
 
-            // Les deux colonnes listent des taches : sans le type d'appartenance affiche en clair,
-            // rien ne distingue "ce qui est dans ce type" de "tout le reste".
+            // Both columns list tasks: without the owning type spelled out, nothing tells "what is
+            // in this type" apart from "everything else".
             var labelRect = rect;
             if (showCurrent && giver.workType != null)
             {

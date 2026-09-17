@@ -6,22 +6,22 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Previent [baku] Work Type Tag qu'un type de travail a change.
+    /// Tells [baku] Work Type Tag that a work type has changed.
     /// <para>
-    /// Ce mod affiche le nom du travail devant l'action courante d'un colon, et colore l'en-tete
-    /// de colonne assorti. Il s'entend deja tres bien avec Work Studio : il indexe par
-    /// <c>defName</c>, et une couleur inconnue est derivee du nom, donc un type cree ici recoit
-    /// automatiquement sa teinte et son etiquette.
+    /// That mod shows the work type's name in front of a colonist's current action, and colours
+    /// the matching column header. It already gets along very well with Work Studio: it indexes by
+    /// <c>defName</c>, and an unknown colour is derived from the name, so a type created here
+    /// automatically gets its tint and its tag.
     /// </para>
     /// <para>
-    /// Son seul angle mort est le notre : il garde ses libelles dans un cache qu'il ne vide que
-    /// depuis sa propre fenetre de reglages. Renommer un travail depuis Work Studio laisserait
-    /// donc l'ancien nom devant l'action des colons jusqu'au redemarrage suivant. Un appel a son
-    /// <c>InvalidateAll</c> apres chaque application suffit.
+    /// Its only blind spot is ours: it keeps its labels in a cache that it only clears from its
+    /// own settings window. Renaming a work type from Work Studio would therefore leave the old
+    /// name in front of colonists' actions until the next restart. A call to its
+    /// <c>InvalidateAll</c> after each apply is enough.
     /// </para>
     /// <para>
-    /// Liaison molle, par reflexion : aucune dependance, et l'absence du mod ne coute qu'une
-    /// recherche de type au premier appel.
+    /// Soft binding, through reflection: no dependency, and the mod's absence costs only one type
+    /// lookup on the first call.
     /// </para>
     /// </summary>
     public static class WorkTypeTagCompat
@@ -37,8 +37,8 @@ namespace WorkStudio
             {
                 looked = true;
 
-                // Toutes les assemblies de mods sont chargees avant notre premier Apply, donc une
-                // recherche infructueuse signifie bien que le mod est absent.
+                // Every mod assembly is loaded before our first Apply, so a failed lookup really
+                // does mean the mod is absent.
                 var resolver = AccessTools.TypeByName(ResolverTypeName);
                 invalidateAll = resolver == null ? null : AccessTools.Method(resolver, "InvalidateAll");
             }
@@ -54,8 +54,8 @@ namespace WorkStudio
             }
             catch (Exception exception)
             {
-                // Sa signature a change : on cesse d'essayer plutot que de crier a chaque
-                // modification. Un nom de travail perime est un desagrement, pas une panne.
+                // Its signature has changed: stop trying rather than shout on every change. A
+                // stale work type name is a nuisance, not a failure.
                 invalidateAll = null;
                 Log.Warning("[Work Studio] Could not refresh Work Type Tag's label cache: " +
                             exception.Message);

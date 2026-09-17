@@ -6,25 +6,25 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Applique la configuration voulue par-dessus les defs de travail, a chaud.
+    /// Applies the desired configuration on top of the work defs, live.
     /// <para>
-    /// Rien n'est ecrit sur disque cote defs : on mute <see cref="WorkGiverDef.workType"/>, on cree
-    /// les <see cref="WorkTypeDef"/> personnalises en memoire, puis on force le jeu a se reindexer.
-    /// <see cref="Apply"/> est une reconciliation complete et idempotente : on peut l'appeler autant
-    /// de fois qu'on veut, le resultat ne depend que de la configuration, jamais de l'historique.
+    /// Nothing is written to disk on the defs side: <see cref="WorkGiverDef.workType"/> is mutated,
+    /// the custom <see cref="WorkTypeDef"/>s are created in memory, then the game is forced to
+    /// reindex. <see cref="Apply"/> is a full, idempotent reconciliation: it can be called as many
+    /// times as needed, and the result depends only on the configuration, never on history.
     /// </para>
     /// </summary>
     public static class WorkTypeRuntime
     {
-        /// <summary>Priorite donnee a un type personnalise dont l'ordre n'a pas encore ete choisi.</summary>
+        /// <summary>Priority given to a custom type whose order has not been chosen yet.</summary>
         public const int DefaultCustomPriority = 500;
 
-        // ------------------------------------------------------- etat d'origine
+        // ------------------------------------------------------- original state
 
-        /// <summary>defName d'un WorkGiverDef vers le defName de son type de travail d'origine.</summary>
+        /// <summary>defName of a WorkGiverDef to the defName of its original work type.</summary>
         private static readonly Dictionary<string, string> originalGiverTypes = new Dictionary<string, string>();
 
-        /// <summary>defName d'un WorkGiverDef vers sa priorite d'origine au sein de son type.</summary>
+        /// <summary>defName of a WorkGiverDef to its original priority within its type.</summary>
         private static readonly Dictionary<string, int> originalGiverOrders = new Dictionary<string, int>();
 
         private static readonly Dictionary<string, int> originalPriorities = new Dictionary<string, int>();
@@ -34,20 +34,20 @@ namespace WorkStudio
 
         private static bool captured;
 
-        // ------------------------------------------------------- etat courant
+        // ------------------------------------------------------- current state
 
-        /// <summary>defName des types que nous avons nous-memes ajoutes a la DefDatabase.</summary>
+        /// <summary>defNames of the types we added to the DefDatabase ourselves.</summary>
         private static readonly HashSet<string> ourTypes = new HashSet<string>();
 
         /// <summary>
-        /// Type derive vers les types dont ses taches ont ete extraites. Lu par le postfix sur
-        /// <c>Pawn.GetDisabledWorkTypes</c> : un colon incapable de faire le travail source doit
-        /// rester incapable de faire le travail derive.
+        /// Derived type to the types its tasks were taken from. Read by the postfix on
+        /// <c>Pawn.GetDisabledWorkTypes</c>: a colonist unable to do the source work must remain
+        /// unable to do the derived work.
         /// </summary>
         public static readonly Dictionary<WorkTypeDef, List<WorkTypeDef>> InheritedDisabling =
             new Dictionary<WorkTypeDef, List<WorkTypeDef>>();
 
-        /// <summary>Cibles introuvables deja signalees une fois.</summary>
+        /// <summary>Missing targets already reported once.</summary>
         private static readonly HashSet<string> warnedMissing = new HashSet<string>();
 
         private static WorkStudioSettings Settings => WorkStudioMod.Settings;
@@ -59,7 +59,7 @@ namespace WorkStudio
             return Settings.customTypes.FirstOrDefault(e => e.id == defName);
         }
 
-        /// <summary>Type de travail d'origine d'une tache, avant toute reaffectation.</summary>
+        /// <summary>Original work type of a task, before any reassignment.</summary>
         public static WorkTypeDef OriginalTypeOf(WorkGiverDef giver)
         {
             Capture();
@@ -81,8 +81,8 @@ namespace WorkStudio
         // ------------------------------------------------------- capture
 
         /// <summary>
-        /// Photographie l'etat livre par le jeu et les autres mods. Doit tourner avant la moindre
-        /// mutation, donc au tout premier <see cref="Apply"/>, au demarrage.
+        /// Takes a snapshot of the state delivered by the game and other mods. Must run before any
+        /// mutation, hence on the very first <see cref="Apply"/>, at startup.
         /// </summary>
         private static void Capture()
         {
@@ -122,8 +122,8 @@ namespace WorkStudio
         {
             Capture();
 
-            // Avant toute chose : les priorites des pions sont indexees par position, et tout ce qui
-            // suit deplace ces positions.
+            // First of all: pawn priorities are indexed by position, and everything that follows
+            // moves those positions.
             var snapshot = PriorityMemory.Capture();
 
             SyncCustomTypes();
@@ -140,7 +140,7 @@ namespace WorkStudio
             WorkTypeTagCompat.Notify();
         }
 
-        /// <summary>Efface toute la configuration et remet les defs dans leur etat d'origine.</summary>
+        /// <summary>Erases the whole configuration and puts the defs back in their original state.</summary>
         public static void ResetAll()
         {
             Settings.customTypes.Clear();
@@ -153,9 +153,9 @@ namespace WorkStudio
             Apply();
         }
 
-        // ------------------------------------------------------- etapes
+        // ------------------------------------------------------- steps
 
-        /// <summary>Cree, met a jour et supprime les <see cref="WorkTypeDef"/> personnalises.</summary>
+        /// <summary>Creates, updates and removes the custom <see cref="WorkTypeDef"/>s.</summary>
         private static void SyncCustomTypes()
         {
             var wanted = Settings.customTypes
@@ -193,7 +193,7 @@ namespace WorkStudio
                     def.modContentPack = WorkStudioMod.Instance?.Content;
                     DefDatabase<WorkTypeDef>.Add(def);
 
-                    // Add() renomme en cas de collision : on se realigne sur le defName retenu.
+                    // Add() renames on collision: realign on the defName it kept.
                     entry.id = def.defName;
                 }
 
@@ -202,8 +202,8 @@ namespace WorkStudio
                 def.label = entry.label.NullOrEmpty() ? def.defName : entry.label;
                 def.description = entry.description;
 
-                // labelShort est le seul libelle que l'en-tete de colonne affiche. A defaut, le nom
-                // complet : une colonne trop large se voit, un en-tete vide ne se comprend pas.
+                // labelShort is the only label the column header shows. Failing that, the full
+                // name: a column too wide is visible, an empty header makes no sense.
                 def.labelShort = entry.labelShort.NullOrEmpty() ? def.label : entry.labelShort;
                 def.pawnLabel = entry.pawnLabel.NullOrEmpty() ? def.label : entry.pawnLabel;
                 def.gerundLabel = entry.gerundLabel.NullOrEmpty() ? def.label : entry.gerundLabel;
@@ -217,7 +217,7 @@ namespace WorkStudio
             }
         }
 
-        /// <summary>Range chaque tache dans le type de travail voulu.</summary>
+        /// <summary>Files each task under the desired work type.</summary>
         private static void ApplyGiverAssignments()
         {
             foreach (var giver in DefDatabase<WorkGiverDef>.AllDefsListForReading)
@@ -228,12 +228,12 @@ namespace WorkStudio
                 {
                     desired = DefDatabase<WorkTypeDef>.GetNamedSilentFail(target);
 
-                    // La cible a disparu (mod retire, type supprime) : on revient a l'origine sans
-                    // effacer l'affectation, au cas ou la cible reviendrait.
+                    // The target is gone (mod removed, type deleted): fall back to the original
+                    // without erasing the assignment, in case the target comes back.
                     if (desired == null && warnedMissing.Add(target))
                     {
-                        // En anglais, comme tout ce qui part au journal : ce sont d'autres
-                        // moddeurs qui le lisent dans les rapports de bug.
+                        // In English, like everything sent to the log: it is other modders who
+                        // read it in bug reports.
                         Log.Warning("[Work Studio] Work type not found: '" + target +
                                     "'. The tasks assigned to it fall back to their original type.");
                     }
@@ -246,22 +246,22 @@ namespace WorkStudio
 
                 giver.workType = desired;
 
-                // Doit etre pose avant RebuildDefs : c'est sur priorityInType que
-                // WorkTypeDef.ResolveReferences trie workGiversByPriority.
+                // Must be set before RebuildDefs: priorityInType is what
+                // WorkTypeDef.ResolveReferences sorts workGiversByPriority on.
                 giver.priorityInType = Settings.giverOrderOverrides.TryGetValue(giver.defName, out var order)
                     ? order
                     : OriginalOrderOf(giver);
             }
         }
 
-        /// <summary>Priorite d'origine d'une tache au sein de son type, avant toute reorganisation.</summary>
+        /// <summary>Original priority of a task within its type, before any reordering.</summary>
         public static int OriginalOrderOf(WorkGiverDef giver)
         {
             Capture();
             return originalGiverOrders.TryGetValue(giver.defName, out var order) ? order : 0;
         }
 
-        /// <summary>Applique ordre, libelle et visibilite a tous les types, personnalises ou non.</summary>
+        /// <summary>Applies order, label and visibility to every type, custom or not.</summary>
         private static void ApplyTypeOverrides()
         {
             foreach (var type in DefDatabase<WorkTypeDef>.AllDefsListForReading)
@@ -272,15 +272,15 @@ namespace WorkStudio
 
                 if (!IsCustom(type))
                 {
-                    // Le libelle d'un type personnalise vit dans sa fiche, pas dans les surcharges :
-                    // une seule source de verite par type.
+                    // A custom type's label lives in its sheet, not in the overrides: a single
+                    // source of truth per type.
                     var renamed = Settings.labelOverrides.TryGetValue(type.defName, out var label)
                                   && !label.NullOrEmpty();
 
                     type.label = renamed ? label : BaseLabelOf(type);
 
-                    // Renommer sans toucher a labelShort ne renommerait rien de visible : l'en-tete
-                    // de colonne n'affiche que le libelle court, et garderait donc l'ancien nom.
+                    // Renaming without touching labelShort would rename nothing visible: the column
+                    // header only shows the short label, and would therefore keep the old name.
                     type.labelShort = renamed ? label : BaseShortLabelOf(type);
                 }
 
@@ -311,21 +311,21 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Fait heriter chaque type derive des incapacites de ses types sources, et renvoie, pour
-        /// chacun, la source dont il doit reprendre la priorite chez les pions qui ne le connaissent
-        /// pas encore.
+        /// Makes each derived type inherit the incapacities of its source types, and returns, for
+        /// each one, the source whose priority it should take over for pawns that do not know it
+        /// yet.
         /// <para>
-        /// Deux mecanismes se completent. Les <see cref="WorkTags"/> couvrent tout ce que le jeu
-        /// filtre par tag - histoires et traits - sans le moindre patch, puisque
-        /// <c>BackstoryDef.AllowsWorkType</c> compare les tags du type a ceux que l'histoire
-        /// interdit. Le reste - genes, roles ideologiques, quetes, sante, stade de vie - designe des
-        /// <see cref="WorkTypeDef"/> nommement : c'est la que le postfix sur
-        /// <c>Pawn.GetDisabledWorkTypes</c> prend le relais, via <see cref="InheritedDisabling"/>.
+        /// Two mechanisms complement each other. <see cref="WorkTags"/> cover everything the game
+        /// filters by tag - backstories and traits - without any patch, since
+        /// <c>BackstoryDef.AllowsWorkType</c> compares the type's tags with those the backstory
+        /// forbids. The rest - genes, ideoligion roles, quests, health, life stage - names
+        /// <see cref="WorkTypeDef"/>s explicitly: that is where the postfix on
+        /// <c>Pawn.GetDisabledWorkTypes</c> takes over, through <see cref="InheritedDisabling"/>.
         /// </para>
         /// <para>
-        /// Un type derive de plusieurs sources herite des incapacites de <b>chacune</b> d'elles. Un
-        /// type mixte est donc plus restrictif que ses parties : c'est le seul choix qui ne laisse
-        /// jamais un colon faire un travail dont le jeu l'avait ecarte.
+        /// A type derived from several sources inherits the incapacities of <b>each</b> of them. A
+        /// mixed type is therefore more restrictive than its parts: it is the only choice that never
+        /// lets a colonist do work the game had ruled out for them.
         /// </para>
         /// </summary>
         private static Dictionary<string, string> ComputeInheritance()
@@ -341,7 +341,7 @@ namespace WorkStudio
                     continue;
                 }
 
-                // Combien de taches ce type derive tient-il de chaque source ?
+                // How many tasks does this derived type hold from each source?
                 var weights = new Dictionary<WorkTypeDef, int>();
 
                 foreach (var pair in Settings.giverAssignments)
@@ -383,9 +383,9 @@ namespace WorkStudio
 
                 InheritedDisabling[type] = origins;
 
-                // La source majoritaire donne le ton : c'est d'elle que le type derive reprend la
-                // priorite deja reglee par le joueur. A egalite, on tranche par defName pour que
-                // deux applications successives donnent le meme resultat.
+                // The majority source sets the tone: it is the one whose priority, already tuned by
+                // the player, the derived type takes over. On a tie, defName decides so that two
+                // successive applies give the same result.
                 seeds[defName] = origins
                     .OrderByDescending(o => weights[o])
                     .ThenBy(o => o.defName)
@@ -397,9 +397,9 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Reindexe les defs et reconstruit les listes de taches par type.
-        /// <c>WorkTypeDef.ResolveReferences</c> repeuple <c>workGiversByPriority</c> en balayant les
-        /// <see cref="WorkGiverDef"/>, donc il faut vider ces listes d'abord sous peine de doublons.
+        /// Reindexes the defs and rebuilds the per-type task lists.
+        /// <c>WorkTypeDef.ResolveReferences</c> repopulates <c>workGiversByPriority</c> by sweeping the
+        /// <see cref="WorkGiverDef"/>s, so those lists must be emptied first or they get duplicates.
         /// </summary>
         private static void RebuildDefs()
         {
@@ -416,10 +416,9 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Refait les colonnes de l'onglet Travail exactement comme
-        /// <see cref="PawnColumnDefGenerator"/> les fabrique au demarrage : chaque colonne inseree
-        /// juste apres le bouton copier/coller, en parcourant les types du moins au plus prioritaire
-        /// pour que le resultat sorte dans l'ordre inverse.
+        /// Rebuilds the Work tab columns exactly the way <see cref="PawnColumnDefGenerator"/> makes
+        /// them at startup: each column inserted right after the copy/paste button, walking the
+        /// types from lowest to highest priority so that the result comes out in reverse order.
         /// </summary>
         private static void RebuildWorkColumns()
         {
@@ -454,9 +453,9 @@ namespace WorkStudio
                 column.workType = type;
                 column.moveWorkTypeLabelDown = moveLabelDown;
 
-                // PawnColumnWorker_WorkPriority mesure le libelle court une seule fois et garde le
-                // resultat. Renommer un travail laisserait donc une colonne dimensionnee pour
-                // l'ancien nom : on jette le worker, le prochain affichage en fabrique un neuf.
+                // PawnColumnWorker_WorkPriority measures the short label only once and keeps the
+                // result. Renaming a work type would therefore leave a column sized for the old
+                // name: the worker is thrown away, and the next draw makes a fresh one.
                 column.workerInt = null;
 
                 workTable.columns.Insert(AnchorIndex(workTable), column);
@@ -466,7 +465,7 @@ namespace WorkStudio
             DefDatabase<PawnColumnDef>.ResolveAllReferences(false, true);
         }
 
-        /// <summary>Position ou inserer une colonne de travail : juste apres le copier/coller.</summary>
+        /// <summary>Where to insert a work column: right after the copy/paste one.</summary>
         private static int AnchorIndex(PawnTableDef workTable)
         {
             var index = workTable.columns.FindIndex(c => c.Worker is PawnColumnWorker_CopyPasteWorkPriorities);
@@ -475,16 +474,16 @@ namespace WorkStudio
                 return index + 1;
             }
 
-            // Pas de colonne copier/coller (mod qui l'a retiree) : on se rabat sur l'espace restant,
-            // qui doit imperativement rester en queue de table.
+            // No copy/paste column (a mod removed it): fall back to the remaining space column,
+            // which must stay at the end of the table.
             index = workTable.columns.FindIndex(c => c.Worker is PawnColumnWorker_RemainingSpace);
             return index >= 0 ? index : workTable.columns.Count;
         }
 
         /// <summary>
-        /// Les histoires gardent en cache la liste des types qu'elles interdisent, et ce cache
-        /// n'est pas vide par <c>ClearCachedData</c>. Sans ce coup de balai, un type cree apres coup
-        /// n'y figure jamais, quels que soient ses <see cref="WorkTags"/>.
+        /// Backstories cache the list of types they forbid, and that cache is not cleared by
+        /// <c>ClearCachedData</c>. Without this sweep, a type created afterwards never shows up in
+        /// it, whatever its <see cref="WorkTags"/>.
         /// </summary>
         private static void ClearBackstoryCaches()
         {
@@ -496,8 +495,8 @@ namespace WorkStudio
 
         private static void RefreshWorkTab()
         {
-            // Notify_PawnsChanged marque la table sale ; PawnTable.Columns relit def.columns a
-            // chaque affichage, donc les nouvelles colonnes apparaissent des la frame suivante.
+            // Notify_PawnsChanged marks the table dirty; PawnTable.Columns rereads def.columns on
+            // every draw, so the new columns show up from the next frame.
             Find.WindowStack?.WindowOfType<MainTabWindow_Work>()?.Notify_PawnsChanged();
         }
     }

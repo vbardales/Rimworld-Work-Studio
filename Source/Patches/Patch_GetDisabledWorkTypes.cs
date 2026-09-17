@@ -5,21 +5,21 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Fait heriter un type de travail derive des incapacites de ses types sources.
+    /// Makes a derived work type inherit the incapacities of its source types.
     /// <para>
-    /// Les <see cref="WorkTags"/> poses par <c>WorkTypeRuntime.ComputeInheritance</c> couvrent deja
-    /// les histoires et les traits. Restent les interdits nommes - genes, roles ideologiques,
-    /// quetes, sante, stade de vie - qui designent un <see cref="WorkTypeDef"/> precis et ne peuvent
-    /// donc rien savoir d'un type cree en cours de partie : c'est ce que ce postfix rattrape.
+    /// The <see cref="WorkTags"/> set by <c>WorkTypeRuntime.ComputeInheritance</c> already cover
+    /// backstories and traits. What remains are the named bans - genes, ideoligion roles, quests,
+    /// health, life stage - which point at one specific <see cref="WorkTypeDef"/> and so cannot
+    /// know anything about a type created mid-game: that is what this postfix catches.
     /// </para>
     /// </summary>
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.GetDisabledWorkTypes))]
     public static class Patch_GetDisabledWorkTypes
     {
         /// <summary>
-        /// On complete la liste sur place, et non une copie : c'est le cache du pion, que le jeu
-        /// reconstruit de zero des qu'il l'invalide. Le test d'appartenance rend l'operation
-        /// idempotente, donc un second appel sur la meme liste n'ajoute rien.
+        /// The list is completed in place, not a copy: it is the pawn's cache, which the game
+        /// rebuilds from scratch as soon as it invalidates it. The membership test makes the
+        /// operation idempotent, so a second call on the same list adds nothing.
         /// </summary>
         [HarmonyPriority(Priority.Last)]
         public static void Postfix(List<WorkTypeDef> __result)

@@ -4,7 +4,7 @@ using Verse;
 
 namespace WorkStudio
 {
-    /// <summary>Petite fenetre de saisie d'une ligne, pour renommer un type de travail.</summary>
+    /// <summary>Small single-line input window, to rename a work type.</summary>
     public class Dialog_TextEntry : Window
     {
         private readonly string title;

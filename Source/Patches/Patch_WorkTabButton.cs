@@ -8,16 +8,15 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Ajoute un bouton d'ouverture de l'editeur dans le bandeau de l'onglet Travail. C'est la que
-    /// l'on constate qu'une colonne manque ou qu'un travail est mal range, donc c'est de la qu'il
-    /// faut pouvoir corriger - sans passer par le menu des options.
+    /// Adds a button that opens the editor to the header strip of the Work tab. That is where one
+    /// notices a missing column or a misfiled job, so that is where fixing it should be possible -
+    /// without going through the options menu.
     /// <para>
-    /// Le patch ne peut pas viser <c>MainTabWindow_Work</c> en dur. Un onglet Travail de
-    /// remplacement - Better Work Tab, par exemple - se declare dans le <c>tabWindowClass</c> du
-    /// <c>MainButtonDef</c>, herite de la classe vanilla mais redefinit <c>DoWindowContents</c>
-    /// <b>sans appeler <c>base</c></b> : la methode vanilla n'est alors jamais executee, et le
-    /// bouton n'apparaitrait nulle part. On patche donc la classe reellement utilisee, quelle
-    /// qu'elle soit.
+    /// The patch cannot hard-code <c>MainTabWindow_Work</c>. A replacement Work tab - Better Work
+    /// Tab, for instance - declares itself in the <c>tabWindowClass</c> of the
+    /// <c>MainButtonDef</c>, inherits the vanilla class but overrides <c>DoWindowContents</c>
+    /// <b>without calling <c>base</c></b>: the vanilla method then never runs, and the button would
+    /// show up nowhere. So the class actually in use is patched, whatever it is.
     /// </para>
     /// </summary>
     public static class Patch_WorkTabButton
@@ -25,9 +24,8 @@ namespace WorkStudio
         private const string WorkButtonDefName = "Work";
 
         /// <summary>
-        /// A appeler une fois les defs chargees : c'est seulement a ce moment que le
-        /// <c>tabWindowClass</c> est resolu, et que les patchs XML des autres mods l'ont deja
-        /// remplace le cas echeant.
+        /// To be called once defs are loaded: only then is the <c>tabWindowClass</c> resolved, and
+        /// other mods' XML patches have already replaced it where they do.
         /// </summary>
         public static void Apply(Harmony harmony)
         {
@@ -55,9 +53,9 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Premiere classe de la hierarchie qui declare vraiment <c>DoWindowContents</c>. Patcher
-        /// une methode heritee toucherait toutes les tables de pions - Animaux, Restrictions - d'ou
-        /// le garde-fou sur le def au moment de dessiner.
+        /// First class in the hierarchy that actually declares <c>DoWindowContents</c>. Patching an
+        /// inherited method would touch every pawn table - Animals, Restrict - hence the guard on
+        /// the def at draw time.
         /// </summary>
         private static MethodInfo FindDrawMethod(Type windowClass)
         {
@@ -74,10 +72,10 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Le rectangle est pris par position (<c>__0</c>) et non par nom. Harmony injecte les
-        /// parametres d'apres leur nom, et celui-ci n'est pas le meme partout : <c>rect</c> chez
-        /// vanilla, <c>inRect</c> chez Better Work Tab. Demander <c>rect</c> faisait rejeter le
-        /// patch avec « Parameter "rect" not found », donc pas de bouton du tout.
+        /// The rectangle is taken by position (<c>__0</c>), not by name. Harmony injects parameters
+        /// by name, and this one is not named the same everywhere: <c>rect</c> in vanilla,
+        /// <c>inRect</c> in Better Work Tab. Asking for <c>rect</c> got the patch rejected with
+        /// "Parameter "rect" not found", so no button at all.
         /// </summary>
         public static void Postfix(MainTabWindow __instance, Rect __0)
         {
@@ -88,8 +86,8 @@ namespace WorkStudio
                 return;
             }
 
-            // Le bandeau vanilla occupe la gauche (cases a cocher) et le centre (fleches de
-            // priorite, dessinees a des abscisses fixes) : la droite est libre.
+            // The vanilla header strip takes the left (checkboxes) and the centre (priority
+            // arrows, drawn at fixed x positions): the right is free.
             var button = new Rect(rect.xMax - 160f, rect.y + 3f, 155f, 28f);
 
             var font = Text.Font;

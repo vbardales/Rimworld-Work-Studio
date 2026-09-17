@@ -5,14 +5,14 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Retient les priorites de travail de chaque pion <b>par defName</b> le temps d'une
-    /// reconfiguration, puis les remet en place.
+    /// Remembers every pawn's work priorities <b>by defName</b> for the duration of a
+    /// reconfiguration, then puts them back.
     /// <para>
-    /// C'est la piece indispensable de tout l'edifice. <see cref="DefMap{D,V}"/> ne stocke pas de
-    /// cles : c'est une simple <c>List</c> de valeurs alignee sur l'ordre de la
-    /// <see cref="DefDatabase{T}"/>, indexee par <c>def.index</c>. Ajouter, retirer ou reordonner un
-    /// seul <see cref="WorkTypeDef"/> decale donc silencieusement les priorites de tous les types
-    /// suivants, chez tous les pions de la partie.
+    /// This is the piece the whole structure cannot do without. <see cref="DefMap{D,V}"/> stores no
+    /// keys: it is a plain <c>List</c> of values aligned on the order of the
+    /// <see cref="DefDatabase{T}"/>, indexed by <c>def.index</c>. Adding, removing or reordering a
+    /// single <see cref="WorkTypeDef"/> therefore silently shifts the priorities of every following
+    /// type, for every pawn in the game.
     /// </para>
     /// </summary>
     public static class PriorityMemory
@@ -24,9 +24,9 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Tous les pions porteurs de reglages de travail, pas seulement ceux poses sur une carte :
-        /// une caravane, une nacelle en vol ou un pion en cryptosommeil ont eux aussi une
-        /// <c>DefMap</c> a recaler.
+        /// Every pawn carrying work settings, not only those standing on a map: a caravan, a
+        /// transport pod in flight or a pawn in cryptosleep also have a <c>DefMap</c> to
+        /// realign.
         /// </summary>
         private static List<Pawn> AllPawns()
         {
@@ -64,13 +64,13 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// Remet chaque priorite en face de son type, redimensionne les <c>DefMap</c> au nouveau
-        /// nombre de defs, et rafraichit les caches de chaque pion.
+        /// Puts each priority back against its type, resizes the <c>DefMap</c>s to the new number of
+        /// defs, and refreshes every pawn's caches.
         /// </summary>
         /// <param name="seeds">
-        /// defName d'un type derive vers le defName du type dont il a ete extrait. Un type que le
-        /// pion ne connaissait pas herite de la priorite de sa source : scinder un travail en deux
-        /// ne doit rien changer au comportement du colon.
+        /// defName of a derived type to the defName of the type it was split from. A type the pawn
+        /// did not know inherits its source's priority: splitting a job in two must not change
+        /// anything about the colonist's behaviour.
         /// </param>
         public static void Restore(Snapshot snapshot, Dictionary<string, string> seeds)
         {
@@ -104,8 +104,8 @@ namespace WorkStudio
 
                 settings.workGiversDirty = true;
 
-                // Vide les caches d'incapacites, remet a zero ce que le pion n'a pas le droit de
-                // faire, et previent l'onglet Competences.
+                // Clears the incapacity caches, zeroes what the pawn is not allowed to do, and
+                // notifies the Skills tab.
                 pawn.Notify_DisabledWorkTypesChanged();
 
                 settings.CacheWorkGiversInOrder();

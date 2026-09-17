@@ -8,8 +8,8 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Fiche d'un type de travail personnalise : les libelles que le jeu affiche un peu partout, et
-    /// les competences qui comptent pour lui.
+    /// Sheet for a custom work type: the labels the game shows all over the place, and the skills
+    /// that count for it.
     /// </summary>
     public class Dialog_EditWorkType : Window
     {
@@ -74,8 +74,9 @@ namespace WorkStudio
             var skillRect = new Rect(inRect.x, y, inRect.width, applyRow.y - 8f - y);
             DrawSkills(skillRect);
 
-            // La validation se fait a la fermeture, quel qu'en soit le chemin : ce bouton ferme, et
-            // la croix aussi. Sans quoi un reglage saisi puis ferme par la croix serait perdu.
+            // Changes are committed on close, whichever way it happens: this button closes, and so
+            // does the cross. Otherwise a value typed in and then closed with the cross would be
+            // lost.
             if (Widgets.ButtonText(applyRow, "WorkStudio.Apply".Translate()))
             {
                 Close();

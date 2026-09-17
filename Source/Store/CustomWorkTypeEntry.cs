@@ -4,41 +4,41 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Un type de travail cree par l'utilisateur. Les types fournis par le jeu ou par d'autres mods
-    /// ne sont pas decrits ici : on les reference par leur defName et on ne surcharge que le libelle,
-    /// la priorite et la visibilite.
+    /// A work type created by the user. Types provided by the game or by other mods are not
+    /// described here: they are referenced by defName, and only their label, priority and
+    /// visibility are overridden.
     /// </summary>
     public class CustomWorkTypeEntry : IExposable
     {
-        /// <summary>defName du <see cref="WorkTypeDef"/> recree a chaque demarrage.</summary>
+        /// <summary>defName of the <see cref="WorkTypeDef"/> recreated at every startup.</summary>
         public string id;
 
         public string label;
 
         /// <summary>
-        /// Libelle court, seul affiche en en-tete de colonne dans l'onglet Travail. Laisse vide, il
-        /// reprend le nom complet - au risque d'une colonne large comme le titre.
+        /// Short label, the only one shown as a column header in the Work tab. Left empty, it falls
+        /// back to the full name - at the risk of a column as wide as the title.
         /// </summary>
         public string labelShort;
 
         public string description;
 
-        /// <summary>Forme en -ant, affichee dans l'inspecteur du pion ("en train de soigner").</summary>
+        /// <summary>-ing form, shown in the pawn inspector ("treating patients").</summary>
         public string gerundLabel;
 
-        /// <summary>Infinitif, utilise dans les menus d'ordre direct.</summary>
+        /// <summary>Infinitive, used in the direct-order menus.</summary>
         public string verb;
 
-        /// <summary>Nom du pion qui fait ce travail ("Medecin", "Cuisinier").</summary>
+        /// <summary>Name of the pawn doing this work ("Doctor", "Cook").</summary>
         public string pawnLabel;
 
-        /// <summary>Le travail est actif d'office chez un nouveau colon, hors quota des six premiers.</summary>
+        /// <summary>The work is active by default on a new colonist, outside the first-six quota.</summary>
         public bool alwaysStartActive;
 
-        /// <summary>Le jeu previent si plus aucun colon capable ne peut faire ce travail.</summary>
+        /// <summary>The game warns when no capable colonist can do this work any more.</summary>
         public bool requireCapableColonist;
 
-        /// <summary>defName des <see cref="RimWorld.SkillDef"/> qui comptent pour ce travail.</summary>
+        /// <summary>defNames of the <see cref="RimWorld.SkillDef"/>s that count for this work.</summary>
         public List<string> relevantSkills = new List<string>();
 
         public CustomWorkTypeEntry()

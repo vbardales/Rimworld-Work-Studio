@@ -8,9 +8,9 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Liste des configurations enregistrees : une ligne par fichier, un bouton pour en ecrire une
-    /// nouvelle. Importer remplace la configuration courante, donc chaque action destructrice passe
-    /// par une confirmation.
+    /// List of saved configurations: one row per file, one button to write a new one. Importing
+    /// replaces the current configuration, so every destructive action goes through a
+    /// confirmation.
     /// </summary>
     public class Dialog_ConfigFiles : Window
     {

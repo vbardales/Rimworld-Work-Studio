@@ -7,18 +7,18 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Ecrit les priorites de travail une seconde fois dans la sauvegarde, cette fois <b>nommees</b>,
-    /// et les relit a ce format.
+    /// Writes work priorities a second time into the save, <b>named</b> this time, and reads them
+    /// back in that format.
     /// <para>
-    /// Vanilla serialise <c>priorities</c> en <see cref="DefMap{D,V}"/>, c'est-a-dire une liste de
-    /// valeurs nues alignee sur l'ordre de la <c>DefDatabase</c>. Rien dans la sauvegarde ne dit
-    /// quelle valeur appartient a quel travail : au chargement, <c>DefMap.ExposeData</c> se contente
-    /// de completer ou de tronquer la liste. Ajouter, retirer ou reordonner un type de travail entre
-    /// deux sessions suffirait donc a redistribuer toutes les priorites de la colonie.
+    /// Vanilla serializes <c>priorities</c> as a <see cref="DefMap{D,V}"/>, that is, a list of bare
+    /// values aligned on the <c>DefDatabase</c> order. Nothing in the save says which value belongs
+    /// to which work type: on load, <c>DefMap.ExposeData</c> merely pads or truncates the list.
+    /// Adding, removing or reordering a work type between two sessions would therefore be enough to
+    /// reshuffle every priority in the colony.
     /// </para>
     /// <para>
-    /// Le noeud ajoute ici est ignore par le jeu si le mod est retire, et ne coute que quelques
-    /// lignes par pion.
+    /// The node added here is ignored by the game if the mod is removed, and costs only a few lines
+    /// per pawn.
     /// </para>
     /// </summary>
     [HarmonyPatch(typeof(Pawn_WorkSettings), nameof(Pawn_WorkSettings.ExposeData))]
@@ -27,9 +27,8 @@ namespace WorkStudio
         private const string Node = "workStudioPriorities";
 
         /// <summary>
-        /// Ce qui a ete lu en phase <c>LoadingVars</c>, en attendant le <c>PostLoadInit</c> ou les
-        /// defs sont resolus. Table faible : un pion abandonne en cours de chargement ne retient
-        /// rien.
+        /// What was read during <c>LoadingVars</c>, waiting for the <c>PostLoadInit</c> where defs
+        /// are resolved. Weak table: a pawn dropped mid-load holds on to nothing.
         /// </summary>
         private static readonly ConditionalWeakTable<Pawn_WorkSettings, Dictionary<string, int>> pending =
             new ConditionalWeakTable<Pawn_WorkSettings, Dictionary<string, int>>();
@@ -109,16 +108,16 @@ namespace WorkStudio
 
             for (var i = 0; i < types.Count; i++)
             {
-                // Un type absent de la sauvegarde est un type apparu depuis : un mod ajoute entre
-                // deux sessions, typiquement. On le met a zero - inactif - plutot que de laisser la
-                // valeur positionnelle que le chargement vanilla vient d'y deposer, qui appartient
-                // au voisin. C'est aussi ce que fait le jeu sans nous : un travail inconnu de la
-                // sauvegarde demarre eteint.
+                // A type missing from the save is a type that appeared since: typically a mod
+                // added between two sessions. It is set to zero - inactive - rather than keeping
+                // the positional value vanilla loading just put there, which belongs to its
+                // neighbour. It is also what the game does without us: a work type the save does
+                // not know starts switched off.
                 values[i] = named.TryGetValue(types[i].defName, out var priority) ? priority : 0;
             }
 
-            // Vanilla vient de desactiver ce que le pion n'a pas le droit de faire ; on a ecrase ce
-            // travail en restaurant, il faut donc le refaire.
+            // Vanilla just disabled what the pawn is not allowed to do; restoring overwrote that
+            // work, so it has to be done again.
             settings.pawn?.Notify_DisabledWorkTypesChanged();
         }
     }

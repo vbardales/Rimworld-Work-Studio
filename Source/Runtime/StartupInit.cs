@@ -3,12 +3,11 @@ using Verse;
 namespace WorkStudio
 {
     /// <summary>
-    /// Applique la configuration une fois tous les defs charges et resolus.
+    /// Applies the configuration once all defs are loaded and resolved.
     /// <para>
-    /// Le moment compte : la configuration doit etre en place <b>avant</b> qu'une sauvegarde soit
-    /// chargee. Les priorites de travail y sont ecrites positionnellement, alignees sur l'ordre de la
-    /// <c>DefDatabase</c> ; si l'on ajoutait nos types apres coup, chaque pion recuperait les
-    /// priorites de son voisin.
+    /// Timing matters: the configuration must be in place <b>before</b> a save is loaded. Work
+    /// priorities are written there positionally, aligned on the <c>DefDatabase</c> order; if our
+    /// types were added afterwards, every pawn would get its neighbour's priorities.
     /// </para>
     /// </summary>
     [StaticConstructorOnStartup]
@@ -18,15 +17,15 @@ namespace WorkStudio
         {
             LongEventHandler.ExecuteWhenFinished(delegate
             {
-                // Avant Apply : le tabWindowClass de l'onglet Travail n'est resolu qu'une fois les
-                // defs charges, et les patchs XML des onglets de remplacement s'y sont deja
-                // appliques.
+                // Before Apply: the Work tab's tabWindowClass is only resolved once defs are
+                // loaded, and the XML patches of replacement tabs have already been applied to
+                // it.
                 Patch_WorkTabButton.Apply(WorkStudioMod.HarmonyInstance);
 
                 WorkTypeRuntime.Apply();
 
-                // Apres Apply : le bilan doit porter sur le paysage tel qu'il est vraiment, une fois
-                // nos types crees et les taches rangees.
+                // After Apply: the report must describe the landscape as it really is, once our
+                // types are created and the tasks filed.
                 ConfigDrift.ReportAtStartup();
             });
         }

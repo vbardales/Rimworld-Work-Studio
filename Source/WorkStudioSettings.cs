@@ -5,45 +5,45 @@ namespace WorkStudio
 {
     public class WorkStudioSettings : ModSettings
     {
-        /// <summary>Version du schema de configuration, pour migrer sans casser les reglages existants.</summary>
+        /// <summary>Configuration schema version, to migrate without breaking existing settings.</summary>
         public int schemaVersion = 1;
 
-        /// <summary>Types de travail crees par l'utilisateur. Recrees en memoire a chaque demarrage.</summary>
+        /// <summary>Work types created by the user. Recreated in memory at every startup.</summary>
         public List<CustomWorkTypeEntry> customTypes = new List<CustomWorkTypeEntry>();
 
         /// <summary>
-        /// defName d'un <see cref="RimWorld.WorkGiverDef"/> vers le defName du type de travail voulu.
-        /// Une cle absente signifie "laisser le type d'origine du def".
+        /// defName of a <see cref="RimWorld.WorkGiverDef"/> to the defName of the desired work type.
+        /// A missing key means "keep the def's original type".
         /// </summary>
         public Dictionary<string, string> giverAssignments = new Dictionary<string, string>();
 
         /// <summary>
-        /// defName d'un <see cref="WorkTypeDef"/> vers sa priorite naturelle voulue. C'est le seul
-        /// levier d'ordonnancement : il pilote a la fois l'ordre des colonnes de l'onglet Travail et
-        /// l'ordre dans lequel les pions prennent les taches.
+        /// defName of a <see cref="WorkTypeDef"/> to its desired natural priority. This is the only
+        /// ordering lever: it drives both the column order of the Work tab and the order in which
+        /// pawns pick up tasks.
         /// </summary>
         public Dictionary<string, int> priorityOverrides = new Dictionary<string, int>();
 
         /// <summary>
-        /// defName d'un <see cref="RimWorld.WorkGiverDef"/> vers sa priorite voulue au sein de son
-        /// type. C'est l'ordre dans lequel un colon attrape les taches d'un meme travail : nourrir
-        /// les animaux avant de les tondre, par exemple.
+        /// defName of a <see cref="RimWorld.WorkGiverDef"/> to its desired priority within its
+        /// type. This is the order in which a colonist grabs the tasks of a single job: feeding
+        /// animals before shearing them, for instance.
         /// </summary>
         public Dictionary<string, int> giverOrderOverrides = new Dictionary<string, int>();
 
-        /// <summary>defName d'un <see cref="WorkTypeDef"/> vers son libelle voulu.</summary>
+        /// <summary>defName of a <see cref="WorkTypeDef"/> to its desired label.</summary>
         public Dictionary<string, string> labelOverrides = new Dictionary<string, string>();
 
-        /// <summary>Types masques : pas de colonne dans l'onglet Travail.</summary>
+        /// <summary>Hidden types: no column in the Work tab.</summary>
         public List<string> hiddenTypes = new List<string>();
 
         /// <summary>
-        /// Types de travail non personnalises vus au dernier demarrage, pour reperer qu'un mod est
-        /// arrive ou reparti. Voir <see cref="ConfigDrift"/>.
+        /// Non-custom work types seen at the last startup, to notice that a mod has arrived or
+        /// left. See <see cref="ConfigDrift"/>.
         /// </summary>
         public List<string> knownWorkTypes = new List<string>();
 
-        /// <summary>Taches introuvables deja signalees : on ne repete pas le meme avertissement.</summary>
+        /// <summary>Missing tasks already reported: the same warning is not repeated.</summary>
         public List<string> reportedMissingTasks = new List<string>();
 
         public override void ExposeData()
@@ -70,12 +70,12 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// La part transportable des reglages : tout ce qui decrit la configuration voulue, et rien
-        /// de ce qui n'a de sens que sur cette installation.
+        /// The portable part of the settings: everything that describes the desired configuration,
+        /// and nothing that only makes sense on this installation.
         /// <para>
-        /// C'est exactement ce qu'un fichier d'export contient, et la raison pour laquelle cette
-        /// methode existe separement : partager <c>knownWorkTypes</c>, qui photographie une liste de
-        /// mods, ferait crier au changement des le premier import.
+        /// This is exactly what an export file contains, and the reason this method exists
+        /// separately: sharing <c>knownWorkTypes</c>, a snapshot of a mod list, would cry change
+        /// on the very first import.
         /// </para>
         /// </summary>
         public void ExposeConfig()
@@ -89,8 +89,8 @@ namespace WorkStudio
 
             if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                // Un noeud absent vaut "rien de surcharge", pas "garder ce qu'il y avait" : un
-                // import doit remplacer la configuration, pas se melanger a elle.
+                // A missing node means "nothing overridden", not "keep what was there": an
+                // import must replace the configuration, not blend into it.
                 if (customTypes == null)
                 {
                     customTypes = new List<CustomWorkTypeEntry>();
@@ -123,7 +123,7 @@ namespace WorkStudio
             }
         }
 
-        /// <summary>Reprend la configuration d'un autre jeu de reglages, sans toucher au reste.</summary>
+        /// <summary>Takes over the configuration of another settings instance, leaving the rest untouched.</summary>
         public void AdoptConfig(WorkStudioSettings other)
         {
             customTypes = other.customTypes;

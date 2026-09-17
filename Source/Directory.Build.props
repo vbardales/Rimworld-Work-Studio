@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <!--
-      Les intermediaires de compilation sortent du dossier publie. L'uploader Workshop envoie
-      Mod/ tel quel (SteamUGC.SetItemContent, aucune exclusion possible) : un obj/ qui s'y
-      trouverait embarquerait l'Assembly-CSharp.dll publicisee, ~6 Mo, chez chaque abonne.
-      Doit rester dans un Directory.Build.props : la restauration NuGet lit cette propriete
-      avant le csproj.
+      Build intermediates go outside the published folder. The Workshop uploader sends Mod/ as
+      is (SteamUGC.SetItemContent, no exclusion possible): an obj/ sitting in there would ship
+      the publicized Assembly-CSharp.dll, ~6 MB, to every subscriber.
+      Must stay in a Directory.Build.props: NuGet restore reads this property before the
+      csproj.
     -->
     <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\.build\obj\</BaseIntermediateOutputPath>
     <BaseOutputPath>$(MSBuildThisFileDirectory)..\.build\bin\</BaseOutputPath>
