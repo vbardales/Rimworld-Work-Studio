@@ -1,8 +1,7 @@
 ---
-localization:   partial
+localization: partial
 translation_en: partial
 translation_fr: partial
-settings_audit: partial
 mod:          Work Studio
 packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
@@ -11,32 +10,18 @@ detached:     yes
 stage:        showcase
 licence:      open
 licence_at:   this mod's own code is MIT and nothing of Achtung! is redistributed, but the technique came from it and it is a named debt, so the source's licence decides: MIT, LICENSE-achtung.txt
+settings_audit: partial
 dependencies: declared
 showcase:     complete
 tested_on:
 workshop:     3792836684
 remaining:
-  - unverified: the MainButtonDef shortcut added 2026-09-17 (WorkStudio_Settings, hidden by
-      buttonVisible=false, worker opens Dialog_WorkStudioSettings) has never been exercised at
-      runtime - no RIMMSQOL (or other MainButtons customization mod) test revealing it, activating
-      it, and confirming it opens the same settings with the same values as Mod options ->
-      Work Studio.
-  - unverified: settings otherwise have no recorded functional pass at all - no documented run of
-      Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across
-      reload, or the "Reset the whole setup" confirmation.
-  - unverified: Tests/Pickle (Gherkin, played in game by the Pickle mod) now covers scenarios 1, 2
-      and 4 to 10 of TESTING.md, written today (2026-09-17) and never run - TESTING.md's own new
-      note says so explicitly ("Not run yet").
-  - unverified: never seen running for anything beyond v1.0.0 - TESTING.md states the up/down
-      arrows, import/export, the startup drift warning, the right-hand column and task ordering,
-      and three successive attempts at the Work tab button have only ever been compiled.
-  - unverified: localization and settings text were audited by source inspection only (inventory,
-      EN/FR key parity, placeholder parity, a trace of the two dynamically-passed tooltip keys);
-      no in-game pass in either language, no run of a formal coverage script (not applicable here,
-      the mod ships no Defs and no DefInjected paths).
-session:      audited 2026-09-17, full workflow audit against PUBLISHING.md / STYLE_RIMWORLD.md /
-              MOD_SETTINGS.md / TRANSLATIONS.md; detached from the monorepo the same day, this
-              repository's own history now tipped at 4941be7e, matching origin/main
+  - unverified: the MainButtonDef shortcut added 2026-09-17 (WorkStudio_Settings, hidden by buttonVisible=false, worker opens Dialog_WorkStudioSettings) has never been exercised at runtime - no RIMMSQOL or other MainButtons customization mod test revealing it, activating it, and confirming it opens the same settings with the same values as Mod options -> Work Studio
+  - unverified: settings otherwise have no recorded functional pass at all - no documented run of Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across reload, or the "Reset the whole setup" confirmation
+  - unverified: Tests/Pickle (Gherkin, played in game by the Pickle mod) now covers scenarios 1, 2 and 4 to 10 of TESTING.md, written 2026-09-17 and never run - TESTING.md's own note says so explicitly ("Not run yet")
+  - unverified: never seen running for anything beyond v1.0.0 - TESTING.md states the up/down arrows, import/export, the startup drift warning, the right-hand column and task ordering, and three successive attempts at the Work tab button have only ever been compiled
+  - unverified: Keyed localization was audited by source inspection only (inventory, EN/FR key parity, placeholder parity, a trace of the two dynamically-passed tooltip keys); no in-game pass in either language yet
+session:      local_df8ae659-1a8e-4bf8-a74a-ff90c6c7ada7
 updated:      2026-09-17
 ---
 
