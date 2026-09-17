@@ -112,6 +112,16 @@ it.
 **What it means for the icon.** Without Useful Marks, only our action menu would show an icon. So
 without it the sheet offers a colour alone, and the action menu shows a dot in that colour.
 
+**Settled 2026-09-17: our own marks, made last.** The picker offers a set drawn for Work Studio,
+not Useful Marks' marks; the drawing comes at the end of the work, once the study and the code are
+done. Read in Useful Marks the same day, and it keeps the Busywork link whole:
+`Assets.LoadAllMarkTextures` loads `ContentFinder<Texture2D>.GetAllInFolder("Marks")`, the
+`Textures/Marks` folder of **every** active mod, keyed by texture name, first one wins, point
+filtering, with a `_plus` suffix marking an accent layer. Marks shipped in Work Studio's
+`Textures/Marks` would therefore be known to Useful Marks by name and usable in a Busywork marker
+— provided their names are prefixed so they collide with nobody's. The animation stays ours: Useful
+Marks draws a static texture.
+
 ### What was verified for Busywork
 
 - **Short cache.** `PawnMarkerCache` keeps a result 100 ticks, so a marker written mid-game shows
