@@ -61,19 +61,31 @@ namespace WorkStudio.PickleSteps
                 "Work Studio logged at startup:\n" + string.Join("\n", lines.Select(m => $"{m.type}: {m.text}")));
         }
 
-        [Then("the Work Studio button {string} is not drawn")]
-        public async Task NotDrawn(PickleContext ctx, string label)
+        /// <summary>
+        /// Pickle tags a button by whatever text is actually drawn, so a hardcoded English literal
+        /// in the feature file only ever matches on an English client - on hers (French), the drawn
+        /// label is "Types de travail…" and every step built from the English string would silently
+        /// miss the button entirely. Resolving the same key the button itself draws
+        /// (Patch_WorkTabButton.cs) keeps this suite language-agnostic instead.
+        /// </summary>
+        private static string EditorButtonTag() => $"btn:{"WorkStudio.OpenEditorShort".Translate()}";
+
+        [When("I click the Work types button")]
+        public async Task ClickOpenEditor(PickleContext ctx) => await ctx.Click(EditorButtonTag());
+
+        [Then("the Work Studio button is not drawn")]
+        public async Task NotDrawn(PickleContext ctx)
         {
             try
             {
-                await ctx.Hover($"btn:{label}");
+                await ctx.Hover(EditorButtonTag());
             }
             catch (Exception)
             {
                 return;
             }
 
-            ctx.Assert(false, $"a button labelled '{label}' is drawn here and should not be");
+            ctx.Assert(false, $"the Work types button is drawn here and should not be");
         }
 
         [When("I close all windows but the main tabs")]

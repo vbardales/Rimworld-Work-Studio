@@ -274,6 +274,15 @@ alone (several titles, like "the mod loads after Harmony", repeat across mods):
 **Traced to environment, not this mod:**
 - "Work types… opens the editor" (2): `tag 'btn:Work types…' not found; known tags: no tags
   recorded this frame` — the Concord/Harmony conflict `Tests/Pickle/README.md` already documents.
+  **A second, independent cause found and fixed the same night (2026-09-17), once Concord was
+  disabled and tags were confirmed captured again**: Pickle tags a button by the text it actually
+  draws, and this scenario's `I click button "Work types…"` step hardcoded the English label - on
+  her French client the button draws `WorkStudio.OpenEditorShort`'s French translation ("Types de
+  travail…"), so the tag would never have matched even with Concord fixed. Same class of bug found
+  the same night in Architect Studio's own suite (a different hardcoded string). Fixed here by
+  replacing the generic step with this mod's own `I click the Work types button` / `the Work Studio
+  button is not drawn` (`ModSteps.cs`, `02-work-tab-button.feature`), which resolve the same key the
+  button itself draws before building the tag. Not yet re-run live.
 - Two of the three scenario-5 sub-scenarios: `FileNotFoundException: ... UnityEngine.
   InputLegacyModule ... ReflectionOnly APIs must be pre-loaded` — this also broke the unrelated,
   generic "save and reload steps" testsuite in the same run. A Pickle-framework limitation on this

@@ -26,6 +26,13 @@ Pickle patches the game through Concord when Concord is loaded, and through Harm
 Concord fails to start ("Failed to initialize Concord" in the log), none of Pickle's hooks land:
 every `I click button` fails with "no tags recorded this frame". Disable Concord for the run.
 
+Pickle tags a button by the text it actually draws. On a non-English client, `I click button
+"Work types…"` would silently never find anything, since the drawn label is whatever
+`WorkStudio.OpenEditorShort` resolves to in that language (found the same night in Architect
+Studio's own suite, on a French client). Scenario 02 uses this mod's own `I click the Work types
+button` / `the Work Studio button is not drawn` steps instead (`ModSteps.cs`), which resolve the
+same key the button itself draws before building the tag.
+
 ## Build
 
 ```powershell
