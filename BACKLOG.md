@@ -397,9 +397,9 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
    action menu section. Its size is now ours to pick, as `extraPartWidth`: vanilla draws it at
    16 px in `Command_ColorIcon`. Check in play that it reads well beside the label before shipping
    a texture of our own.
-2. **GrimWorks: settled, no link** (rule 2 above). What stays open is only whether a new custom
-   type's column lands somewhere sensible in GrimWorks' order when it falls into `Unsupported`,
-   which is an ordering question for Work Studio, not a colour one.
+2. **GrimWorks: settled, no link** (rule 2 above). The question of where a custom type's column
+   lands in GrimWorks' order was read on 2026-09-17 and turned out to be a conflict over ordering
+   as a whole, not a colour matter: see the entry "Coexisting with GrimWorks' ordering" below.
 3. **Vanilla types too, or only custom ones.** The 1.1.0 plan was the custom-type sheet. Read
    2026-09-17 in Work Studio's own source and the three mods:
    - *No save footprint either way.* Work Studio keeps everything in its `ModSettings`, per
@@ -458,3 +458,47 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
    The mods above already split it that way, so Work Studio stays the one place the player
    chooses, and the action menu patch lives in Work Studio unless it proves to conflict with a
    float-menu mod (Useful Marks ships `FloatSubMenu.dll`).
+
+---
+
+## Coexisting with GrimWorks' ordering
+
+Found 2026-09-17 while checking where GrimWorks puts a custom type's column, in `GW_WorkManager.dll`
+as updated on the Workshop on 2026-09-16. **It contradicts the 2026-09-11 reading**, which found
+neither `naturalPriority` nor `CacheWorkGiversInOrder` in GrimWorks: the current version touches
+both. Not about icons; parked here because the icon study found it.
+
+**GrimWorks keeps its own order and writes it into `naturalPriority`.**
+- The order is a list of `defName`s per save (`GW_WorkManager_GameComponent.customWorkTypeOrder`),
+  seeded from a global template in its settings.
+- `ApplySavedOrder` rewrites the `naturalPriority` of **every** type in that list — `count × 10`
+  down to 10 — then reorders the Work tab's columns. `naturalPriority` is Work Studio's only
+  ordering lever (`priorityOverrides`): column order and the order in which pawns pick up work.
+- It runs on `LoadedGame` and `StartedNewGame`, when a column is dragged in its header, when a
+  category is collapsed or moved, and when its settings change. Work Studio applies its own values
+  at startup and on every edit. **Whoever ran last wins**, and loading a save always hands it to
+  GrimWorks.
+- It also postfixes `Pawn_WorkSettings.CacheWorkGiversInOrder` — not read yet; it may compete
+  with Work Studio's per-type giver order as well.
+
+**Where a custom type lands.** `EnsureOrderList` inserts a type missing from the list after the
+last type of the **same category**. A custom type is `Unsupported`, and no stock type is, so it
+goes to the **end of the list**: last column, and lowest `naturalPriority` once the order is
+applied — its work is picked up after everything else. That position is then saved in the list.
+
+**A column created mid-game can vanish.** `ReorderWorkTableColumns` captures the Work table's work
+columns **once per session** (`completeWorkColumns`, static), then on every reorder removes all work
+columns and puts back only the captured ones. Work Studio builds a new `PawnColumnDef` when a type is
+created while playing. Types that existed at startup are in the capture; one created afterwards
+loses its column at GrimWorks' next reorder — loading a save, dragging a header, collapsing a
+category — until the game restarts. A deleted type's captured column is filtered by `visible`
+only.
+
+**Before starting.**
+1. Read the `CacheWorkGiversInOrder` postfix, to know whether the giver order conflicts too.
+2. Decide who owns the order when both are installed: Work Studio stands down (and says so in its
+   window), writes GrimWorks' list through its public `MoveWorkTypeToIndex`, or re-applies its
+   own values after GrimWorks' hooks.
+3. The column cache is the one to fix whatever the choice: clearing `completeWorkColumns` by
+   reflection after Work Studio rebuilds the columns would let GrimWorks capture them afresh.
+4. Check the lot in play: create a type mid-game with GrimWorks installed, then drag a header.
