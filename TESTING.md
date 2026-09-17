@@ -248,7 +248,12 @@ dotnet build Tests/OffGame/WorkStudio.Tests.csproj -c Release
 
 Scenarios 1, 2, 4 to 10, and half of 12 (the raw-save half, not an actual restart) are also written
 in Gherkin under `Tests/Pickle/`, played inside RimWorld by the Pickle test mod. Its README says
-how to run them and which parts stay manual. Not run yet.
+how to run them and which parts stay manual.
+
+Run for the first time 2026-09-17, against the full live mod list (150+ mods): scenarios 1, 4, 7,
+9 and 10 passed in full; 2, 5, 6, 8 and 12 each had at least one failure, some traced to the
+Concord conflict above or to a Pickle-framework issue, others not yet explained. See STATUS.md's
+"In-game pass, 2026-09-17" section for the breakdown and what stays open.
 
 ## What a pass means
 

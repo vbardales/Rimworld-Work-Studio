@@ -22,6 +22,10 @@ files and the step assembly, so nothing test-related ships in the Workshop folde
 
 3. Enable Work Studio, then the companion mod below it and Pickle.
 
+Pickle patches the game through Concord when Concord is loaded, and through Harmony otherwise. If
+Concord fails to start ("Failed to initialize Concord" in the log), none of Pickle's hooks land:
+every `I click button` fails with "no tags recorded this frame". Disable Concord for the run.
+
 ## Build
 
 ```powershell

@@ -1,6 +1,6 @@
 # TESTING.md scenario 6, both levels. Drops are replayed through the callback each column
 # registered on its last repaint, so the insertion convention under test is the mod's own. Rows are
-# named: a mod list that adds work types does not move the targets.
+# named: a mod list that adds work types or tasks does not move the targets.
 #
 # With Fluffy's Work Tab or Better Work Tab, the type order may not reach execution once a column
 # was dragged there (scenario 11); what is checked below is the order the game and the Work tab
@@ -25,12 +25,12 @@ Feature: reordering types and tasks
     Then the whole setup is as remembered
 
   Scenario: a task dragged downwards lands where it was dropped
-    Given the tasks of "Handling" start in the order "Slaughter, Milk, Shear, Tame, Train"
+    Given the tasks of "Handling" include "Slaughter, Milk, Shear, Tame, Train" in that order
     When I drag the task "Slaughter" of "Handling" below "Tame"
     Then the task "Slaughter" of "Handling" comes right after "Tame"
 
   Scenario: a task dragged upwards lands where it was dropped
-    Given the tasks of "Handling" start in the order "Slaughter, Milk, Shear, Tame, Train"
+    Given the tasks of "Handling" include "Slaughter, Milk, Shear, Tame, Train" in that order
     When I drag the task "Train" of "Handling" above "Milk"
     Then the task "Train" of "Handling" comes right before "Milk"
 

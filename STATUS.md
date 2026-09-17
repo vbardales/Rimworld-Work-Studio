@@ -13,14 +13,17 @@ licence_at:   this mod's own code is MIT and nothing of Achtung! is redistribute
 settings_audit: partial
 dependencies: declared
 showcase:     complete
-tested_on:
+tested_on:    2026-09-17
 workshop:     3792836684
 remaining:
+  - defect: TESTING.md scenario 5 ("deleting a type in a running game keeps every other priority in place") failed in the 2026-09-17 Pickle run - Pickle second's priority dropped from 3 to 0 after deleting Pickle first, even though PriorityMemory.Restore looks up saved priorities by name and tracing Apply()/SyncCustomTypes step by step found no fault on paper. Root cause not found; needs a live re-run with the SetPriority/HasPriority diagnostics added the same day, or a cleaner mod list to rule out interference from the 150+ other mods active in this run
+  - defect: TESTING.md scenario 8 ("hide a column"), both scenarios, failed the same way in the same run - Cleaning's priority dropped from 2 to 0 after hide/show, reproducibly. Root cause not found by tracing Apply()'s pipeline by hand; needs the same live re-run
+  - defect: TESTING.md scenario 6 ("the arrows move a type one place") failed - Research landed right after Patient instead of where the test expected. Not yet distinguished from interference by another loaded mod touching Research or the Work tab's ordering
+  - unverified: several other 2026-09-17 Pickle failures trace to environment, not Work Studio - "Work types… opens the editor" hit the Concord/OS-click conflict TESTING.md's own note documents ("no tags recorded this frame"), and two of the three scenario-5 sub-scenarios failed on a ReflectionOnly UnityEngine.InputLegacyModule error that also broke the unrelated generic "save and reload steps" testsuite in the same run - a Pickle-framework issue
+  - fixed: Tests/Pickle's own scenario 12 step had an ambiguous raw-save pawn lookup (a large save can carry more than one <nick>Keeper</nick>) and failed on that basis in the same run, not on a real Work Studio defect - Patch_WorkSettingsExposeData.Save() writes the positional list and the named dictionary in the same lockstep loop, so they cannot disagree if the lookup is correct. Narrowed 2026-09-17 to require a <workStudioPriorities> sibling and, if still ambiguous, a matching def count; not yet re-run
   - unverified: the MainButtonDef shortcut (WorkStudio_Settings) is code- and mutation-verified off-game (Tests/OffGame) but has never been exercised at runtime - no RIMMSQOL or other MainButtons customization mod test revealing it, activating it, and confirming it opens the same settings with the same values as Mod options -> Work Studio
   - unverified: settings otherwise have no recorded functional pass at all - no documented run of Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across reload, or the "Reset the whole setup" confirmation
   - unverified: ConfigFile.PathFor/Folder/Export/Import stay untested even off-game - they all reach GenFilePaths.SaveDataFolderPath, and merely JIT-compiling that property throws outside a running Unity player; Tests/OffGame exercises the WorkStudioSettings/CustomWorkTypeEntry Scribe contract they wrap instead, at a path it computes itself
-  - unverified: Tests/Pickle (Gherkin, played in game by the Pickle mod) covers scenarios 1, 2, 4 to 10, and half of 12 (the raw-save half, not an actual restart) of TESTING.md, and has never been run - TESTING.md's own note says so explicitly ("Not run yet")
-  - unverified: never seen running for anything beyond v1.0.0 - TESTING.md states the up/down arrows, import/export, the startup drift warning, the right-hand column and task ordering, and three successive attempts at the Work tab button have only ever been compiled
   - unverified: no in-game pass of English or French display yet (raw keys, clipping, fallback text) - the static localization gate is certified complete, but TRANSLATIONS.md tracks this runtime check separately and it must pass before claiming the translations tested in game
 session:      local_df8ae659-1a8e-4bf8-a74a-ff90c6c7ada7
 updated:      2026-09-17
@@ -39,7 +42,7 @@ covers `options` and `l10n` on top of the workflow's own `preTest`; `done` and `
 unchanged. Work Studio is set to `showcase`: `horsMonoRepo`, `ModIcon générée`, `Preview générée`
 and `preOptions` are all now satisfied (see below), and the `l10n` gate is now certified
 `complete` too, but `preOptions -> options` still is not — `settings_audit` stays `partial` until
-an in-game/RIMMSQOL pass runs, which this session cannot do (see "Next: an in-game pass" below).
+an in-game/RIMMSQOL pass runs, which this session cannot do (see "In-game pass, 2026-09-17" below).
 
 ## Detachment, 2026-09-17 — `dansMonoRepo -> horsMonoRepo`, now done
 
@@ -210,9 +213,10 @@ and none exists. No defect found on this transition itself.
 
 ## preTest -> done, and beyond
 
-Not reached, but no longer for lack of an off-game harness. `TESTING.md` names four gating
-scenarios (1, 2, 4, 5) and states plainly that everything past v1.0.0 "has only ever been
-compiled" — never played, and that half of the gate (execution in game) is still missing.
+Not reached. Two of the four gating scenarios TESTING.md names (1, 4) are now confirmed passing in
+game; the other two (2, 5) each have at least one real failure — see "In-game pass, 2026-09-17"
+below for what is environmental noise and what is not yet explained. "Written, executed" now holds
+for the whole suite; "green" does not yet, for either half.
 
 **`Tests/OffGame/`** (added 2026-09-17, `WorkStudio.Tests.csproj` + `ModTests.cs`, following the
 established `rimworld-tests-hors-jeu` pattern) instances the shipped `WorkStudio.dll` against the
@@ -231,8 +235,9 @@ unreachable off-game the same way `ConfigFile` is — see `remaining`). Full out
 `Tests/OffGame/RESULTS-2026-09-17.md`.
 
 `Tests/Pickle/`, an in-game Gherkin harness for the Pickle mod, was written 2026-09-17 and covers
-most of the twelve TESTING.md scenarios, but its own note in `TESTING.md` says "Not run yet" — this
-is the half `Tests/OffGame` cannot reach (real map/pawn/save state).
+most of the twelve TESTING.md scenarios — the half `Tests/OffGame` cannot reach (real map/pawn/save
+state) — and was run for the first time the same day, with mixed results: see "In-game pass,
+2026-09-17" below.
 
 A rebuild (`dotnet build Source/WorkStudio.csproj -c Release`) was run as part of this audit to
 confirm the distributed assembly matches current source, since every `.cs` file's mtime post-dates
@@ -240,41 +245,73 @@ confirm the distributed assembly matches current source, since every `.cs` file'
 mtime came from comment-only and documentation commits, not from unbuilt functional changes. No
 defect there.
 
-Net: closer to `preTest -> done` than before, but not there — "written, executed and green"
-now holds for the off-game half only; the in-game half (Pickle, and the four scenarios it does
-not cover) is written but not executed.
+Net: closer to `preTest -> done` than before, but not there — "written and executed" now holds for
+both halves; "green" holds for the off-game half (32/0/1) and for five of Pickle's ten features,
+but not yet for scenarios 5, 6 and 8, whose failures are not yet explained (see below).
 
-## Next: an in-game pass
+## In-game pass, 2026-09-17: Tests/Pickle run for real, mixed results
 
-Every remaining item, in every section above, needs the game running, and this session does not
-launch it. Prepared and ready to hand off:
+Run across the full live mod list (150+ mods), not an isolated one. 162 scenarios total across
+every Pickle-instrumented mod on the list; the ones belonging to Work Studio, read from
+`PickleReports/junit.xml`'s per-feature `testsuite` blocks rather than guessed from scenario titles
+alone (several titles, like "the mod loads after Harmony", repeat across mods):
 
-1. **The MainButtons shortcut.** With RIMMSQOL (or another MainButtons customization mod)
-   installed: reveal `WorkStudio_Settings`, click it, confirm it opens the same window as Mod
-   options -> Work Studio, edit something through it, and check the edit shows up through the
-   other route too.
-2. **The settings window itself**, through Mod options -> Work Studio: open/close/reopen; click
-   "Open the work type editor", "Import / export a setup", and "Reset the whole setup" (with its
-   confirmation); change something and confirm it survives a reload.
-3. **`Tests/Pickle/`**: run the suite per `Tests/Pickle/README.md` (dev mode -> debug actions ->
-   Pickle -> the Work Studio suite -> Run selected, or the `-pickle-run=` command line). It covers
-   TESTING.md scenarios 1, 2, 4 to 10 unattended, plus the raw-save half of 12
-   (`12-removing-the-mod.feature`, added 2026-09-17: proves from the saved XML that custom types
-   sit at the tail of `DefDatabase<WorkTypeDef>`, so a mod-less load would only lose their own
-   priorities and shift nothing else - see `Tests/Pickle/README.md` for what that check does and
-   does not establish).
-4. **What still needs an actual restart or a live visual check**: scenario 3 (see the README's
-   "What stays manual" table); the *visual* halves of scenarios 7 and 11 — `Tests/OffGame` already
-   proves each mechanism against the real third-party assembly (Work Type Tag's cache-clearing,
-   Better Work Tab's recorded-order-wins/new-type-goes-last rule), but not that either actually
-   renders correctly on screen, or that dragging a column in Better Work Tab live really does make
-   Work Studio's own reordering stop affecting it; the other half of scenario 12 (a real restart
-   without the mod, confirming the game tolerates the unread `<workStudioPriorities>` node and that
-   moved tasks read their original `workType`); and the general FR/EN display pass from the
-   localization audit above.
+| Feature | Result |
+| --- | --- |
+| Work Studio loads and its patches apply (1) | 3/3 pass |
+| the button in the Work tab (2) | 2/3 pass |
+| create a work type, and fill it (4) | 5/5 pass |
+| priorities survive a reconfiguration across a save (5) | 0/3 pass |
+| reordering types and tasks (6) | 6/7 pass |
+| rename a work type (7) | 2/2 pass |
+| hide a column (8) | 0/2 pass |
+| export, reset, import (9) | 3/3 pass |
+| the mod list drift warning (10) | 2/2 pass |
+| what removing the mod would leave behind (12, raw-save half) | 0/1 pass |
 
-Paste back `Player.log` (prefixed `[Work Studio]`) and whatever Pickle's report says; that is
-enough to fill in `tested_on` and clear the `remaining` list above without guessing at a result.
+**Traced to environment, not this mod:**
+- "Work types… opens the editor" (2): `tag 'btn:Work types…' not found; known tags: no tags
+  recorded this frame` — the Concord/Harmony conflict `Tests/Pickle/README.md` already documents.
+- Two of the three scenario-5 sub-scenarios: `FileNotFoundException: ... UnityEngine.
+  InputLegacyModule ... ReflectionOnly APIs must be pre-loaded` — this also broke the unrelated,
+  generic "save and reload steps" testsuite in the same run. A Pickle-framework limitation on this
+  machine, not a Work Studio fault.
+
+**Traced to this suite's own scenario 12 step, not a mod defect:** `position 0 (Firefighter) holds
+3 positionally but 0 by name`. `Patch_WorkSettingsExposeData.Save()` writes the positional value
+and the named entry for a given type in the *same loop iteration*, from the *same* live value —
+they cannot disagree if the step read the right pawn. The likely cause is an ambiguous
+`<nick>Keeper</nick>` match in a save this large (a world pawn, a faction record, anything else
+sharing the name), which `FirstOrDefault` picked over the real colonist. Narrowed the same day to
+require a `<workStudioPriorities>` sibling and, on remaining ambiguity, a matching def count. Not
+yet re-run.
+
+**Real, reproducible, and not yet explained — the ones that matter:**
+- **Scenario 5** ("deleting a type... keeps every other priority in place"): `'Keeper' should have
+  3 for Pickle second; it has 0.` `PriorityMemory.Restore` looks up saved priorities by defName,
+  which should be immune to the reindexing `DefDatabase<T>.Remove()` causes (it calls
+  `SetIndices()` after removing) — traced the whole `Apply()` pipeline by hand
+  (`Capture -> SyncCustomTypes -> ... -> Restore`) and found nothing wrong on paper.
+- **Scenario 8** ("hide a column"), both of its scenarios: `'Keeper' should have 2 for Cleaning;
+  it has 0.` Hiding only ever touches `type.visible` in this mod's own code — no def is added or
+  removed, so no reindexing even happens. Same result twice removes coincidence as an explanation.
+  Traced `ApplyTypeOverrides`, `RebuildWorkColumns` and the `Notify_DisabledWorkTypesChanged` /
+  `Patch_GetDisabledWorkTypes` chain by hand and found nothing that should zero a type the colonist
+  can do and never asked to disable.
+- **Scenario 6** ("the arrows move a type one place"): `Research` lands right after `Patient`
+  instead of at the position the test expects. Plausibly another loaded mod reordering Research
+  independently (several in this list touch the Work tab or the Research menu), but not confirmed.
+
+The same-day addition of a read-back assertion and a `disabled/visible/useWorkPriorities/hidden`
+diagnostic to `SetPriority`/`HasPriority` (`Tests/Pickle/Source/ColonySteps.cs`) exists to separate
+"the game never took the value" from "something later dropped it" on the next run — exactly the
+question scenarios 5 and 8 raise. A re-run with that diagnostic, ideally against a smaller mod
+list, is the fastest way to tell a real defect from environmental noise here.
+
+**Still not exercised at all:** the MainButtons shortcut with RIMMSQOL; the settings window through
+Mod options directly; scenario 3 and the visual halves of 7 and 11 (`Tests/OffGame` already proves
+each underlying mechanism against the real third-party assembly, not that either renders correctly
+on screen); the other half of scenario 12 (an actual restart without the mod); FR/EN display.
 
 ## Note, outside this workflow's ladder
 

@@ -146,7 +146,15 @@ namespace WorkStudio.PickleSteps
             expected.RemoveAt(from);
             expected.Insert(to, def);
             var actual = Driver.TypesInOrder();
-            ctx.Assert(actual.SequenceEqual(expected), $"expected {Driver.Names(expected)}; the game orders {Driver.Names(actual)}");
+
+            // The order comes out of naturalPriority, which the editor rewrites for every row at
+            // once: when a row lands somewhere unexpected, those numbers say whether the editor
+            // wrote them wrong or something else reordered the list afterwards.
+            ctx.Assert(actual.SequenceEqual(expected),
+                $"expected {Driver.Names(expected)}; the game orders {Driver.Names(actual)}. naturalPriority now: " +
+                string.Join(", ", actual.Select(t => $"{t.defName}={t.naturalPriority}")) +
+                ". Overrides written by the mod: " +
+                string.Join(", ", WorkStudioMod.Settings.priorityOverrides.Select(p => $"{p.Key}={p.Value}")));
         }
 
         [When("I press the {word} arrow on the task {string} of {string}")]
@@ -321,14 +329,20 @@ namespace WorkStudio.PickleSteps
                 $"expected [{string.Join(", ", wanted)}]; {Driver.Describe(def)} orders them [{string.Join(", ", actual)}]");
         }
 
-        [Given("the tasks of {string} start in the order {string}")]
+        /// <summary>
+        /// Only the relative order of the named tasks: the drags find their rows by name, so tasks a
+        /// mod list slips in between change nothing. What matters is that a drag "below" really
+        /// moves a row downwards.
+        /// </summary>
+        [Given("the tasks of {string} include {string} in that order")]
         public void TaskOrderPrecondition(PickleContext ctx, string type, string commaSeparated)
         {
             var def = Driver.WorkType(ctx, type);
             var wanted = commaSeparated.Split(',').Select(s => s.Trim()).ToList();
-            var actual = def.workGiversByPriority.Select(g => g.defName).ToList();
+            var actual = def.workGiversByPriority.Select(g => g.defName).Where(wanted.Contains).ToList();
             ctx.Require(actual.SequenceEqual(wanted),
-                $"this scenario counts rows and needs [{string.Join(", ", wanted)}]; this mod list gives [{string.Join(", ", actual)}]");
+                $"this scenario needs [{string.Join(", ", wanted)}] in that order; {Driver.Describe(def)} orders them " +
+                $"[{string.Join(", ", actual)}] among [{string.Join(", ", def.workGiversByPriority.Select(g => g.defName))}]");
         }
 
         [Then("the Work tab column of {string} is headed {string} and measured afresh")]

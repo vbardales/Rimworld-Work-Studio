@@ -35,6 +35,19 @@ namespace WorkStudio.PickleSteps
             // Manual priorities keep only 0 or 3 when off, which would erase every distinct value below.
             Current.Game.playSettings.useWorkPriorities = true;
             pawn.workSettings.SetPriority(def, priority);
+
+            // Read straight back: it separates "the game never took the value" from "something
+            // later dropped it", which the Then step alone cannot tell apart.
+            ctx.Assert(pawn.workSettings.GetPriority(def) == priority,
+                $"the game did not keep priority {priority} for {Driver.Describe(def)} on '{nickname}': it reads " +
+                $"{pawn.workSettings.GetPriority(def)} right after the call. {Describe(pawn, def)}");
+        }
+
+        private static string Describe(Pawn pawn, WorkTypeDef def)
+        {
+            return $"disabled={pawn.WorkTypeIsDisabled(def)}, visible={def.visible}, " +
+                $"useWorkPriorities={Current.Game.playSettings.useWorkPriorities}, " +
+                $"hidden by the mod={WorkStudioMod.Settings.hiddenTypes.Contains(def.defName)}";
         }
 
         [Then("{string} has priority {int} for {string}")]
@@ -44,7 +57,7 @@ namespace WorkStudio.PickleSteps
             var def = Driver.WorkType(ctx, type);
             var actual = pawn.workSettings.GetPriority(def);
             ctx.Assert(actual == expected,
-                $"'{nickname}' should have {expected} for {Driver.Describe(def)}; it has {actual}. Every priority: " +
+                $"'{nickname}' should have {expected} for {Driver.Describe(def)}; it has {actual}. {Describe(pawn, def)}. Every priority: " +
                 string.Join(", ", Driver.TypesInOrder().Select(t => $"{t.defName}={pawn.workSettings.GetPriority(t)}")));
         }
 
@@ -149,12 +162,28 @@ namespace WorkStudio.PickleSteps
             ctx.Require(File.Exists(path), $"no save '{saveName}' to inspect");
 
             var doc = XDocument.Load(path);
-            var nick = doc.Descendants("nick").FirstOrDefault(e => e.Value == nickname);
-            ctx.Require(nick != null, $"no pawn named '{nickname}' found in the raw save '{saveName}'");
-            var pawnElement = nick.Ancestors().FirstOrDefault(a => a.Element("workSettings") != null);
-            ctx.Require(pawnElement != null, $"'{nickname}' has no <workSettings> in the raw save");
 
-            var workSettings = pawnElement.Element("workSettings");
+            // A save with a large mod list can carry more than one <nick>Keeper</nick> - a world
+            // pawn, a faction relation, a history entry - none of which are the live colonist this
+            // step means. Every <nick> match is walked up to its nearest <workSettings>-bearing
+            // ancestor, then filtered to the ones that actually carry Work Studio's own
+            // <workStudioPriorities> node; a real colonist's block is the only kind that has one.
+            var candidates = doc.Descendants("nick")
+                .Where(e => e.Value == nickname)
+                .Select(e => e.Ancestors().FirstOrDefault(a => a.Element("workSettings") != null)?.Element("workSettings"))
+                .Where(ws => ws?.Element("workStudioPriorities") != null)
+                .Distinct()
+                .ToList();
+            ctx.Require(candidates.Count > 0,
+                $"no pawn named '{nickname}' with a <workStudioPriorities> node found in the raw save '{saveName}'");
+
+            var currentTypeCount = DefDatabase<WorkTypeDef>.AllDefsListForReading.Count;
+            var workSettings = candidates.Count == 1 ? candidates[0]
+                : candidates.FirstOrDefault(ws => ws.Element("priorities")?.Element("vals")?.Elements("li").Count() == currentTypeCount);
+            ctx.Require(workSettings != null,
+                $"{candidates.Count} pawns named '{nickname}' found in the raw save '{saveName}', none with a " +
+                $"<priorities><vals> matching the current {currentTypeCount} work types - ambiguous, cannot pick one");
+
             var vals = workSettings.Element("priorities")?.Element("vals")?.Elements("li")
                 .Select(e => int.Parse(e.Value)).ToList();
             ctx.Require(vals != null, $"'{nickname}' has no <priorities><vals> in the raw save - vanilla's own node is missing");
