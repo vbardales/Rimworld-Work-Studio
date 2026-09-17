@@ -16,8 +16,8 @@ showcase:     complete
 tested_on:    2026-09-17
 workshop:     3792836684
 remaining:
-  - defect: TESTING.md scenario 5 ("deleting a type in a running game keeps every other priority in place") failed in the 2026-09-17 Pickle run - Pickle second's priority dropped from 3 to 0 after deleting Pickle first, even though PriorityMemory.Restore looks up saved priorities by name and tracing Apply()/SyncCustomTypes step by step found no fault on paper. Root cause not found; needs a live re-run with the SetPriority/HasPriority diagnostics added the same day, or a cleaner mod list to rule out interference from the 150+ other mods active in this run
-  - defect: TESTING.md scenario 8 ("hide a column"), both scenarios, failed the same way in the same run - Cleaning's priority dropped from 2 to 0 after hide/show, reproducibly. Tracing Apply()'s pipeline by hand found no fault, and Tests/OffGame's TheHideColumnRegression (added 2026-09-17) now proves that by driving the real WorkTypeRuntime.Apply() against a fake WorkTypeDef and pawn: hiding and re-showing the type leaves its priority untouched, and the check is mutation-confirmed sensitive (breaking PriorityMemory.Capture() turns it red). This rules out Apply()'s own reconciliation as the cause; the live failure needs a re-run with the SetPriority/HasPriority diagnostics to find where it actually comes from - most likely something outside Apply() entirely, or environment noise from the 150+ other mods active in that run
+  - defect: TESTING.md scenario 5 ("deleting a type in a running game keeps every other priority in place") failed in the 2026-09-17 Pickle run - Pickle second's priority dropped from 3 to 0 after deleting Pickle first, even though PriorityMemory.Restore looks up saved priorities by name and tracing Apply()/SyncCustomTypes step by step found no fault on paper. Leading hypothesis as of 2026-09-17 evening (from a concurrent session's decompile, not yet confirmed): 1trickPwnyta's Defaults, active in this run's mod list, patches Pawn.Notify_DisabledWorkTypesChanged - which PriorityMemory.Restore calls on every pawn right after writing named priorities back - and overwrites the priority of any type that transitions from disabled to enabled with its own configured default, which would land after this mod's own restore and explain values coming back as Defaults' own defaults (3 or 0) rather than what was saved. Needs a live A/B (rerun with Defaults' WorkPriorities patch category turned off) or a before/after-notify read to confirm
+  - defect: TESTING.md scenario 8 ("hide a column"), both scenarios, failed the same way in the same run - Cleaning's priority dropped from 2 to 0 after hide/show, reproducibly. Tracing Apply()'s pipeline by hand found no fault, and Tests/OffGame's TheHideColumnRegression (added 2026-09-17) now proves that by driving the real WorkTypeRuntime.Apply() against a fake WorkTypeDef and pawn: hiding and re-showing the type leaves its priority untouched, and the check is mutation-confirmed sensitive (breaking PriorityMemory.Capture() turns it red). This rules out Apply()'s own reconciliation as the cause - consistent with the same Defaults interaction hypothesis above, since a synthetic off-game pawn never runs a third-party mod's Harmony patches. Not yet confirmed either way
   - defect: TESTING.md scenario 6 ("the arrows move a type one place") failed - Research landed right after Patient instead of where the test expected. Not yet distinguished from interference by another loaded mod touching Research or the Work tab's ordering
   - unverified: several other 2026-09-17 Pickle failures trace to environment, not Work Studio - "Work types… opens the editor" hit the Concord/OS-click conflict TESTING.md's own note documents ("no tags recorded this frame"), and two of the three scenario-5 sub-scenarios failed on a ReflectionOnly UnityEngine.InputLegacyModule error that also broke the unrelated generic "save and reload steps" testsuite in the same run - a Pickle-framework issue
   - fixed: Tests/Pickle's own scenario 12 step had an ambiguous raw-save pawn lookup (a large save can carry more than one <nick>Keeper</nick>) and failed on that basis in the same run, not on a real Work Studio defect - Patch_WorkSettingsExposeData.Save() writes the positional list and the named dictionary in the same lockstep loop, so they cannot disagree if the lookup is correct. Narrowed 2026-09-17 to require a <workStudioPriorities> sibling and, if still ambiguous, a matching def count; not yet re-run
@@ -312,6 +312,26 @@ yet re-run.
 - **Scenario 6** ("the arrows move a type one place"): `Research` lands right after `Patient`
   instead of at the position the test expects. Plausibly another loaded mod reordering Research
   independently (several in this list touch the Work tab or the Research menu), but not confirmed.
+
+**Leading hypothesis for scenarios 5 and 8, from a concurrent session's decompile (2026-09-17
+evening, not yet confirmed):** 1trickPwnyta's Defaults, active in this run's mod list, carries a
+"WorkPriorities" Harmony patch category — a postfix on `Pawn_WorkSettings.EnableAndInitialize` that
+sets every non-disabled type to its own configured default, and a **prefix on
+`Pawn.Notify_DisabledWorkTypesChanged`** that, for every type transitioning from disabled to
+enabled, overwrites that type's priority with the same default. `PriorityMemory.Restore` calls
+`pawn.Notify_DisabledWorkTypesChanged()` on every pawn right after writing the named priorities
+back, so on a machine running Defaults, Work Studio's own restore could be immediately overwritten
+by that prefix. This fits the failure shape exactly: the values that come back are a mix of 3 and 0
+(Defaults' own defaults), not an off-by-one or a stale value, and it explains why a synthetic
+off-game pawn (`TheHideColumnRegression` above) never reproduces it — a fake pawn built by this
+suite never runs a third-party mod's Harmony patches at all. Two ways to settle it, both needing a
+live run: turn off Defaults' WorkPriorities patch category (toggleable from its own mod settings)
+and rerun scenarios 5 and 8, or add a step that reads the priority immediately before and after the
+`Notify_DisabledWorkTypesChanged()` call to catch the value dying at that exact point. If confirmed,
+this is a mod interaction, not a Work Studio defect, though `PriorityMemory.Restore` could still be
+made more robust against it (the notify call exists to zero out priorities of types genuinely
+disabled for other reasons — traits, backstories — so it cannot simply move before the values are
+written without breaking that enforcement).
 
 The same-day addition of a read-back assertion and a `disabled/visible/useWorkPriorities/hidden`
 diagnostic to `SetPriority`/`HasPriority` (`Tests/Pickle/Source/ColonySteps.cs`) exists to separate
