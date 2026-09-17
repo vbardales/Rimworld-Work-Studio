@@ -109,8 +109,11 @@ holds. On an explicit edit, overwrite as before. And when the player edits a cus
 `gerundLabel`, remove its entry before the change and put it back after: the key's hash moves with
 it.
 
-**What it means for the icon.** Without Useful Marks, only our action menu would show an icon. So
-without it the sheet offers a colour alone, and the action menu shows a dot in that colour.
+**What it means for the icon.** ~~Without Useful Marks, only our action menu would show an icon. So
+without it the sheet offers a colour alone, and the action menu shows a dot in that colour.~~
+Superseded 2026-09-17: the marks ship in Work Studio (question 7), so the sheet offers them and the
+action menu shows them with or without Useful Marks. The dot remains for a type styled with a
+colour and no mark.
 
 **Settled 2026-09-17: our own marks, made last.** The picker offers a set drawn for Work Studio,
 not Useful Marks' marks; the drawing comes at the end of the work, once the study and the code are
@@ -472,7 +475,7 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
      Useful Marks loads the stills from every active mod and Plus would find the frames the same
      way (`ContentFinder` searches all mods), so the marks can ship in whichever mod — nobody
      needs to depend on the one that carries them.
-   **Recommended: the marks ship in Work Studio.** It is the one piece that uses them without
+   **Settled 2026-09-17: the marks ship in Work Studio.** It is the one piece that uses them without
    anything else installed (the sheet's picker, the action menu), and with Useful Marks present
    they appear in its picker for free. A separate marks pack would be a third repository and a
    third Workshop page for textures only. Plus stays a separate, generic mod; the frame layout
