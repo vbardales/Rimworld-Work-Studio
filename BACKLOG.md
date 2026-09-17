@@ -359,9 +359,23 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
    - *The action menu is the exception.* It is our own code, and nobody marks stock types there.
      Custom types only would leave every vanilla order bare, and the mark would come to mean
      "custom" rather than naming a work type.
-   Still to choose: custom only; any type, with a mark in the menu only where the player set one;
-   or any type, with unstyled types falling back in the menu on what the linked mods already hold
-   (Work Type Tag's effective colour, Busywork's icon) — read, never written.
+   **Settled 2026-09-17: every type, with a fallback on the linked mods.** Any work type can be
+   styled, stock or custom, through a `styleOverrides` keyed by `defName`. In the action menu, a
+   type the player has not styled borrows what the linked mods already hold — read, never
+   written, so nothing changes in them. What each piece comes from, first match wins:
+   - *Icon:* the player's choice; else Busywork's marker for the type, if any
+     (`MarkerProvider.WorkMarkers[type]`, whose `MarkerSettings` carries the loaded `icon` and
+     `iconAccent` textures — a mark is two layers, drawn one over the other); else the dot.
+   - *Colour:* the player's choice; else Work Type Tag's effective colour
+     (`WorkTypeTagSettings.GetEffectiveColor(defName)`, which already falls back on its own
+     hand-picked or hashed colour, so it always answers when the mod is present); else Busywork's
+     marker colour when it is a real one; else white.
+   - *Busywork's stock markers are all `AdaptiveColor`*, an alpha below 1 that Useful Marks
+     resolves to the pawn's name colour (`MarkerSettings.IsAdaptiveColor`). Not a colour to
+     borrow: skip it and go on down the chain.
+   - *No linked mod, no player choice:* no mark. The menu then looks exactly like vanilla.
+   The fallback is computed when the menu is built, not stored: a colour changed in Work Type
+   Tag's own window shows in the next menu.
 4. **Whether to expose `showMode`.** The colonist bar and the map can be told apart per marker
    for free; decide whether the type sheet offers it or leaves Busywork's default.
 5. **Equivalence groups in the action menu.** Handled by the prefix/postfix pair above, not by a
