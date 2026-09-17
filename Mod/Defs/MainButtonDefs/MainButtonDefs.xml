@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!--
+    Hidden by default (buttonVisible = false): MainButtonsRoot only draws buttons whose Worker
+    reports Visible, and MainButtonWorker.Visible reads this field directly, so the button takes
+    no space and shows no greyed-out slot until a MainButtons customization mod - RIMMSQOL and the
+    like - flips it on. Not a tabWindowClass/MainTabWindow: the worker opens Dialog_WorkStudioSettings
+    directly, since this is a shortcut to a settings window, not a docked tab.
+  -->
+  <MainButtonDef>
+    <defName>WorkStudio_Settings</defName>
+    <label>Work Studio</label>
+    <description>Open Work Studio's settings: the work type editor, import/export, and the whole-setup reset. Hidden by default; reveal it with a MainButtons customization mod such as RIMMSQOL.</description>
+    <workerClass>WorkStudio.MainButtonWorker_OpenSettings</workerClass>
+    <buttonVisible>false</buttonVisible>
+    <validWithoutMap>true</validWithoutMap>
+    <order>5000</order>
+  </MainButtonDef>
+
+</Defs>

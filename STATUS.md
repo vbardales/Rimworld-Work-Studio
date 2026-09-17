@@ -16,14 +16,14 @@ showcase:     complete
 tested_on:
 workshop:     3792836684
 remaining:
-  - defect: no MainButtonDef exists for this mod, so there is nothing for RIMMSQOL or another
-      MainButtons customization mod to reveal (MOD_SETTINGS.md requires one, hidden by default).
-      The mod only offers a button drawn inside the vanilla Work tab's own header and the normal
-      Mod options entry; neither is a MainButtons shortcut.
-  - unverified: settings have no recorded functional pass at all - no RIMMSQOL integration test
-      (impossible today, see the settings_audit defect above), no documented run of Mod options ->
-      Work Studio: open/close/reopen, each control's effect, persistence across reload, or the
-      "Reset the whole setup" confirmation.
+  - unverified: the MainButtonDef shortcut added 2026-09-17 (WorkStudio_Settings, hidden by
+      buttonVisible=false, worker opens Dialog_WorkStudioSettings) has never been exercised at
+      runtime - no RIMMSQOL (or other MainButtons customization mod) test revealing it, activating
+      it, and confirming it opens the same settings with the same values as Mod options ->
+      Work Studio.
+  - unverified: settings otherwise have no recorded functional pass at all - no documented run of
+      Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across
+      reload, or the "Reset the whole setup" confirmation.
   - unverified: Tests/Pickle (Gherkin, played in game by the Pickle mod) now covers scenarios 1, 2
       and 4 to 10 of TESTING.md, written today (2026-09-17) and never run - TESTING.md's own new
       note says so explicitly ("Not run yet").
@@ -117,27 +117,44 @@ file before this audit — absent means `unchecked` per MOD_SETTINGS.md, not a p
   label, "Open the work type editor", "Import / export a setup", a conditional "Reset the whole
   setup" behind a confirmation dialog, and the save note. All four labels resolve through
   `.Translate()` to keys present in both languages.
-- **Mandatory MainButtons shortcut: missing**, not merely unverified. `grep`-ing the whole mod for
-  `MainButtonDef` finds none, in code or XML. `Patch_WorkTabButton.cs` adds a button to the
-  vanilla Work tab's own header strip by Harmony postfix — a different, real, working feature —
-  but it is not a `MainButtonDef`, so no customization mod has anything to reveal. This is the
-  one item MOD_SETTINGS.md treats as required regardless of how useful the rest of the settings
-  are.
-  - Nothing in the repository suggests one was attempted and hidden: no def, no reference to
-    `RIMMSQOL` anywhere outside `TESTING.md`'s one incidental mention of the log message from the
-    Work-tab-button patch.
-- No recorded functional pass: no log of opening/closing/reopening the settings window, changing
-  an option and observing the effect, persistence across a reload, or exercising the confirmation
-  dialogs. `TESTING.md`'s twelve scenarios are about the editor and its effects on the Work tab
-  and colonists, not about the settings window itself.
+- **Mandatory MainButtons shortcut: added 2026-09-17.** `Mod/Defs/MainButtonDefs/MainButtonDefs.xml`
+  defines `WorkStudio_Settings` with `buttonVisible=false` and `workerClass=
+  WorkStudio.MainButtonWorker_OpenSettings`. Checked directly in `RimWorld.MainButtonsRoot`/
+  `MainButtonWorker` (decompiled 1.6 `Assembly-CSharp.dll`): `MainButtonsRoot.DoButtons()` only
+  iterates buttons whose `Worker.Visible` is true, and the base `MainButtonWorker.Visible` getter
+  returns `def.buttonVisible` directly — a false def takes no layout slot and draws nothing, which
+  is "neither visible nor greyed out" rather than a button disabled at runtime. The worker's
+  `Activate()` opens `Dialog_WorkStudioSettings`, a plain `Window` whose `DoWindowContents` calls
+  `WorkStudioMod.Instance.DoSettingsWindowContents` directly — the same method, the same
+  `WorkStudioMod.Settings` instance, as Mod options -> Work Studio, so both routes necessarily
+  share values and persistence rather than needing to be kept in sync by hand. `label`/
+  `description` are English in the def (the game's native fallback) with a French DefInjected
+  counterpart at `Mod/Languages/French/DefInjected/MainButtonDef/MainButtonDefs.xml`.
+  No dependency was added: nothing requires RIMMSQOL to be installed, and nothing in the def or
+  worker references it beyond the description's mention of it as an example.
+- Verified without launching the game: the project builds clean with the new files
+  (`dotnet build Source/WorkStudio.csproj -c Release`); both new XML files parse as well-formed
+  XML; `scripts/Check-DefInjected.ps1 -TransMod Mod` reports the two new keys checked with 0
+  errors against the reflected 1.6 def graph.
+- **Not verified**: no in-game or RIMMSQOL pass. Nothing confirms yet that RIMMSQOL (or another
+  MainButtons customization mod) actually lists this def, can reveal it, that the button then
+  activates and opens the window, or that edits made through it persist identically to edits made
+  through Mod options. This remains open in `remaining`.
+- No recorded functional pass on the settings window itself either: no log of opening/closing/
+  reopening through Mod options, changing an option and observing the effect, persistence across
+  a reload, or exercising the confirmation dialogs. `TESTING.md`'s twelve scenarios are about the
+  editor and its effects on the Work tab and colonists, not about the settings window.
 
 Net: `partial`, not `not_applicable` (the settings are real and useful) and not `complete` (the
-mandatory shortcut does not exist, and no functional pass is recorded).
+shortcut now exists and is code- and DefInjected-verified, but no functional or RIMMSQOL pass has
+been run).
 
 ## Translation audit (TRANSLATIONS.md)
 
-The mod ships no `Defs` and no `DefInjected` folder — every player-facing string is
-code-owned, so this is a pure Keyed audit.
+At audit time the mod shipped no `Defs` and no `DefInjected` folder — every player-facing string
+was code-owned, so this was a pure Keyed audit. That changed 2026-09-17 with the MainButtonDef
+shortcut (see the settings audit above): one Def, two DefInjected-covered fields, checked with
+`scripts/Check-DefInjected.ps1` (0 errors). The Keyed audit below is unaffected.
 
 - `Mod/Languages/English/Keyed/WorkStudio.xml` and the French counterpart both hold exactly 63
   keys, and a full diff of the key lists is empty: no key exists in one language and not the

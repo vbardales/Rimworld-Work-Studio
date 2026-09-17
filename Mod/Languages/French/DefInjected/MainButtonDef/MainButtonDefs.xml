@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <WorkStudio_Settings.label>Work Studio</WorkStudio_Settings.label>
+  <WorkStudio_Settings.description>Ouvre les réglages de Work Studio : l'éditeur des types de travail, l'import/export et la réinitialisation complète de la configuration. Masqué par défaut ; révélez-le avec un mod de personnalisation des boutons principaux comme RIMMSQOL.</WorkStudio_Settings.description>
+
+</LanguageData>
