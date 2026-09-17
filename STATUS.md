@@ -16,8 +16,8 @@ showcase:     complete
 tested_on:    2026-09-17
 workshop:     3792836684
 remaining:
-  - defect: TESTING.md scenario 5 ("deleting a type in a running game keeps every other priority in place") failed in the 2026-09-17 Pickle run - Pickle second's priority dropped from 3 to 0 after deleting Pickle first, even though PriorityMemory.Restore looks up saved priorities by name and tracing Apply()/SyncCustomTypes step by step found no fault on paper. Leading hypothesis as of 2026-09-17 evening (from a concurrent session's decompile, not yet confirmed): 1trickPwnyta's Defaults, active in this run's mod list, patches Pawn.Notify_DisabledWorkTypesChanged - which PriorityMemory.Restore calls on every pawn right after writing named priorities back - and overwrites the priority of any type that transitions from disabled to enabled with its own configured default, which would land after this mod's own restore and explain values coming back as Defaults' own defaults (3 or 0) rather than what was saved. Needs a live A/B (rerun with Defaults' WorkPriorities patch category turned off) or a before/after-notify read to confirm
-  - defect: TESTING.md scenario 8 ("hide a column"), both scenarios, failed the same way in the same run - Cleaning's priority dropped from 2 to 0 after hide/show, reproducibly. Tracing Apply()'s pipeline by hand found no fault, and Tests/OffGame's TheHideColumnRegression (added 2026-09-17) now proves that by driving the real WorkTypeRuntime.Apply() against a fake WorkTypeDef and pawn: hiding and re-showing the type leaves its priority untouched, and the check is mutation-confirmed sensitive (breaking PriorityMemory.Capture() turns it red). This rules out Apply()'s own reconciliation as the cause - consistent with the same Defaults interaction hypothesis above, since a synthetic off-game pawn never runs a third-party mod's Harmony patches. Not yet confirmed either way
+  - defect: TESTING.md scenario 5 ("deleting a type in a running game keeps every other priority in place") failed in the 2026-09-17 Pickle run - Pickle second's priority dropped from 3 to 0 after deleting Pickle first, even though PriorityMemory.Restore looks up saved priorities by name and tracing Apply()/SyncCustomTypes step by step found no fault on paper. A same-evening hypothesis (1trickPwnyta's Defaults overwriting the priority through its own patch on Notify_DisabledWorkTypesChanged) was raised and then refuted by reading her real Defaults config - every relevant entry there is a no-op value. Candidates still open: the type genuinely reads as disabled at that moment (the ColonySteps diagnostics now answer this directly), another work-tab mod in the list (natee.enhancedworktab, riketta.recolorworkpriorities untraced; UnlimitedHugs.AllowTool confirmed writing priorities in Player.log), or something about how the scenario builds "Keeper". Needs a live re-run with the diagnostics to tell these apart
+  - defect: TESTING.md scenario 8 ("hide a column"), both scenarios, failed the same way in the same run - Cleaning's priority dropped from 2 to 0 after hide/show, reproducibly. Tracing Apply()'s pipeline by hand found no fault, and Tests/OffGame's TheHideColumnRegression (added 2026-09-17) now proves that by driving the real WorkTypeRuntime.Apply() against a fake WorkTypeDef and pawn: hiding and re-showing the type leaves its priority untouched, and the check is mutation-confirmed sensitive (breaking PriorityMemory.Capture() turns it red). This rules out Apply()'s own reconciliation as the cause; the Defaults hypothesis raised for scenario 5 was checked and refuted for this scenario too (Cleaning's own WorkPrioritiesBasic entry is a no-op value on her machine). Same open candidates as scenario 5 above
   - defect: TESTING.md scenario 6 ("the arrows move a type one place") failed - Research landed right after Patient instead of where the test expected. Not yet distinguished from interference by another loaded mod touching Research or the Work tab's ordering
   - unverified: several other 2026-09-17 Pickle failures trace to environment, not Work Studio - "Work types… opens the editor" hit the Concord/OS-click conflict TESTING.md's own note documents ("no tags recorded this frame"), and two of the three scenario-5 sub-scenarios failed on a ReflectionOnly UnityEngine.InputLegacyModule error that also broke the unrelated generic "save and reload steps" testsuite in the same run - a Pickle-framework issue
   - fixed: Tests/Pickle's own scenario 12 step had an ambiguous raw-save pawn lookup (a large save can carry more than one <nick>Keeper</nick>) and failed on that basis in the same run, not on a real Work Studio defect - Patch_WorkSettingsExposeData.Save() writes the positional list and the named dictionary in the same lockstep loop, so they cannot disagree if the lookup is correct. Narrowed 2026-09-17 to require a <workStudioPriorities> sibling and, if still ambiguous, a matching def count; not yet re-run
@@ -313,41 +313,30 @@ yet re-run.
   instead of at the position the test expects. Plausibly another loaded mod reordering Research
   independently (several in this list touch the Work tab or the Research menu), but not confirmed.
 
-**Leading hypothesis for scenarios 5 and 8, from a concurrent session's decompile (2026-09-17
-evening, not yet confirmed):** 1trickPwnyta's Defaults, active in this run's mod list, carries a
-"WorkPriorities" Harmony patch category — a postfix on `Pawn_WorkSettings.EnableAndInitialize` that
-sets every non-disabled type to its own configured default, and a **prefix on
-`Pawn.Notify_DisabledWorkTypesChanged`** that, for every type transitioning from disabled to
-enabled, overwrites that type's priority with the same default. `PriorityMemory.Restore` calls
-`pawn.Notify_DisabledWorkTypesChanged()` on every pawn right after writing the named priorities
-back, so on a machine running Defaults, Work Studio's own restore could be immediately overwritten
-by that prefix. This fits the failure shape exactly: the values that come back are a mix of 3 and 0
-(Defaults' own defaults), not an off-by-one or a stale value, and it explains why a synthetic
-off-game pawn (`TheHideColumnRegression` above) never reproduces it — a fake pawn built by this
-suite never runs a third-party mod's Harmony patches at all. Two ways to settle it, both needing a
-live run: turn off Defaults' WorkPriorities patch category (toggleable from its own mod settings)
-and rerun scenarios 5 and 8, or add a step that reads the priority immediately before and after the
-`Notify_DisabledWorkTypesChanged()` call to catch the value dying at that exact point. If confirmed,
-this is a mod interaction, not a Work Studio defect, though `PriorityMemory.Restore` could still be
-made more robust against it (the notify call exists to zero out priorities of types genuinely
-disabled for other reasons — traits, backstories — so it cannot simply move before the values are
-written without breaking that enforcement).
+**Hypothesis raised and refuted the same evening (1trickPwnyta's Defaults):** a concurrent session
+decompiling `Defaults.dll` found it patches `Pawn_WorkSettings.EnableAndInitialize` and, more to the
+point, prefixes `Pawn.Notify_DisabledWorkTypesChanged` - which `PriorityMemory.Restore` calls on
+every pawn right after writing named priorities back - to overwrite a type's priority with a
+configured default whenever that type is in `WorkPrioritiesBasic` (basic mode) or matched by a rule
+(advanced mode). The failure shape (values landing on 3 or 0) matched well enough to be worth
+checking against her real config. It does not survive that check: her
+`Config/Mod_3285178686_DefaultsMod.xml` has `WorkPrioritiesAdvancedMode` absent (false, so the rules
+branch never runs) and `WorkPrioritiesBasic` holding 27 vanilla work types, Cleaning among them, but
+every one set to `-1` (`WorkPriorityValue.TynansChoice`) - the basic branch only acts on `0` or a
+positive value, so every entry is a no-op on her machine. Defaults' patches fire but do nothing here;
+they are not the cause of either failure. Read of one already-identified file, not a search.
 
-**Decompiled the deciding branch, 2026-09-17 night:** `WorkPriorityUtility.SetWorkPrioritiesToDefault`
-does nothing at all for a type unless `pawn.IsFreeColonist` (true for "Keeper" here) **and** either
-`WorkPrioritiesAdvancedMode` is on and a global/per-type rule actually fires for that def, or
-(the likely default) advanced mode is off and `WorkPrioritiesBasic` - a plain
-`Dictionary<WorkTypeDef, int>` the player fills in by hand from Defaults' own settings window -
-literally contains a key for that exact `WorkTypeDef`. Since "Pickle second" and the scenario-8
-custom types are created by Work Studio at runtime, they could only be in that dictionary if
-Defaults' own UI lets the player add an entry for a work type that does not exist yet, or if
-"Cleaning" specifically (a vanilla type, plausible to have been configured) is the one actually
-losing its value while a *custom* type's loss has a different cause. This is the fact that decides
-whether the hypothesis holds, and it lives only in her `Config/Mod_3285178686_DefaultsMod.xml` -
-not chased further here to avoid a full-text search of a 350KB settings file. Whoever runs the next
-live check should look at whether `WorkPrioritiesAdvancedMode` is on and, if not, whether
-`WorkPrioritiesBasic` names "Cleaning" (and, separately, whether a custom type could ever appear
-there at all) before trusting either a red or a green result from it.
+**Candidates that still fit the evidence, in the order the same session would test them:**
+1. The type really is disabled for "Keeper" at read time - vanilla's own
+   `Notify_DisabledWorkTypesChanged` zeroes every disabled type, and `Restore` calls it. The
+   `disabled`/`visible`/`hidden-by-the-mod` diagnostic already in `ColonySteps.cs` answers this
+   directly on the next run.
+2. Another work-tab mod in the same list: `natee.enhancedworktab` and
+   `riketta.recolorworkpriorities` are both active and untraced so far; `UnlimitedHugs.AllowTool`
+   is confirmed writing to priorities on this exact machine (`Player.log` carries lines like
+   "Adjusted work type priority of FinishingOff for pawns: Jet:0->3, ...").
+3. Something specific to how the scenario builds "Keeper" - a colonist the scenario creates fresh,
+   so whatever else runs against a newly created pawn runs between the `Given` and the `Then` too.
 
 The same-day addition of a read-back assertion and a `disabled/visible/useWorkPriorities/hidden`
 diagnostic to `SetPriority`/`HasPriority` (`Tests/Pickle/Source/ColonySteps.cs`) exists to separate
