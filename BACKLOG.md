@@ -188,6 +188,39 @@ the option it returns; `iconTex` needs `AccessTools`.
 Limit: only those options carry a work type. Equip, eat, rescue, shoot come from no work giver and
 stay bare.
 
+Read in full 2026-09-17, and the simple postfix is **not enough**:
+
+- **Grouped options come back `null`.** When the target is a thing and the work giver has an
+  `equivalenceGroup`, `GetWorkGiverOption` stores the option in the private static array
+  `equivalenceGroupTempStorage[group.index]` and returns `null`; `GetOptionsFor` yields the array
+  afterwards. A postfix reading `__result` never sees those options. The fix stays small: a prefix
+  keeps the slot's current value, and the postfix, when `__result` is null, checks whether the
+  slot now holds a different option — the one just built for this work giver — and decorates it.
+  A later giver of the same group can replace it (a disabled option yields to an enabled one), and
+  the replacement is decorated with its own work type the same way.
+- **Duplicates are dropped by label.** `tmpUsedLabels` discards an option whose label another giver
+  already produced. Whichever giver wins, the icon follows its work type; nothing to handle.
+- **Disabled options too.** Everything that reaches the end of the method gets through, including
+  "Cannot …: not assigned to …". Decide whether those carry the icon; it arguably helps, since it
+  names the work type the player has to enable.
+- **The size is measured after us.** `FloatMenu` calls `SetSizeMode` on every option when it is
+  built, and `IconOffset` counts `iconTex` then. Setting the field in a postfix reserves the icon's
+  width; no need to go through a constructor.
+- **`DecoratePrioritizedTask` keeps the same object.** It edits the label and returns the option it
+  was given, so the reference we decorate is the one shown.
+- **Drawing.** `DoGUI` multiplies `iconColor` into `GUI.color` and draws `iconTex` with
+  `Widgets.DrawTextureFitted`, left-justified by default. A white texture takes the tint cleanly —
+  which suits the colour dot, and means Useful Marks' coloured icons should be drawn with
+  `iconColor` white.
+- **No other vanilla path gives orders from work.** The 53 `FloatMenuOptionProvider_*` classes
+  include specialised ones (rescue, arrest, clean room, extinguish fires, childcare, drafted
+  repair and tend); their options carry no `WorkGiverDef`. Only `_WorkGivers` is in scope, with
+  one borderline case: `_ExtinguishFires` ("Extinguish fires nearby") builds its option from
+  `WorkGiverDefOf.FightFires` and `WorkTypeDefOf.Firefighter` by name. Firefighter's icon could go
+  there with a second, one-line postfix — a vanilla type, so only if question 3 opens them.
+- **Useful Marks' `FloatSubMenu.dll`** patches `FloatMenu.UpdateBaseColor` and `GenUI.DistFromRect`
+  only: it does not rebuild options, so it keeps our icon.
+
 ### Before starting
 
 1. **The dot's texture.** Settled that without Useful Marks the sheet offers a colour alone and
@@ -200,8 +233,9 @@ stay bare.
    player restyle Construction is the same code and a larger save footprint.
 4. **Whether to expose `showMode`.** The colonist bar and the map can be told apart per marker
    for free; decide whether the type sheet offers it or leaves Busywork's default.
-5. **Equivalence groups in the action menu.** `GetOptions` merges equivalent work-giver options
-   into one; check in play that the surviving option keeps its icon.
+5. **Equivalence groups in the action menu.** Handled by the prefix/postfix pair above, not by a
+   plain postfix. Still check in play, on a thing with two equivalent givers, that the option
+   shown carries the icon of the giver that won.
 6. **One mod or several.** Considered 2026-09-17: a style core with one display mod per place.
    The mods above already split it that way, so Work Studio stays the one place the player
    chooses, and the action menu patch lives in Work Studio unless it proves to conflict with a
