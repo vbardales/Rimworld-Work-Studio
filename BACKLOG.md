@@ -222,11 +222,42 @@ Read in full 2026-09-17, and the simple postfix is **not enough**:
 - **Useful Marks' `FloatSubMenu.dll`** patches `FloatMenu.UpdateBaseColor` and `GenUI.DistFromRect`
   only: it does not rebuild options, so it keeps our icon.
 
+**Other mods on the same method.** Every installed DLL was searched on 2026-09-17, in binary mode,
+for the method name in ASCII and UTF-16 (the first search, through `scripts/Search-Workshop.sh`,
+reported zero because ripgrep silently skips binaries when it walks a folder). Twelve shipped mods
+patch `GetWorkGiverOption`; the rest of the hits were copies of the game's own assembly.
+
+- **Prefixes that return `null` and skip the method** — LarvaParasite, VEF (animal behaviours),
+  Mosquito Animal Work, Toddlers (with DBH), Hauler's Dream. Postfixes still run and see `null`:
+  nothing to decorate, nothing to break.
+- **Transpilers that change text or priority checks** — Prioritize Research, Assignment Overrides,
+  More Than Capable (two). They leave the returned option alone.
+- **A prefix with a finalizer** — Stop Farming It's Enough, state only.
+- **Postfixes that replace the option.** Children, School and Learning (both the same code: a new
+  "Cannot study…" option on a school table) and **Better Work Tab**. So our postfix must carry
+  `[HarmonyPriority(Priority.Last)]`, to decorate the option that is actually shown.
+- **Better Work Tab goes further**, and Work Studio already supports it. When the pawn is not
+  assigned to the work type, its postfix returns a new "do once" option and pushes two more into
+  its public static list `Patch_FloatMenuOptionProvider_WorkGivers_GetWorkGiverOptionFor.AdditionalOptions`:
+  the original disabled option and an "assign work" option. A postfix on
+  `GetWorkGiversOptionsFor` yields that list and clears it. Running last, ours sees the "do once"
+  option only. The other two carry the same work type and can be decorated from that list — read
+  by reflection right after BWT fills it, in the same postfix.
+
+**The dot's texture: `UI/Icons/ColorIndicatorBulb`.** Found by extracting every texture path
+string from the 1.6 assembly (656 of them, UTF-16 at both byte parities) and filtering for round
+shapes. It is the one vanilla uses for exactly this: `Command_ColorIcon` loads it in a
+`[StaticConstructorOnStartup]` class of the base assembly — so it ships with Core, not a DLC — and
+draws it 16 px wide, tinted with the gizmo's colour, as its "colour circle". The other candidates
+are map overlays (`UI/Overlays/Circle75Solid`, a material for the multi-pawn goto marker;
+`UI/Overlays/DotHighlight`) or widgets (`UI/Widgets/RadioButOn`). Not seen: the texture lives in
+the game's asset bundle, so its look is inferred from that use, and checked in play.
+
 ### Before starting
 
-1. **The dot's texture.** Settled that without Useful Marks the sheet offers a colour alone and
-   the action menu shows a dot. Still to pick: a vanilla texture that tints cleanly, or one small
-   white disc shipped with the mod.
+1. **The dot's texture.** `UI/Icons/ColorIndicatorBulb`, vanilla's own colour circle, see the
+   action menu section. Check in play that it reads well at the menu's icon size (27 px, 16 px in
+   tiny mode) before shipping a texture of our own.
 2. **GrimWorks: settled, no link** (rule 2 above). What stays open is only whether a new custom
    type's column lands somewhere sensible in GrimWorks' order when it falls into `Unsupported`,
    which is an ordering question for Work Studio, not a colour one.
