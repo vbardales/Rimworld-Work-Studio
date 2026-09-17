@@ -205,6 +205,12 @@ empty and is only written the first time you drag one of its columns.
   stops having an effect. A type created afterwards is absent from its list and sorts **last**
   until you position it there.
 
+The rule itself — recorded types keep the recorded order, a type missing from it goes last — is
+proven off-game against Better Work Tab's real assembly by `Tests/OffGame`'s
+`TheBetterWorkTabColumnOrder` (skips cleanly if that Workshop item is not installed). What still
+needs the game: actually dragging a column in Better Work Tab and watching Work Studio's own
+reordering stop affecting it, live.
+
 Both are correct behaviour. The way to tell them apart is whether you have ever dragged a column
 in Better Work Tab on that particular save.
 

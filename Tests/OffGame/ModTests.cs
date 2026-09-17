@@ -75,6 +75,7 @@ internal static class Program
         TheConfigRoundTrip();
         TheKeyedCoverage();
         TheWorkTypeTagCompat();
+        TheBetterWorkTabColumnOrder();
     }
 
     // --- the publicizer waiver -----------------------------------------------------------------
@@ -668,16 +669,18 @@ internal static class Program
         Check("after WorkStudio.WorkTypeTagCompat.Notify(), the new label is read", Label() == "After");
     }
 
-    private static string FindWorkTypeTagAssembly()
+    private static string FindWorkTypeTagAssembly() => FindWorkshopAssembly("3779138895", "baku.WorkTypeTag.dll");
+
+    private static string FindWorkshopAssembly(string itemId, string dllName)
     {
         try
         {
             // .../RimWorld/RimWorldWin64_Data/Managed -> the Steam library's steamapps folder.
             string steamapps = Path.GetFullPath(Path.Combine(managedFolder, "..", "..", "..", ".."));
-            string workshopMod = Path.Combine(steamapps, "workshop", "content", "294100", "3779138895");
+            string workshopMod = Path.Combine(steamapps, "workshop", "content", "294100", itemId);
             if (!Directory.Exists(workshopMod)) return null;
 
-            return Directory.GetFiles(workshopMod, "baku.WorkTypeTag.dll", SearchOption.AllDirectories)
+            return Directory.GetFiles(workshopMod, dllName, SearchOption.AllDirectories)
                 .OrderByDescending(f => f) // higher version folders ("1.6" > "1.5" > ...) sort later
                 .FirstOrDefault();
         }
@@ -685,6 +688,110 @@ internal static class Program
         {
             return null;
         }
+    }
+
+    // --- TESTING.md scenario 11, off-game: Better Work Tab's own column-order rule -------------
+
+    // Unlike scenario 7, Work Studio has no code path into Better Work Tab at all - the
+    // "compatibility" described in About.xml is two mods independently reading and writing
+    // PawnTableDefOf.Work.columns, not an integration this mod owns. What is worth protecting is
+    // that description staying true: WorkColumnOrderManager.ApplyOrderToTable is the exact private
+    // method that implements it, callable directly by reflection without a live Game, since it
+    // takes the PawnTableDef and the recorded order as plain arguments rather than reading them
+    // from GameComponent_BWTWorldSettings itself.
+    private static void TheBetterWorkTabColumnOrder()
+    {
+        Console.WriteLine();
+        Console.WriteLine("Better Work Tab's own column-order rule, which About.xml describes:");
+
+        string dll = FindWorkshopAssembly("3626737803", "Better Work Tab.dll");
+        if (dll == null)
+        {
+            Skip("Better Work Tab (Workshop 3626737803) not found locally - subscribe it to run this check");
+            return;
+        }
+
+        Assembly bwt;
+        MethodInfo applyOrderToTable;
+        try
+        {
+            bwt = Assembly.LoadFrom(dll);
+            Type managerType = bwt.GetType("Better_Work_Tab.Features.WorkColumnOrderManager", true);
+            applyOrderToTable = AccessTools.Method(managerType, "ApplyOrderToTable");
+        }
+        catch (Exception e)
+        {
+            Skip("loading Better Work Tab: " + Innermost(e).GetType().Name + " - " + Innermost(e).Message);
+            return;
+        }
+
+        if (applyOrderToTable == null)
+        {
+            Skip("Better Work Tab's WorkColumnOrderManager.ApplyOrderToTable not found - its internals changed");
+            return;
+        }
+
+        // The reordering itself is done before ApplyOrderToTable's own trailing notification calls
+        // - WorkExecutionOrder.MarkAllPawnsWorkGiversDirty() among them - which need a live Game
+        // and NRE without one. Neutered the same way BurnBarrel's test silences an emitter it is
+        // not exercising: the mutation under test still runs for real, only the side effects do not.
+        var bwtSilencer = new Harmony("nelim.workstudio.tests.bwt");
+        try
+        {
+            MethodInfo markDirty = bwt.GetType("Better_Work_Tab.Features.WorkExecutionOrder")?
+                .GetMethod("MarkAllPawnsWorkGiversDirty", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+            if (markDirty != null) bwtSilencer.Patch(markDirty, prefix: new HarmonyMethod(typeof(Program), nameof(SkipPrefix)));
+
+            MethodInfo notify = AccessTools.Method(typeof(MainTabWindowUtility), "NotifyAllPawnTables_PawnsChanged");
+            if (notify != null) bwtSilencer.Patch(notify, prefix: new HarmonyMethod(typeof(Program), nameof(SkipPrefix)));
+
+            RunColumnOrderCheck(applyOrderToTable);
+        }
+        catch (Exception e)
+        {
+            Skip("Better Work Tab's column-order rule: " + Innermost(e).GetType().Name + " - " + Innermost(e).Message);
+        }
+    }
+
+    private static void RunColumnOrderCheck(MethodInfo applyOrderToTable)
+    {
+        var cooking = new WorkTypeDef { defName = "PickleBwtCooking" };
+        var hauling = new WorkTypeDef { defName = "PickleBwtHauling" };
+        var newType = new WorkTypeDef { defName = "PickleBwtNewType" }; // "a type created afterwards"
+
+        // PawnColumnDef's own default workerClass, plain PawnColumnWorker, is abstract and cannot
+        // be instantiated - a concrete, real vanilla non-work worker stands in for one instead.
+        var nonWorkColumn = new PawnColumnDef { defName = "PickleBwtIcon", workerClass = typeof(PawnColumnWorker_CopyPasteWorkPriorities) };
+        var colCooking = WorkColumn(cooking);
+        var colHauling = WorkColumn(hauling);
+        var colNew = WorkColumn(newType);
+
+        var table = new PawnTableDef { columns = new List<PawnColumnDef> { nonWorkColumn, colCooking, colHauling, colNew } };
+
+        // Recorded before "New" was ever created - exactly the gap About.xml describes.
+        var recordedOrder = new List<string> { hauling.defName, cooking.defName };
+
+        applyOrderToTable.Invoke(null, new object[] { table, recordedOrder });
+
+        var workColumnsAfter = table.columns.Where(c => c.workType != null).Select(c => c.workType.defName).ToList();
+
+        Check("a non-work column is left where Better Work Tab's own split puts it",
+            table.columns.Count > 0 && table.columns[0] == nonWorkColumn);
+        Check("the recorded order is applied to the columns it knows about",
+            workColumnsAfter.Count >= 2 && workColumnsAfter[0] == hauling.defName && workColumnsAfter[1] == cooking.defName);
+        Check("a work type created after the last recorded order goes last, exactly as About.xml says",
+            workColumnsAfter.Count > 0 && workColumnsAfter[workColumnsAfter.Count - 1] == newType.defName);
+    }
+
+    private static PawnColumnDef WorkColumn(WorkTypeDef type)
+    {
+        var column = new PawnColumnDef
+        {
+            defName = "WorkPriority_" + type.defName,
+            workerClass = typeof(PawnColumnWorker_WorkPriority),
+            workType = type,
+        };
+        return column;
     }
 
     // --- silencing Verse.Log ------------------------------------------------------------------
