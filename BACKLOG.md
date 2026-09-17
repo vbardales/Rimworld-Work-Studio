@@ -447,7 +447,8 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
      `MarkerSettings`: after a restart `showMode` is back to `ColonistBarAndWorld`, and `atSide`
      to the global alignment.
    So a per-type choice would be ignored in the default alignment and forgotten at the next
-   start. Recommended: do not expose it.
+   start. **Settled 2026-09-17: not exposed.** The marker keeps the constructor's default,
+   `ColonistBarAndWorld`.
 5. **Equivalence groups in the action menu.** Handled by the prefix/postfix pair above, not by a
    plain postfix. Still check in play on a frame, where Construction and Hauling givers compete,
    that the option shown carries the mark of the giver that won.
