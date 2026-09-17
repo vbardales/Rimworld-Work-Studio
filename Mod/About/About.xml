@@ -59,7 +59,9 @@ https://steamcommunity.com/profiles/76561198380244407
 Densevoid, for Personal Work Categories, where the pointer was shared.
 https://steamcommunity.com/sharedfiles/filedetails/?id=2722053051
 
-What is reused and how it differs is detailed in ATTRIBUTION.md. This mod is MIT licensed.</description>
+What is reused and how it differs is detailed in ATTRIBUTION.md. This mod is MIT licensed.
+
+[url=https://github.com/vbardales/Rimworld-Work-Studio]Source code on GitHub[/url]</description>
   <modDependencies>
     <li>
       <packageId>brrainz.harmony</packageId>
@@ -78,9 +80,9 @@ What is reused and how it differs is detailed in ATTRIBUTION.md. This mod is MIT
     <li>Ludeon.RimWorld.Odyssey</li>
   </loadAfter>
   <!--
-    Ces deux mods reconstruisent eux aussi les colonnes de l'onglet Travail : les faire cohabiter
-    revient a les faire se les reprendre a chaque application. Contrairement a la description,
-    ce champ est relu a chaque demarrage, donc il agit chez qui a deja le mod installe.
+    These two mods also rebuild the Work tab's columns: running them together means each one
+    keeps reclaiming them from the other on every apply. Unlike the description, this field is
+    re-read at every startup, so it also affects players who already have the mod installed.
   -->
   <incompatibleWith>
     <li>Fluffy.WorkTab</li>
