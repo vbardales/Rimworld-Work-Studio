@@ -219,6 +219,38 @@ version alpha1g1).
 - **The player sets it in its settings window**, one group at a time. Writing from Work Studio
   overwrites that choice, the same question as GrimWorks.
 
+**The write, read in full 2026-09-17** (`WorkTypeTagMod`, `WorkTypeTagSettings`, and `Verse.ModSettings`):
+1. Read the internal static field `baku.WorkTypeTag.WorkTypeTagMod.Settings` by reflection. That is
+   the only non-public step.
+2. Resolve the **group**, not the `defName`: call the internal
+   `WorkTypeColorResolver.ResolveGroupDefName(WorkTypeDef)` by reflection. For every type but
+   Complex Jobs' split ones the group is the `defName`; for those it is the vanilla parent
+   (`FSFNurse` → `Doctor`), and a record written under `FSFNurse` would never be read. The
+   consequence cannot be avoided: Work Type Tag has **one colour per group**, so styling Complex
+   Jobs' Nurse recolours Doctor and Surgeon too. Either say so in the style dialog or skip the
+   link for a type whose group differs from its `defName`.
+3. `GetOrCreate(group)` — public — returns the record, creating it with the default colour.
+4. Set its public `red`, `green`, `blue` (0–255).
+5. `NotifyGroupChanged(group)` — public — clamps them and drops that group from the presentation
+   cache, so the next job report shows the new colour.
+6. `Write()`. Not a Work Type Tag method: `WorkTypeTagSettings` is a `ModSettings`, and
+   `Verse.ModSettings.Write()` is public, so a plain cast does it. Nothing in Work Type Tag calls it;
+   its settings are otherwise saved only when the player closes its window, through its
+   `WriteSettings` override.
+
+**It survives a restart on its own**, unlike Busywork: records are keyed by a string and loaded in
+the mod's constructor, with no def lookup. No restore at startup is needed.
+
+**One cosmetic leftover.** Its window keeps the RGB text fields of the last group shown in private
+buffers, refreshed only when the selected group changes (`bufferGroupDefName`). After a write from
+Work Studio to that same group, the sliders show the new colour and the text fields the old
+numbers, until the player selects another group. Harmless — the record is right, and typing in a
+field sets it from what is typed — or cured by setting that private field to `null` on the mod
+instance.
+
+**The fallback reads the same way.** `GetEffectiveColor(group)` — resolved group again, not the
+`defName`.
+
 ### What was verified for GrimWorks
 
 Read 2026-09-17 in `GW_WorkManager.dll`.
@@ -429,7 +461,8 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
      (`MarkerProvider.WorkMarkers[type]`, whose `MarkerSettings` carries the loaded `icon` and
      `iconAccent` textures — a mark is two layers, drawn one over the other); else the dot.
    - *Colour:* the player's choice; else Work Type Tag's effective colour
-     (`WorkTypeTagSettings.GetEffectiveColor(defName)`, which already falls back on its own
+     (`WorkTypeTagSettings.GetEffectiveColor(group)`, with the group resolved as in the Work Type Tag
+     section, which already falls back on its own
      hand-picked or hashed colour, so it always answers when the mod is present); else Busywork's
      marker colour when it is a real one; else white.
    - *Busywork's stock markers are all `AdaptiveColor`*, an alpha below 1 that Useful Marks
