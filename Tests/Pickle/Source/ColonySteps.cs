@@ -47,7 +47,29 @@ namespace WorkStudio.PickleSteps
         {
             return $"disabled={pawn.WorkTypeIsDisabled(def)}, visible={def.visible}, " +
                 $"useWorkPriorities={Current.Game.playSettings.useWorkPriorities}, " +
-                $"hidden by the mod={WorkStudioMod.Settings.hiddenTypes.Contains(def.defName)}";
+                $"hidden by the mod={WorkStudioMod.Settings.hiddenTypes.Contains(def.defName)}, " +
+                $"raw DefMap value={RawPriority(pawn, def)}";
+        }
+
+        /// <summary>
+        /// Pawn_WorkSettings.GetPriority(), straight from the private DefMap this mod's own
+        /// PriorityMemory.Restore writes into - bypassing GetPriority() itself, since a mod that
+        /// prefixes it (2026-09-17: Enhanced Work Tab keeps its own per-pawn priority store and
+        /// answers GetPriority from that instead of the DefMap whenever time-aware priorities are
+        /// on, its default) would otherwise make this diagnostic read the same wrong value the
+        /// failing assertion already saw. A mismatch between this and GetPriority() proves the
+        /// value the mod restored is intact and something else is what the player - or this step -
+        /// actually reads back.
+        /// </summary>
+        private static int RawPriority(Pawn pawn, WorkTypeDef def)
+        {
+            var priorities = typeof(Pawn_WorkSettings)
+                .GetField("priorities", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.GetValue(pawn.workSettings);
+            var values = priorities?.GetType()
+                .GetField("values", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.GetValue(priorities) as System.Collections.IList;
+            return values != null && def.index < values.Count ? (int)values[def.index] : -1;
         }
 
         [Then("{string} has priority {int} for {string}")]
