@@ -31,6 +31,30 @@ The icon and colour then show up in five places, each owned by whichever mod dra
 | Work tab column header | **GrimWorks: Work Manager** (3761759348) | `WorkTypeCategoryUtility.SetCategoryOverride(WorkTypeDef, GW_WorkManager_WorkTypeCategory)`, public static. It colours by **category** and named palette, not by type: a category also moves the column. **Not linked**, see the rule below. |
 | Right-click action menu | nobody | Our own patch, see below. |
 
+### Licences of the linked mods
+
+Checked 2026-09-17 in each mod's `About.xml`, in every file it ships, and in its full Workshop
+description through the Steam API. **None of the four states a licence or a permission.**
+
+| Mod | Author | What the page says |
+|---|---|---|
+| Busywork | Andromeda | Nothing on rights. |
+| Useful Marks | Andromeda | "Art : Andromeda" — the pixel-art marks are the author's own; paid support on Boosty. Players may drop their own icons in `Textures/Marks`, which is not a grant to redistribute. |
+| GrimWorks: Work Manager | Grim & Chat | Nothing on rights. |
+| [baku] Work Type Tag | baku | Nothing on rights; the Workshop copy even says its DLL must be built from source it does not ship. |
+
+No licence means all rights reserved. What that allows and forbids here:
+
+- **The soft links are fine.** Work Studio ships none of their code or art. It finds their types
+  at runtime by reflection, on the player's own install, and silences itself when they are
+  absent — the same footing as `WorkTypeTagCompat` in 1.0.1. Their assemblies were decompiled to
+  read the entry points, and nothing from them is copied into Work Studio.
+- **Drawing a Busywork icon in our action menu is fine** as long as the texture comes from the
+  loaded `MarkerSettings.icon`, i.e. from the player's installed Useful Marks. Copying a mark into
+  Work Studio's `Textures` is not.
+- **Our own marker mod could not borrow a single mark**, nor a line of Busywork's drawing code.
+  One more reason against it: every icon would have to be drawn from scratch.
+
 ### When to link another mod, when to write our own code
 
 Agreed 2026-09-17, from the four assemblies read below. One question per place: who already draws
