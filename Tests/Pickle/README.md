@@ -33,6 +33,12 @@ Studio's own suite, on a French client). Scenario 02 uses this mod's own `I clic
 button` / `the Work Studio button is not drawn` steps instead (`ModSteps.cs`), which resolve the
 same key the button itself draws before building the tag.
 
+Pickle itself later gained a generic equivalent, `I click button keyed {string}` (upstream
+[RimWorks/Rimworld-Pickle#19](https://github.com/RimWorks/Rimworld-Pickle/pull/19), 2026-09-17
+night, not yet on a released Pickle version at the time this suite was written). Kept the
+mod-owned steps above rather than switching: they depend only on `PickleContext.Click`/`.Hover`,
+which every Pickle version this suite has ever run against already has, not on a specific build.
+
 ## Build
 
 ```powershell
