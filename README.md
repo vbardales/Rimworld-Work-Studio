@@ -19,7 +19,8 @@ Deck trackpad, and the arrows stay visible — greyed out — at the ends of a l
 disappeared would shift every other one under your finger.
 
 Open it from the **Work types…** button at the top right of the Work tab, or from the mod
-settings.
+settings. A MainButtons shortcut also exists for RIMMSQOL and similar customization mods to
+reveal — hidden by default, it opens the exact same settings window.
 
 ## How it works
 

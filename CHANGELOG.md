@@ -3,6 +3,16 @@
 Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This file serves the repository and the writing of Steam patch notes; RimWorld does not display it in game.
 
+## [Unreleased]
+
+### Added
+
+- A hidden MainButtons shortcut (`WorkStudio_Settings`), for RIMMSQOL and similar MainButtons customization mods to reveal. It opens the exact same settings window as Mod options → Work Studio, against the same settings instance, so both routes share values and persistence.
+
+### Fixed
+
+- `Source/WorkStudio.csproj` combined the Publicizer with `GenerateAssemblyInfo=false`, which silently dropped the waiver that lets this mod read and write a few private fields of `Pawn_WorkSettings` — the same fields `PriorityMemory.Restore` touches on every startup and every edit. Left alone, this was a `FieldAccessException` waiting to happen on at least one runtime (confirmed on the desktop CLR; never observed in the shipped game itself, whose Mono may not enforce the same check). One line restores the waiver.
+
 ## [1.0.1] — 2026-09-02
 
 ### Fixed
