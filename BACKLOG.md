@@ -43,17 +43,25 @@ description through the Steam API. **None of the four states a licence or a perm
 | GrimWorks: Work Manager | Grim & Chat | Nothing on rights. |
 | [baku] Work Type Tag | baku | Nothing on rights; the Workshop copy even says its DLL must be built from source it does not ship. |
 
-No licence means all rights reserved. What that allows and forbids here:
+**Silence is not a refusal.** The repository's rule, set 2026-09-04 and restated 2026-09-17: a mod
+that states no licence can be reused, with the author credited by name and a takedown clause —
+if the author objects, the borrowed part comes out. Only an explicit prohibition (an ND licence,
+a "do not redistribute" clause) closes the door. A first version of this section read the silence
+as "all rights reserved" and forbade copying a mark; that was wrong.
 
-- **The soft links are fine.** Work Studio ships none of their code or art. It finds their types
-  at runtime by reflection, on the player's own install, and silences itself when they are
-  absent — the same footing as `WorkTypeTagCompat` in 1.0.1. Their assemblies were decompiled to
-  read the entry points, and nothing from them is copied into Work Studio.
-- **Drawing a Busywork icon in our action menu is fine** as long as the texture comes from the
-  loaded `MarkerSettings.icon`, i.e. from the player's installed Useful Marks. Copying a mark into
-  Work Studio's `Textures` is not.
-- **Our own marker mod could not borrow a single mark**, nor a line of Busywork's drawing code.
-  One more reason against it: every icon would have to be drawn from scratch.
+- **The soft links** ship none of their code or art: Work Studio finds their types at runtime, on
+  the player's install, and silences itself when they are absent.
+- **Reusing a mark** — in the action menu without Useful Marks, or in a marker mod of our own —
+  is open under the same rule: credit Andromeda, keep the takedown clause.
+- **The other half of the rule still applies.** A mod derived from a source that is **alive in
+  1.6** stays private; Busywork and Useful Marks are both maintained (updated
+  August–September 2026). Reusing their marks in something published is a decision to take
+  knowingly, not a default.
+- **Fallback, said 2026-09-17: "au pire, on fera les nôtres"** — our own marks, possibly
+  **animated**. The chain already exists in SkillIcons: parametric drawings in `_tools/gen.js`,
+  rasterised frame by frame by headless Chrome, and a Harmony postfix that swaps the frame at
+  draw time (`PassionIconAnimations.cs`). Its design rules carry over: the silhouette alone must
+  be recognisable, and a tint is a hue remap, never a desaturation.
 
 ### When to link another mod, when to write our own code
 
