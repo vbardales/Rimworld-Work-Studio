@@ -75,9 +75,16 @@ without it the sheet offers a colour alone, and the action menu shows a dot in t
 - **The trap.** `WorkTypeDef.GetHashCode` combines `defName` and `gerundLabel`, which is mutable.
   An entry inserted before `gerundLabel` is set becomes unreachable. Write at the end of
   `Apply()`, after `SyncCustomTypes` — the same hazard as `InheritedDisabling`.
-- `MarkerSettings` comes from Useful Marks. Its constructor is
-  `(string iconName, Color col, string desc, int side, MarkerConditionNode condition = null)` —
-  read 2026-09-17; the 2026-09-11 reading had dropped the `desc` string. Callable by reflection.
+- `MarkerSettings` comes from Useful Marks, with **three** constructors besides the empty one:
+  `(string iconName, Color col, string desc, int side, MarkerConditionNode condition = null)`,
+  `(string iconName, Color col, int side, MarkerConditionNode condition = null)` — the one Busywork
+  itself calls — and `(string iconName, Color col, int side, string descr, MarkerConditionNode
+  condition = null)`. Both the 2026-09-11 reading and a first 2026-09-17 "correction" saw one
+  each. By reflection, ask for the exact parameter types: the name alone is ambiguous.
+- **Busywork already marks the stock types.** Its settings bootstrap creates markers for 45 work
+  types when they exist: every vanilla and DLC type, and Complex Jobs' split types — all with
+  `AdaptiveColor`. Through `CreateMarker`, which, like the XML path, skips a type already in the
+  dictionary or cleared by the player.
 
 ### What was verified for the colonist bar, and what it costs
 
@@ -334,8 +341,27 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
 2. **GrimWorks: settled, no link** (rule 2 above). What stays open is only whether a new custom
    type's column lands somewhere sensible in GrimWorks' order when it falls into `Unsupported`,
    which is an ordering question for Work Studio, not a colour one.
-3. **Vanilla types too, or only custom ones.** The 1.1.0 plan was the custom-type sheet. Letting a
-   player restyle Construction is the same code and a larger save footprint.
+3. **Vanilla types too, or only custom ones.** The 1.1.0 plan was the custom-type sheet. Read
+   2026-09-17 in Work Studio's own source and the three mods:
+   - *No save footprint either way.* Work Studio keeps everything in its `ModSettings`, per
+     install, and `ExposeConfig` is what an export file holds. The earlier "larger save
+     footprint" was wrong.
+   - *Stock types are already overridable.* `labelOverrides`, `priorityOverrides` and
+     `hiddenTypes` are keyed by `defName` and apply to any type, and the Rename button is offered
+     on every type. A `styleOverrides` keyed the same way would cover both kinds; deleting a
+     custom type already clears its keys in the other dictionaries. What is custom-only is the
+     sheet, `Dialog_EditWorkType`: a stock type would need its own way in, next to Rename.
+   - *The other mods already style stock types, and only them.* Busywork ships icons for 45 stock
+     types; Work Type Tag has hand-picked colours for 23; GrimWorks has a category for each. A
+     custom type gets no Busywork marker, a colour hashed from its `defName`, and GrimWorks'
+     grey. So for the linked mods, the value sits almost entirely on custom types — and by the
+     "last word" rule a stock type is only touched if the player edits it.
+   - *The action menu is the exception.* It is our own code, and nobody marks stock types there.
+     Custom types only would leave every vanilla order bare, and the mark would come to mean
+     "custom" rather than naming a work type.
+   Still to choose: custom only; any type, with a mark in the menu only where the player set one;
+   or any type, with unstyled types falling back in the menu on what the linked mods already hold
+   (Work Type Tag's effective colour, Busywork's icon) — read, never written.
 4. **Whether to expose `showMode`.** The colonist bar and the map can be told apart per marker
    for free; decide whether the type sheet offers it or leaves Busywork's default.
 5. **Equivalence groups in the action menu.** Handled by the prefix/postfix pair above, not by a
