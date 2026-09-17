@@ -178,12 +178,13 @@ Read 2026-09-17 in `GW_WorkManager.dll`.
 
 ### The action menu, which no mod covers
 
-Read in the 1.6 assembly, not assumed. `FloatMenuOption` already draws a tinted icon: a private
-`iconTex` and a public `iconColor`, applied to `GUI.color` when drawn. Orders that come from work
-("Prioritize repairing…") are built by
+**Settled 2026-09-17: the mark goes on the right, in the option's extra part** — not in its icon,
+which already shows the target thing (see below). Orders that come from work ("Prioritize
+repairing…") are built by
 `FloatMenuOptionProvider_WorkGivers.GetWorkGiverOption(pawn, workGiver, target, context)`, which
-reads `workGiver.workType` itself. A postfix there knows the work type and can set both fields on
-the option it returns; `iconTex` needs `AccessTools`.
+reads `workGiver.workType` itself. A postfix there knows the work type and can fill the extra part
+of the option it returns: `extraPartWidth`, `extraPartOnGUI` and `extraPartRightJustified`, all
+public fields.
 
 Limit: only those options carry a work type. Equip, eat, rescue, shoot come from no work giver and
 stay bare.
@@ -228,13 +229,24 @@ Read in full 2026-09-17, and the simple postfix is **not enough**:
   `iconThing` to the clicked thing on every option from `GetOptionsFor` that has none — so every
   work order on a thing already shows that thing's icon. `DoGUI` draws one icon only, in this
   order: `shownItem`, then `iconTex`, then `iconThing`. Setting `iconTex` would replace the wall or
-  the plant with our mark. Options from `GetOptions` (a clicked cell) have no icon to lose.
-  The alternative that loses nothing is the **extra part**: `extraPartWidth`,
-  `extraPartOnGUI` and `extraPartRightJustified` are public fields, the width is counted by
-  `SetSizeMode` like the icon, and vanilla's work-giver options leave them empty (Better Work
-  Tab's too). A delegate drawing our tinted mark in a right-justified square and returning
-  `false` — `true` would swallow the click — adds the work type's mark without touching the
-  thing's. Leave any option whose `extraPartOnGUI` is already set alone.
+  the plant with our mark. Options from `GetOptions` (a clicked cell) have no icon to lose. Hence
+  the extra part, which loses nothing.
+- **The extra part, read in `DoGUI`.**
+  - *Free on these options.* Vanilla's work-giver options use the plain constructor and leave all
+    three fields empty; Better Work Tab's replacements too. Leave any option whose
+    `extraPartOnGUI` is already set alone.
+  - *Where it lands.* With `extraPartRightJustified`, the part's rect is
+    `(rect.xMax - extraPartWidth, labelRect.yMin, extraPartWidth, 30)`, and the label's rect loses
+    `extraPartWidth` on the right, so a long label wraps instead of running under the mark. The
+    height is a fixed 30 whatever the size mode: draw a square of `extraPartWidth`, not of the
+    rect's height.
+  - *What the delegate returns.* `DoGUI` returns `true` at once when the delegate does, before the
+    option's own button: `true` would swallow the click. Return `false`.
+  - *Hover.* While the mouse is over the part, `DoGUI` draws the option unhighlighted, but the
+    click still goes to the option. A small mark keeps that area small.
+  - *Colour is ours to set.* Unlike the icon, the part gets no `iconColor`: the delegate sets
+    `GUI.color` to the type's colour for the dot, white for a Useful Marks icon, dimmed when the
+    option is `Disabled`, and restores it.
 - **Duplicates are dropped by label.** `tmpUsedLabels` discards an option whose label another giver
   already produced. Whichever giver wins, the icon follows its work type; nothing to handle.
 - **Disabled options too.** Everything that reaches the end of the method gets through, including
@@ -242,14 +254,12 @@ Read in full 2026-09-17, and the simple postfix is **not enough**:
   work type the player has to enable. So the postfix decorates every non-null option, with no
   test on `Disabled`.
 - **The size is measured after us.** `FloatMenu` calls `SetSizeMode` on every option when it is
-  built, and `IconOffset` counts `iconTex` then. Setting the field in a postfix reserves the icon's
+  built, and it counts `extraPartWidth` then. Setting the field in a postfix reserves the mark's
   width; no need to go through a constructor.
 - **`DecoratePrioritizedTask` keeps the same object.** It edits the label and returns the option it
   was given, so the reference we decorate is the one shown.
-- **Drawing.** `DoGUI` multiplies `iconColor` into `GUI.color` and draws `iconTex` with
-  `Widgets.DrawTextureFitted`, left-justified by default. A white texture takes the tint cleanly —
-  which suits the colour dot, and means Useful Marks' coloured icons should be drawn with
-  `iconColor` white.
+- **Drawing.** A white texture takes the tint cleanly, which suits the colour dot;
+  `Widgets.DrawTextureFitted` keeps its proportions, as vanilla does for icons.
 - **No other vanilla path gives orders from work.** The 53 `FloatMenuOptionProvider_*` classes
   include specialised ones (rescue, arrest, clean room, extinguish fires, childcare, drafted
   repair and tend); their options carry no `WorkGiverDef`. Only `_WorkGivers` is in scope, with
@@ -318,8 +328,9 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
 ### Before starting
 
 1. **The dot's texture.** `UI/Icons/ColorIndicatorBulb`, vanilla's own colour circle, see the
-   action menu section. Check in play that it reads well at the menu's icon size (27 px, 16 px in
-   tiny mode) before shipping a texture of our own.
+   action menu section. Its size is now ours to pick, as `extraPartWidth`: vanilla draws it at
+   16 px in `Command_ColorIcon`. Check in play that it reads well beside the label before shipping
+   a texture of our own.
 2. **GrimWorks: settled, no link** (rule 2 above). What stays open is only whether a new custom
    type's column lands somewhere sensible in GrimWorks' order when it falls into `Unsupported`,
    which is an ordering question for Work Studio, not a colour one.
@@ -330,9 +341,9 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
 5. **Equivalence groups in the action menu.** Handled by the prefix/postfix pair above, not by a
    plain postfix. Still check in play on a frame, where Construction and Hauling givers compete,
    that the option shown carries the mark of the giver that won.
-6. **Where the mark sits in the action menu.** `iconTex` on the left would hide the target
-   thing's icon on every order given on a thing; the extra part on the right keeps both. Decide
-   before writing the patch — the two share nothing but the texture.
+6. **Where the mark sits in the action menu: settled 2026-09-17, on the right, in the extra
+   part.** `iconTex` on the left would have hidden the target thing's icon on every order given on
+   a thing.
 7. **One mod or several.** Considered 2026-09-17: a style core with one display mod per place.
    The mods above already split it that way, so Work Studio stays the one place the player
    chooses, and the action menu patch lives in Work Studio unless it proves to conflict with a
