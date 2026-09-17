@@ -333,6 +333,22 @@ made more robust against it (the notify call exists to zero out priorities of ty
 disabled for other reasons — traits, backstories — so it cannot simply move before the values are
 written without breaking that enforcement).
 
+**Decompiled the deciding branch, 2026-09-17 night:** `WorkPriorityUtility.SetWorkPrioritiesToDefault`
+does nothing at all for a type unless `pawn.IsFreeColonist` (true for "Keeper" here) **and** either
+`WorkPrioritiesAdvancedMode` is on and a global/per-type rule actually fires for that def, or
+(the likely default) advanced mode is off and `WorkPrioritiesBasic` - a plain
+`Dictionary<WorkTypeDef, int>` the player fills in by hand from Defaults' own settings window -
+literally contains a key for that exact `WorkTypeDef`. Since "Pickle second" and the scenario-8
+custom types are created by Work Studio at runtime, they could only be in that dictionary if
+Defaults' own UI lets the player add an entry for a work type that does not exist yet, or if
+"Cleaning" specifically (a vanilla type, plausible to have been configured) is the one actually
+losing its value while a *custom* type's loss has a different cause. This is the fact that decides
+whether the hypothesis holds, and it lives only in her `Config/Mod_3285178686_DefaultsMod.xml` -
+not chased further here to avoid a full-text search of a 350KB settings file. Whoever runs the next
+live check should look at whether `WorkPrioritiesAdvancedMode` is on and, if not, whether
+`WorkPrioritiesBasic` names "Cleaning" (and, separately, whether a custom type could ever appear
+there at all) before trusting either a red or a green result from it.
+
 The same-day addition of a read-back assertion and a `disabled/visible/useWorkPriorities/hidden`
 diagnostic to `SetPriority`/`HasPriority` (`Tests/Pickle/Source/ColonySteps.cs`) exists to separate
 "the game never took the value" from "something later dropped it" on the next run — exactly the
