@@ -227,8 +227,9 @@ version alpha1g1).
    Complex Jobs' split ones the group is the `defName`; for those it is the vanilla parent
    (`FSFNurse` → `Doctor`), and a record written under `FSFNurse` would never be read. The
    consequence cannot be avoided: Work Type Tag has **one colour per group**, so styling Complex
-   Jobs' Nurse recolours Doctor and Surgeon too. Either say so in the style dialog or skip the
-   link for a type whose group differs from its `defName`.
+   Jobs' Nurse recolours Doctor and Surgeon too. **Settled 2026-09-17: write anyway, and say so
+   in the style dialog** when the type's group differs from its `defName`, naming the other types
+   of the group that the colour will reach in Work Type Tag.
 3. `GetOrCreate(group)` — public — returns the record, creating it with the default colour.
 4. Set its public `red`, `green`, `blue` (0–255).
 5. `NotifyGroupChanged(group)` — public — clamps them and drops that group from the presentation
