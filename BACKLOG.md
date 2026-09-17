@@ -244,6 +244,31 @@ patch `GetWorkGiverOption`; the rest of the hits were copies of the game's own a
   option only. The other two carry the same work type and can be decorated from that list — read
   by reflection right after BWT fills it, in the same postfix.
 
+  **The list, read in full 2026-09-17:**
+  - `public static readonly List<FloatMenuOption>` on a `public static class`, full name
+    `Better_Work_Tab.Patches.Patch_FloatMenuOptionProvider_WorkGivers_GetWorkGiverOptionFor`.
+    `AccessTools.TypeByName` and `AccessTools.Field` reach it without any access trick.
+  - **Only one writer.** BWT's `GetWorkGiverOption` postfix adds exactly two entries per
+    unassigned giver, "assign work" first, then the original option. Nothing else in the assembly
+    writes to it.
+  - **Filled and emptied inside one enumeration.** Vanilla's `GetWorkGiversOptionsFor` is an
+    iterator that calls `GetWorkGiverOption` for every giver before its first `yield`. BWT's
+    postfix wraps it: it passes the vanilla options through, which runs all those calls, then
+    yields the list, then clears it. So while any `GetWorkGiverOption` postfix runs, the list holds
+    only the current menu's entries, and the entries for this giver are the ones added during
+    this call.
+  - **How to find them without guessing.** A prefix stores the list's `Count` in `__state`; the
+    postfix decorates every entry from that index to the end. No matching by label, no
+    assumption on the pair's order.
+  - **BWT's postfix has no `HarmonyPriority`**, so it runs at the default 400; ours at
+    `Priority.Last` runs after it and finds the entries already added.
+  - **Grouped options never reach it.** For an equivalence group the method returns `null`, and
+    BWT's postfix returns at once on `null`: those options stay in vanilla's storage and are
+    handled by the slot comparison above.
+  - **One leak, not ours.** The list is cleared only when the enumeration reaches its end. If a
+    caller stops early, entries survive into the next menu. Harmless to the decoration: our index
+    comes from the count at our prefix.
+
 **The dot's texture: `UI/Icons/ColorIndicatorBulb`.** Found by extracting every texture path
 string from the 1.6 assembly (656 of them, UTF-16 at both byte parities) and filtering for round
 shapes. It is the one vanilla uses for exactly this: `Command_ColorIcon` loads it in a
