@@ -122,7 +122,11 @@ file before this audit — absent means `unchecked` per MOD_SETTINGS.md, not a p
 - Verified without launching the game: the project builds clean with the new files
   (`dotnet build Source/WorkStudio.csproj -c Release`); both new XML files parse as well-formed
   XML; `scripts/Check-DefInjected.ps1 -TransMod Mod` reports the two new keys checked with 0
-  errors against the reflected 1.6 def graph.
+  errors against the reflected 1.6 def graph. Also run against the same `MainButtonDefs.xml`,
+  all clean: `Check-XmlFields.ps1` (every element maps to a real 1.6 field), `Check-DefRefs.ps1`
+  (no dangling def reference, no wrong-type reference), `Check-TypeRefs.ps1` (the `workerClass`
+  reference resolves to the mod's own assembly, not an unguarded third-party type), and
+  `Check-ConfigErrors.ps1` (26 load-time rules applied, none triggered).
 - **Not verified**: no in-game or RIMMSQOL pass. Nothing confirms yet that RIMMSQOL (or another
   MainButtons customization mod) actually lists this def, can reveal it, that the button then
   activates and opens the window, or that edits made through it persist identically to edits made
