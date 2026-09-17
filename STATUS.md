@@ -1,7 +1,7 @@
 ---
-localization: partial
-translation_en: partial
-translation_fr: partial
+localization: complete
+translation_en: complete
+translation_fr: complete
 mod:          Work Studio
 packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
@@ -20,7 +20,7 @@ remaining:
   - unverified: settings otherwise have no recorded functional pass at all - no documented run of Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across reload, or the "Reset the whole setup" confirmation
   - unverified: Tests/Pickle (Gherkin, played in game by the Pickle mod) now covers scenarios 1, 2 and 4 to 10 of TESTING.md, written 2026-09-17 and never run - TESTING.md's own note says so explicitly ("Not run yet")
   - unverified: never seen running for anything beyond v1.0.0 - TESTING.md states the up/down arrows, import/export, the startup drift warning, the right-hand column and task ordering, and three successive attempts at the Work tab button have only ever been compiled
-  - unverified: Keyed localization was audited by source inspection only (inventory, EN/FR key parity, placeholder parity, a trace of the two dynamically-passed tooltip keys); no in-game pass in either language yet
+  - unverified: no in-game pass of English or French display yet (raw keys, clipping, fallback text) - the static localization gate is certified complete, but TRANSLATIONS.md tracks this runtime check separately and it must pass before claiming the translations tested in game
 session:      local_df8ae659-1a8e-4bf8-a74a-ff90c6c7ada7
 updated:      2026-09-17
 ---
@@ -36,8 +36,9 @@ l10n -> preTest -> done -> tested`. Correspondence: `port` covers `dansMonoRepo`
 `horsMonoRepo`; `showcase` covers `ModIcon générée`, `Preview générée` and `preOptions`; `preTest`
 covers `options` and `l10n` on top of the workflow's own `preTest`; `done` and `tested` are
 unchanged. Work Studio is set to `showcase`: `horsMonoRepo`, `ModIcon générée`, `Preview générée`
-and `preOptions` are all now satisfied (see below), but `preOptions -> options` is not — the
-`settings_audit` defect and unverified items further down block it.
+and `preOptions` are all now satisfied (see below), and the `l10n` gate is now certified
+`complete` too, but `preOptions -> options` still is not — `settings_audit` stays `partial` until
+an in-game/RIMMSQOL pass runs, which this session cannot do (see "Next: an in-game pass" below).
 
 ## Detachment, 2026-09-17 — `dansMonoRepo -> horsMonoRepo`, now done
 
@@ -156,13 +157,16 @@ shortcut (see the settings audit above): one Def, two DefInjected-covered fields
   under TRANSLATIONS.md's rule on reusing existing keys.
   Every one of the 18 keys carrying a `{0}` placeholder places it identically in both languages;
   no orphaned or missing parameter found.
-- **Not done**: an in-game pass in each language (raw keys, clipping, fallback text) —
-  TRANSLATIONS.md explicitly allows this to remain pending until `preTest`/in-game testing, so it
-  does not by itself block this gate.
+- **Not done, and not required for this certification**: an in-game pass in each language (raw
+  keys, clipping, fallback text). TRANSLATIONS.md is explicit that `complete` "certifies readiness
+  for `preTest`, not in-game validation" and that runtime checks are "recorded separately" in
+  `remaining` — see the `unverified` bullet in the front matter above.
 
-Net: `partial`. The inventory and coverage checks found no defect, but they were a manual trace
-rather than a scripted, exhaustive one (no coverage script applies here — there are no Defs to
-check), so it is recorded as audited-with-no-defect-found rather than certified `complete`.
+Net: `complete` for `localization`, `translation_en` and `translation_fr`. TRANSLATIONS.md's
+three static requirements (inventory every player-facing text, make it localizable, verify EN/FR
+coverage) are all met with evidence above, for both the Keyed surface and the MainButtonDef added
+2026-09-17. Nothing here was inferred from an old stage, an existing language folder, or a bare
+syntax check — each line above is a specific trace or a specific comparison.
 
 ## Dependencies (l10n -> preTest)
 
@@ -190,6 +194,27 @@ confirm the distributed assembly matches current source, since every `.cs` file'
 `Mod/Assemblies/WorkStudio.dll`. The build succeeded and produced a byte-identical DLL: the stale
 mtime came from comment-only and documentation commits, not from unbuilt functional changes. No
 defect there.
+
+## Next: an in-game pass
+
+Every remaining item, in every section above, needs the game running, and this session does not
+launch it. Prepared and ready to hand off:
+
+1. **The MainButtons shortcut.** With RIMMSQOL (or another MainButtons customization mod)
+   installed: reveal `WorkStudio_Settings`, click it, confirm it opens the same window as Mod
+   options -> Work Studio, edit something through it, and check the edit shows up through the
+   other route too.
+2. **The settings window itself**, through Mod options -> Work Studio: open/close/reopen; click
+   "Open the work type editor", "Import / export a setup", and "Reset the whole setup" (with its
+   confirmation); change something and confirm it survives a reload.
+3. **`Tests/Pickle/`**: run the suite per `Tests/Pickle/README.md` (dev mode -> debug actions ->
+   Pickle -> the Work Studio suite -> Run selected, or the `-pickle-run=` command line). It covers
+   TESTING.md scenarios 1, 2 and 4 to 10 unattended.
+4. **The four scenarios Pickle does not cover** (3, 7, 11, 12 — see the README's "What stays
+   manual" table) and the general FR/EN display pass from the localization audit above.
+
+Paste back `Player.log` (prefixed `[Work Studio]`) and whatever Pickle's report says; that is
+enough to fill in `tested_on` and clear the `remaining` list above without guessing at a result.
 
 ## Note, outside this workflow's ladder
 
