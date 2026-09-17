@@ -25,7 +25,7 @@ The icon and colour then show up in five places, each owned by whichever mod dra
 
 | Where | Owner | Entry point, as read in its assembly |
 |---|---|---|
-| In front of the current job | **[baku] Work Type Tag** (3779138895) | Already linked in 1.0.1. It derives a colour from the `defName`; its per-type RGB setting is what we would write. |
+| In front of the current job | **[baku] Work Type Tag** (3779138895) | Linked in 1.0.1 for its label cache only. Its per-type RGB record is reachable, through one internal field, see below. Colour only — it has no icon. |
 | Marker above the pawn, on the map | **Busywork** (3775253009), on **Useful Marks** (3506573327), both by Andromeda | `MarkerProvider.WorkMarkers`, a public static `Dictionary<WorkTypeDef, MarkerSettings>`. 104 icons in `Textures/Marks/`: 81 from Useful Marks, 23 from Busywork. |
 | Colonist bar portrait | **Busywork** | A postfix on `ColonistBarColonistDrawer.DrawColonist` draws `GetMarkerFor(colonist)` in the portrait's top-left corner — the same work marker, read 2026-09-17. In side alignments Useful Marks draws it instead, see below. |
 | Work tab column header | **GrimWorks: Work Manager** (3761759348) | `WorkTypeCategoryUtility.SetCategoryOverride(WorkTypeDef, GW_WorkManager_WorkTypeCategory)`, public static. It colours by **category** and named palette, not by type: we would pick a category, not a colour — and a category also moves the column, see below. |
@@ -86,6 +86,38 @@ Read 2026-09-17 in `Busywork.dll` and `UsefulColonistBar.dll`.
   `atSide` to `GlobalAlignment` — `ApplyGlobalAlignmentToAll()` does it for everyone, and runs
   again on each game load.
 
+### What was verified for Work Type Tag
+
+Read 2026-09-17 in `baku.WorkTypeTag.dll` (Workshop copy; its `BUILD_REQUIRED.txt` names source
+version alpha1g1).
+
+- **One internal door, then a public API.** `WorkTypeTagMod` is public but its `Settings` field is
+  `internal static`, so reflection is needed to reach it. Behind it, `WorkTypeTagSettings` and
+  `WorkTypeColorRecord` are public: `GetOrCreate(groupDefName)` returns the record, whose `red`,
+  `green` and `blue` are public ints, and `NotifyGroupChanged(groupDefName)` clamps them and drops
+  that group from the presentation cache. The resolver itself, and `InvalidateAll` that 1.0.1
+  already calls, are internal.
+- **Keyed by `defName`, as a string.** Rename-safe. The key is a *group*: Complex Jobs' split types
+  fold into their vanilla parent through a fixed table, and anything else, ours included, is its
+  own group.
+- **An unknown type already gets a colour.** Not configured, it takes a hue hashed from the
+  `defName` (FNV-1a, fixed saturation and value) — stable, but nobody chose it.
+- **It is a setting, not save data.** Records live in its `ModSettings`, per install. Nothing in
+  the assembly calls `Write()`: a record we set is only saved if we call it, or when the player
+  next closes its settings window. Its "reset all" clears ours, and records for types deleted in
+  Work Studio are never pruned.
+- **RGB, no alpha, no icon.** The tag is the text `[Label]`, from `labelShort` or else `label`,
+  wrapped in a `<color>` rich-text tag. Our custom types need a sensible `labelShort`.
+- **Same job limit as the others.** The tag reads `job.workGiverDef?.workType`, plus two hardcoded
+  continuations (childcare, cleaning). Jobs from no work giver get no tag.
+- **Where it draws.** Postfixes on `Pawn.GetJobReport` and `Job.GetReport(Pawn)` for the current
+  and queued jobs, and a transpiler on `PawnColumnWorker_WorkPriority.DoHeader` that tints the
+  header **label text**. GrimWorks patches the same `DoHeader` to draw its coloured **plate**
+  behind it: the two may stack, one colouring the text, the other the background. Not seen in
+  play.
+- **The player sets it in its settings window**, one group at a time. Writing from Work Studio
+  overwrites that choice, the same question as GrimWorks.
+
 ### What was verified for GrimWorks
 
 Read 2026-09-17 in `GW_WorkManager.dll`.
@@ -134,6 +166,9 @@ stay bare.
    only when `HasCategoryOverride` is false, once, when a type is created; or a category field in
    the type sheet, kept apart from the colour. Mapping our colour to the nearest category is ruled
    out — the palette belongs to the player and changes under us.
+   **Work Type Tag raises the same question** with less at stake: its record is a plain RGB, the
+   exact field we would own, and moving it moves nothing else. Decide who holds the colour when
+   both screens can edit it.
 3. **Vanilla types too, or only custom ones.** The 1.1.0 plan was the custom-type sheet. Letting a
    player restyle Construction is the same code and a larger save footprint.
 4. **Whether to expose `showMode`.** The colonist bar and the map can be told apart per marker
