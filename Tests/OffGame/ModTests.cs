@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using HarmonyLib;
@@ -64,6 +65,7 @@ internal static class Program
         DeepProfiler.enabled = false;
 
         TheAssemblyWaiver();
+        TheNonPublicMemberScan();
         TheAccessTheModMakes();
         TheHarmonyPatchTargets();
         TheMainButtonsShortcut();
@@ -88,6 +90,153 @@ internal static class Program
             && (string)a.ConstructorArguments[0].Value == "Assembly-CSharp");
 
         Check("WorkStudio.dll declares [assembly: IgnoresAccessChecksTo(\"Assembly-CSharp\")]", has);
+    }
+
+    // --- every non-public Assembly-CSharp member the shipped DLL actually touches ---------------
+
+    // TheAccessTheModMakes below performs a live exercise of the two members PriorityMemory.Restore
+    // touches, but the assembly-wide waiver covers whatever else the mod reaches for too -
+    // WorkTypeRuntime's PawnColumnDef.workerInt and BackstoryDef.cachedDisabledWorkTypes among them.
+    // Per rimworld-tests-hors-jeu's "balayage inverse": walk every method body the mod ships,
+    // resolve every field/method token it references, and flag whichever of those belongs to
+    // Assembly-CSharp and is not public - except a protected member reached from a class that
+    // actually derives from its declaring type, which is ordinary legal C# needing no waiver at all.
+    private static readonly Dictionary<short, OpCode> opcodes = BuildOpcodeTable();
+
+    private static Dictionary<short, OpCode> BuildOpcodeTable()
+    {
+        var table = new Dictionary<short, OpCode>();
+        foreach (FieldInfo f in typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static))
+        {
+            if (f.FieldType == typeof(OpCode))
+            {
+                var code = (OpCode)f.GetValue(null);
+                table[code.Value] = code;
+            }
+        }
+        return table;
+    }
+
+    private static void TheNonPublicMemberScan()
+    {
+        Console.WriteLine();
+        Console.WriteLine("every non-public Assembly-CSharp member the shipped DLL touches:");
+
+        var seen = new SortedSet<string>();
+        var flagged = new SortedSet<string>();
+        int unresolved = 0;
+
+        BindingFlags allMembers = BindingFlags.Public | BindingFlags.NonPublic
+            | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+
+        foreach (Type t in mod.GetTypes())
+        {
+            IEnumerable<MethodBase> methods = t.GetConstructors(allMembers).Cast<MethodBase>()
+                .Concat(t.GetMethods(allMembers).Cast<MethodBase>());
+
+            foreach (MethodBase m in methods)
+            {
+                byte[] il;
+                try { il = m.GetMethodBody()?.GetILAsByteArray(); }
+                catch { continue; }
+                if (il == null) continue;
+
+                int i = 0;
+                while (i < il.Length)
+                {
+                    short opValue = il[i] == 0xFE ? (short)(0xFE00 | il[i + 1]) : il[i];
+                    i += il[i] == 0xFE ? 2 : 1;
+
+                    if (!opcodes.TryGetValue(opValue, out OpCode code))
+                    {
+                        break; // an opcode this table does not know: stop reading this method body
+                    }
+
+                    if (code.OperandType == OperandType.InlineSwitch)
+                    {
+                        int count = BitConverter.ToInt32(il, i);
+                        i += 4 + count * 4;
+                        continue;
+                    }
+
+                    int operandSize = OperandSize(code.OperandType);
+
+                    if (code.OperandType == OperandType.InlineField
+                        || code.OperandType == OperandType.InlineMethod
+                        || code.OperandType == OperandType.InlineTok)
+                    {
+                        int token = BitConverter.ToInt32(il, i);
+                        try
+                        {
+                            MemberInfo member = m.Module.ResolveMember(token);
+                            Inspect(member, t, seen, flagged);
+                        }
+                        catch
+                        {
+                            unresolved++;
+                        }
+                    }
+
+                    i += operandSize;
+                }
+            }
+        }
+
+        foreach (string line in seen) Console.WriteLine("    " + line);
+        if (unresolved > 0) Console.WriteLine("    (" + unresolved + " token(s) left unresolved - generic instantiations, not a game reference)");
+
+        // The mod deliberately uses Krafs.Publicizer, so finding non-public members here is
+        // expected, not a defect - the defect (rimworld-tests-hors-jeu's "the mod publicises"
+        // chapter) is finding them WITHOUT the waiver that makes touching them legal. That is the
+        // conditional form the same chapter's "critere qui ne marche pas" section settles on.
+        bool waiverPresent = mod.GetCustomAttributesData().Any(a =>
+            a.AttributeType.Name == "IgnoresAccessChecksToAttribute"
+            && a.ConstructorArguments.Count == 1
+            && (string)a.ConstructorArguments[0].Value == "Assembly-CSharp");
+
+        Check(flagged.Count == 0
+                ? "no non-public Assembly-CSharp member is touched outside a legal protected/subclass access"
+                : flagged.Count + " non-public member(s) touched (" + string.Join(", ", flagged)
+                  + "), all legal only because the assembly declares IgnoresAccessChecksTo",
+            flagged.Count == 0 || waiverPresent);
+    }
+
+    private static void Inspect(MemberInfo member, Type callingType, SortedSet<string> seen, SortedSet<string> flagged)
+    {
+        Type declaringType = member.DeclaringType;
+        if (declaringType == null || declaringType.Assembly != typeof(Pawn).Assembly)
+        {
+            return; // not a reference into the game at all
+        }
+
+        bool isPublic = member is FieldInfo field ? field.IsPublic
+            : member is MethodBase method ? method.IsPublic
+            : true;
+        if (isPublic) return;
+
+        bool isProtected = member is FieldInfo pf ? pf.IsFamily || pf.IsFamilyOrAssembly
+            : member is MethodBase pm && (pm.IsFamily || pm.IsFamilyOrAssembly);
+        bool exempt = isProtected && declaringType.IsAssignableFrom(callingType);
+
+        string label = declaringType.Name + "." + member.Name + (exempt ? "  (protected, reached from a subclass - no waiver needed)" : "");
+        seen.Add(label);
+        if (!exempt) flagged.Add(declaringType.Name + "." + member.Name);
+    }
+
+    private static int OperandSize(OperandType type)
+    {
+        switch (type)
+        {
+            case OperandType.InlineNone: return 0;
+            case OperandType.ShortInlineBrTarget:
+            case OperandType.ShortInlineI:
+            case OperandType.ShortInlineVar: return 1;
+            case OperandType.InlineVar: return 2;
+            case OperandType.InlineI8:
+            case OperandType.InlineR: return 8;
+            default: return 4; // InlineBrTarget, InlineField, InlineI, InlineMethod, InlineSig,
+                                // InlineString, InlineTok, InlineType, ShortInlineR, InlineSig
+        }
     }
 
     // --- the access itself, performed rather than read from metadata -------------------------

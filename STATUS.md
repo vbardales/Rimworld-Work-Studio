@@ -149,10 +149,14 @@ startup, every edit — so this was a live `FieldAccessException` risk on the mo
 path, not a cosmetic gap.
 
 Fixed with `Source/AccessChecks.cs` (one line, the established pattern from `ContentedLivestock`
-and others). Confirmed by mutation: removing that file and rebuilding turns `Tests/OffGame`'s
-first two checks red with a real `FieldAccessException` thrown from inside
-`PriorityMemory.Restore`; restoring it and rebuilding turns them green again. Whether the game's
-own Mono runtime enforces this check at all was never established either way in this codebase
+and others). Confirmed by mutation: removing that file and rebuilding turns two of
+`Tests/OffGame`'s checks red with a real `FieldAccessException` thrown from inside
+`PriorityMemory.Restore`; restoring it and rebuilding turns them green again. A full IL scan added
+the same day (`TheNonPublicMemberScan`, the "balayage inverse" from `rimworld-tests-hors-jeu`)
+found the fix's true scope is wider than the manual reading above: three more private members
+(`GenFilePaths.FolderUnderSaveData`, `DefDatabase<T>.Remove`, `Pawn_WorkSettings.pawn`), all
+already covered by the same one-line waiver. Whether the game's own Mono runtime enforces this
+check at all was never established either way in this codebase
 (same memory chapter, "severity not established" note) — a reason to fix it for free, not a reason
 it would necessarily have been visible in play.
 
@@ -209,12 +213,13 @@ compiled" — never played, and that half of the gate (execution in game) is sti
 **`Tests/OffGame/`** (added 2026-09-17, `WorkStudio.Tests.csproj` + `ModTests.cs`, following the
 established `rimworld-tests-hors-jeu` pattern) instances the shipped `WorkStudio.dll` against the
 installed `Assembly-CSharp.dll` and actually executes real mod and game code, no RimWorld process
-involved: the publicizer waiver (see above), `PriorityMemory.Restore`'s two private-member touches
-performed for real via a Harmony-faked pawn list, the three Harmony patch targets' continued
-existence and signatures in 1.6, the `WorkStudio_Settings` MainButtonDef's declared content and
-its worker's override slot, `PriorityMemory.PriorityFor`'s full fallback chain, a real
+involved: the publicizer waiver, a full IL scan of every non-public Assembly-CSharp member the DLL
+touches (9 found, all legal only because of that waiver), `PriorityMemory.Restore`'s private-member
+touches performed for real via a Harmony-faked pawn list, the three Harmony patch targets'
+continued existence and signatures in 1.6, the `WorkStudio_Settings` MainButtonDef's declared
+content and its worker's override slot, `PriorityMemory.PriorityFor`'s full fallback chain, a real
 `WorkStudioSettings`/`CustomWorkTypeEntry` Scribe export-then-load round trip, and Keyed key/
-placeholder parity between English and French. Result: **25 PASS, 0 FAIL, 1 SKIP** (documented:
+placeholder parity between English and French. Result: **26 PASS, 0 FAIL, 1 SKIP** (documented:
 `MainButtonWorker.Visible`'s real getter is unreachable off-game the same way `ConfigFile` is —
 see `remaining`). Full output in `Tests/OffGame/RESULTS-2026-09-17.md`.
 
