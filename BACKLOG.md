@@ -27,7 +27,7 @@ The icon and colour then show up in five places, each owned by whichever mod dra
 |---|---|---|
 | In front of the current job | **[baku] Work Type Tag** (3779138895) | Already linked in 1.0.1. It derives a colour from the `defName`; its per-type RGB setting is what we would write. |
 | Marker above the pawn, on the map | **Busywork** (3775253009), on **Useful Marks** (3506573327), both by Andromeda | `MarkerProvider.WorkMarkers`, a public static `Dictionary<WorkTypeDef, MarkerSettings>`. 104 icons in `Textures/Marks/`: 81 from Useful Marks, 23 from Busywork. |
-| Colonist bar portrait | **Busywork** | A postfix on `ColonistBarColonistDrawer.DrawColonist` draws `GetMarkerFor(colonist)` in the portrait's top-left corner — the same work marker, read 2026-09-17. Only with its default "upper" alignment, see below. |
+| Colonist bar portrait | **Busywork** | A postfix on `ColonistBarColonistDrawer.DrawColonist` draws `GetMarkerFor(colonist)` in the portrait's top-left corner — the same work marker, read 2026-09-17. In side alignments Useful Marks draws it instead, see below. |
 | Work tab column header | **GrimWorks: Work Manager** (3761759348) | `SetCategoryOverride(WorkTypeDef, GW_WorkManager_WorkTypeCategory)`, public static. It colours by **category** and named palette, not by type: we would pick a category, not a colour. |
 | Right-click action menu | nobody | Our own patch, see below. |
 
@@ -43,8 +43,9 @@ The icon and colour then show up in five places, each owned by whichever mod dra
 - **The trap.** `WorkTypeDef.GetHashCode` combines `defName` and `gerundLabel`, which is mutable.
   An entry inserted before `gerundLabel` is set becomes unreachable. Write at the end of
   `Apply()`, after `SyncCustomTypes` — the same hazard as `InheritedDisabling`.
-- `MarkerSettings` comes from Useful Marks, constructor `(string icon, Color color, int,
-  MarkerConditionNode)`, callable by reflection.
+- `MarkerSettings` comes from Useful Marks. Its constructor is
+  `(string iconName, Color col, string desc, int side, MarkerConditionNode condition = null)` —
+  read 2026-09-17; the 2026-09-11 reading had dropped the `desc` string. Callable by reflection.
 
 ### What was verified for the colonist bar, and what it costs
 
@@ -54,9 +55,25 @@ Read 2026-09-17 in `Busywork.dll` and `UsefulColonistBar.dll`.
   is a postfix that calls `MarkerProvider.GetMarkerFor(colonist)` and draws it at the top-left
   of the portrait. On the map, a prefix on Useful Marks' `DrawMarks` draws the same marker above
   the head, and skips when Useful Marks flags that it is drawing at the colonist bar.
-- **Only in "upper" alignment.** Both draws require `MarkerProvider.GlobalAlignment == 2`, the
-  default. In a side alignment the marker is handed to Useful Marks' own marker list instead, and
-  whether Useful Marks then shows it on the bar was not read.
+- **In every alignment, by two different paths.** Busywork's own two draws require
+  `MarkerProvider.GlobalAlignment == 2` ("upper", the default). In any other alignment,
+  `MarkerProvider.Process` adds the marker to Useful Marks' list instead, and Useful Marks draws
+  that list on the bar too. The chain, each link read:
+  - vanilla `ColonistBarColonistDrawer.DrawColonist` calls the `Vector2` overload of
+    `GenMapUI.DrawPawnLabel`, which forwards to the `Rect` overload;
+  - Useful Marks raises `DrawingAtColonistBar` around `DrawColonist` and postfixes that `Rect`
+    overload; with the flag up and `Settings.DrawMarksOnColonistBar` (default true) it calls
+    `DrawMarks`;
+  - `DrawMarks` calls `ProcessMarkersFor(pawn)`, which runs every `IMarkerProvider.Process`
+    after the player's own markers — so ours is always in the list, never cut by Useful Marks'
+    per-side priority, which only filters its automatic markers;
+  - it places `atSide >= 1` on the right of the label, `<= -1` on the left, `0` underneath,
+    two columns wide.
+- **`showMode` filters the bar.** `ColonistBarAndWorld`, `ColonistBarOnly`, `WorldOnly`. The
+  constructor does not set it, so it keeps the enum's first value, `ColonistBarAndWorld`: our
+  marker shows on both unless we set it. A per-place choice would live here.
+- **The player can turn the bar off.** `DrawMarksOnColonistBar` only governs the side path; the
+  upper path is Busywork's own postfix and ignores it.
 - **The work type is the weakest match.** `ComputeMarker` starts from
   `CurJob.workGiverDef?.workType`, then lets a `JobDef` marker, the joy marker and, for a bill, a
   skill marker override it in turn. A custom type made of bills can show its skill's marker
@@ -90,8 +107,8 @@ stay bare.
    the nearest category, or asks the player to pick a category as a separate field.
 3. **Vanilla types too, or only custom ones.** The 1.1.0 plan was the custom-type sheet. Letting a
    player restyle Construction is the same code and a larger save footprint.
-4. **Side alignment on the colonist bar.** Read how Useful Marks draws its own marker list, to
-   know whether the bar keeps our icon when a player moves Busywork's markers to the side.
+4. **Whether to expose `showMode`.** The colonist bar and the map can be told apart per marker
+   for free; decide whether the type sheet offers it or leaves Busywork's default.
 5. **Equivalence groups in the action menu.** `GetOptions` merges equivalent work-giver options
    into one; check in play that the surviving option keeps its icon.
 6. **One mod or several.** Considered 2026-09-17: a style core with one display mod per place.
