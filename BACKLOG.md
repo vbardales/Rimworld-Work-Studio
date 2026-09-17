@@ -459,6 +459,28 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
    The mods above already split it that way, so Work Studio stays the one place the player
    chooses, and the action menu patch lives in Work Studio unless it proves to conflict with a
    float-menu mod (Useful Marks ships `FloatSubMenu.dll`).
+   **Re-read 2026-09-17, after the decisions on our own animated marks.** The conflict check is
+   done: `FloatSubMenu.dll` patches `FloatMenu.UpdateBaseColor` and `GenUI.DistFromRect` only.
+   Three pieces are now on the table, and they do not all belong together:
+   - **Work Studio** (public, MIT, Workshop 3792836684): the choice in the sheet, the storage, the
+     links to Busywork and Work Type Tag, the action menu mark — which it draws and animates
+     itself, frames included, with no need for anything else.
+   - **Useful Marks Plus**: animates any Useful Marks mark that has frames, by a prefix on
+     `NamePlatePatches.DrawMark`. It needs Useful Marks, not Work Studio, and is useful to anyone
+     who draws animated marks: a mod of its own, filed in the monorepo backlog.
+   - **The marks themselves**: a still in `Textures/Marks/`, frames in `Textures/MarksAnimated/`.
+     Useful Marks loads the stills from every active mod and Plus would find the frames the same
+     way (`ContentFinder` searches all mods), so the marks can ship in whichever mod — nobody
+     needs to depend on the one that carries them.
+   **Recommended: the marks ship in Work Studio.** It is the one piece that uses them without
+   anything else installed (the sheet's picker, the action menu), and with Useful Marks present
+   they appear in its picker for free. A separate marks pack would be a third repository and a
+   third Workshop page for textures only. Plus stays a separate, generic mod; the frame layout
+   (`MarksAnimated/<name>/<name>_NN`) is the only contract the two share, and names carry a
+   `WorkStudio_` prefix, since Useful Marks keeps the first texture of a given name.
+   **This reopens an earlier line.** "Without Useful Marks the sheet offers a colour alone" was
+   written when the icons were Useful Marks' own. With our marks inside Work Studio, the sheet can
+   offer them — and the action menu show them — with or without Useful Marks.
 
 ---
 
