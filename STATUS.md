@@ -218,10 +218,12 @@ touches (9 found, all legal only because of that waiver), `PriorityMemory.Restor
 touches performed for real via a Harmony-faked pawn list, the three Harmony patch targets'
 continued existence and signatures in 1.6, the `WorkStudio_Settings` MainButtonDef's declared
 content and its worker's override slot, `PriorityMemory.PriorityFor`'s full fallback chain, a real
-`WorkStudioSettings`/`CustomWorkTypeEntry` Scribe export-then-load round trip, and Keyed key/
-placeholder parity between English and French. Result: **26 PASS, 0 FAIL, 1 SKIP** (documented:
-`MainButtonWorker.Visible`'s real getter is unreachable off-game the same way `ConfigFile` is —
-see `remaining`). Full output in `Tests/OffGame/RESULTS-2026-09-17.md`.
+`WorkStudioSettings`/`CustomWorkTypeEntry` Scribe export-then-load round trip, Keyed key/
+placeholder parity between English and French, and TESTING.md scenario 7's [baku] Work Type Tag
+label-cache claim proven against that mod's real installed assembly (skips cleanly if not
+subscribed). Result: **29 PASS, 0 FAIL, 1 SKIP** (documented: `MainButtonWorker.Visible`'s real
+getter is unreachable off-game the same way `ConfigFile` is — see `remaining`). Full output in
+`Tests/OffGame/RESULTS-2026-09-17.md`.
 
 `Tests/Pickle/`, an in-game Gherkin harness for the Pickle mod, was written 2026-09-17 and covers
 most of the twelve TESTING.md scenarios, but its own note in `TESTING.md` says "Not run yet" — this
@@ -256,10 +258,13 @@ launch it. Prepared and ready to hand off:
    sit at the tail of `DefDatabase<WorkTypeDef>`, so a mod-less load would only lose their own
    priorities and shift nothing else - see `Tests/Pickle/README.md` for what that check does and
    does not establish).
-4. **What still needs an actual restart**: scenarios 3, 7, 11 (see the README's "What stays
-   manual" table), the other half of 12 (a real restart without the mod, confirming the game
-   tolerates the unread `<workStudioPriorities>` node and that moved tasks read their original
-   `workType`), and the general FR/EN display pass from the localization audit above.
+4. **What still needs an actual restart or a live visual check**: scenario 3 and scenario 11 (see
+   the README's "What stays manual" table); scenario 7's *visual* half — `Tests/OffGame` already
+   proves the cache-clearing mechanism against Work Type Tag's real assembly, but not that the
+   label actually redraws correctly on screen; the other half of scenario 12 (a real restart
+   without the mod, confirming the game tolerates the unread `<workStudioPriorities>` node and that
+   moved tasks read their original `workType`); and the general FR/EN display pass from the
+   localization audit above.
 
 Paste back `Player.log` (prefixed `[Work Studio]`) and whatever Pickle's report says; that is
 enough to fill in `tested_on` and clear the `remaining` list above without guessing at a result.

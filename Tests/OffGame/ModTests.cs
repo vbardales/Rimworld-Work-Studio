@@ -22,12 +22,14 @@ internal static class Program
 
     private static Assembly mod;
     private static string modFolder;
+    private static string managedFolder;
 
     private static void Main(string[] args)
     {
         string managed = args.Length > 0 ? args[0] : Metadata("RimWorldManaged");
         string modAssembly = args.Length > 1 ? args[1] : Metadata("ModAssembly");
         modFolder = args.Length > 2 ? args[2] : Metadata("ModFolder");
+        managedFolder = managed;
 
         // Assembly-CSharp pulls in Unity assemblies that are not beside this executable.
         AppDomain.CurrentDomain.AssemblyResolve += (s, e) =>
@@ -72,6 +74,7 @@ internal static class Program
         ThePriorityFallback();
         TheConfigRoundTrip();
         TheKeyedCoverage();
+        TheWorkTypeTagCompat();
     }
 
     // --- the publicizer waiver -----------------------------------------------------------------
@@ -598,6 +601,90 @@ internal static class Program
             }
         }
         return found.Distinct().OrderBy(n => n).ToArray();
+    }
+
+    // --- TESTING.md scenario 7, off-game: [baku] Work Type Tag's label cache -------------------
+
+    // WorkTypeTagCompat.Notify() looks up baku.WorkTypeTag.WorkTypeColorResolver by name and calls
+    // its InvalidateAll(), on the strength of a comment: that mod caches a work type's label the
+    // first time it draws it, keyed by the WorkTypeDef instance, and only clears that cache from
+    // its own settings window - so a rename from Work Studio would otherwise leave the old name in
+    // front of a colonist's current job until a restart. This proves that claim by loading the real
+    // Work Type Tag assembly (if it is installed - Workshop item 3779138895) and driving its own
+    // GetPresentation/InvalidateAll for real, the same way rimworld-tests-hors-jeu drives Scribe or
+    // PatchOperation: real third-party code, not a description of it.
+    private static void TheWorkTypeTagCompat()
+    {
+        Console.WriteLine();
+        Console.WriteLine("[baku] Work Type Tag's label cache, the compat WorkTypeTagCompat.Notify() targets:");
+
+        string dll = FindWorkTypeTagAssembly();
+        if (dll == null)
+        {
+            Skip("Work Type Tag (Workshop 3779138895) not found locally - subscribe it to run this check");
+            return;
+        }
+
+        Assembly tag;
+        Type resolverType;
+        try
+        {
+            tag = Assembly.LoadFrom(dll);
+            resolverType = tag.GetType("baku.WorkTypeTag.WorkTypeColorResolver", true);
+        }
+        catch (Exception e)
+        {
+            Skip("loading Work Type Tag: " + Innermost(e).GetType().Name + " - " + Innermost(e).Message);
+            return;
+        }
+
+        MethodInfo getPresentation = AccessTools.Method(resolverType, "GetPresentation");
+        FieldInfo labelField = AccessTools.Field(tag.GetType("baku.WorkTypeTag.WorkTypePresentation"), "label");
+        Type compatType = ModType("WorkStudio.WorkTypeTagCompat", true);
+        MethodInfo notify = compatType == null ? null : AccessTools.Method(compatType, "Notify");
+        if (getPresentation == null || labelField == null || notify == null)
+        {
+            Skip("Work Type Tag's internals or WorkStudio.WorkTypeTagCompat.Notify() changed - not found");
+            return;
+        }
+
+        var type = new WorkTypeDef { defName = "PickleWorkTypeTagCompat", label = "before" };
+
+        string Label() => (string)labelField.GetValue(getPresentation.Invoke(null, new object[] { type }));
+
+        Check("Work Type Tag capitalises and caches the label the first time it is drawn",
+            Label() == "Before");
+
+        type.label = "after";
+        Check("without invalidation, the cache still shows the label from before the rename - " +
+              "proving the compat call is not a no-op", Label() == "Before");
+
+        // WorkStudio.WorkTypeTagCompat.Notify() itself, not a reimplementation of what it does:
+        // it looks up baku.WorkTypeTag.WorkTypeColorResolver by name (AccessTools.TypeByName, which
+        // searches every loaded assembly) and calls its InvalidateAll(). Since this test already
+        // loaded Work Type Tag's real assembly above, that lookup finds the real thing.
+        notify.Invoke(null, null);
+
+        Check("after WorkStudio.WorkTypeTagCompat.Notify(), the new label is read", Label() == "After");
+    }
+
+    private static string FindWorkTypeTagAssembly()
+    {
+        try
+        {
+            // .../RimWorld/RimWorldWin64_Data/Managed -> the Steam library's steamapps folder.
+            string steamapps = Path.GetFullPath(Path.Combine(managedFolder, "..", "..", "..", ".."));
+            string workshopMod = Path.Combine(steamapps, "workshop", "content", "294100", "3779138895");
+            if (!Directory.Exists(workshopMod)) return null;
+
+            return Directory.GetFiles(workshopMod, "baku.WorkTypeTag.dll", SearchOption.AllDirectories)
+                .OrderByDescending(f => f) // higher version folders ("1.6" > "1.5" > ...) sort later
+                .FirstOrDefault();
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     // --- silencing Verse.Log ------------------------------------------------------------------

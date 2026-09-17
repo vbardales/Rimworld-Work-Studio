@@ -156,6 +156,11 @@ Rename a vanilla type — *Hauling* to *Portage*, say.
 - If **[baku] Work Type Tag** is installed, the name in front of a colonist's current job changes
   too, without a restart. That one is a cache this mod clears by reflection.
 
+  The cache-clearing itself is proven off-game, against the real third-party assembly, by
+  `Tests/OffGame`'s `TheWorkTypeTagCompat` check (skips cleanly if that Workshop item is not
+  installed on the machine running the suite). What still needs the game: seeing the label actually
+  redraw in front of a moving colonist.
+
 ## 8 — Hide a column
 
 **Proves** that hiding removes the column and nothing else.
@@ -221,8 +226,11 @@ The priority half is also proven from the raw save, without an actual restart, b
 game's own `Assembly-CSharp.dll`, no RimWorld process involved. It found and fixed a real defect
 before it ever shipped: the Publicizer/`GenerateAssemblyInfo=false` combination that silently drops
 the private-member access waiver, which would have thrown `FieldAccessException` on
-`PriorityMemory.Restore`'s first call — every startup, every edit. See `Tests/OffGame/RESULTS-*.md`
-for what is covered and what still needs the game (`ConfigFile`'s own file paths, chiefly).
+`PriorityMemory.Restore`'s first call — every startup, every edit. It also loads real third-party
+assemblies from the local Workshop subscription when available (skipping cleanly when not) to
+prove a compatibility claim against the actual mod rather than a description of it — see
+`Tests/OffGame/RESULTS-*.md` for what is covered and what still needs the game (`ConfigFile`'s own
+file paths, chiefly).
 
 ```powershell
 dotnet build Source/WorkStudio.csproj -c Release
