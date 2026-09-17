@@ -565,8 +565,27 @@ both. Not about icons; parked here because the icon study found it.
   category is collapsed or moved, and when its settings change. Work Studio applies its own values
   at startup and on every edit. **Whoever ran last wins**, and loading a save always hands it to
   GrimWorks.
-- It also postfixes `Pawn_WorkSettings.CacheWorkGiversInOrder` — not read yet; it may compete
-  with Work Studio's per-type giver order as well.
+- **For pawns, GrimWorks' list wins outright** — read 2026-09-17 in
+  `GW_WorkManager_CacheWorkGiversInOrder_ApplyPriorities`. The "whoever ran last" above holds for
+  `naturalPriority`, not for the order in which pawns pick up work:
+  - a postfix on `Pawn_WorkSettings.CacheWorkGiversInOrder`, at `HarmonyPriority(0)` so after
+    everyone else, rebuilds each pawn's cached normal and emergency lists by reflection
+    (`workGiversInOrderNormal`, `workGiversInOrderEmerg`);
+  - it sorts every giver by three keys: its **effective priority** for that pawn
+    (`WorkGiverPriorityRegistry.GetEffectivePriority`, GrimWorks' per-pawn, per-giver priorities —
+    not read), then the **position of its work type in GrimWorks' list** (`OrderIndexFor`), then
+    its **index in the vanilla cache**;
+  - so between two types at the same priority, the pawn follows GrimWorks' list and never
+    `naturalPriority`. Work Studio's `priorityOverrides` still move the vanilla cache, but that
+    only breaks ties GrimWorks has already settled. A type missing from the list gets
+    `int.MaxValue`: picked up last.
+- **Within a type, Work Studio's order survives as the last tie-break.** The vanilla cache follows
+  `workGiversByPriority`, which is where Work Studio puts its per-type task order, and
+  `originalIndex` keeps that order among givers with the same effective priority and type. The
+  moment a player gives two givers different priorities in GrimWorks' giver window, GrimWorks'
+  priorities win.
+- The same postfix also drops givers with no work type or an effective priority of 0, and moves
+  some givers to the emergency list (`ShouldPromoteToEmergencyQueue`, a GrimWorks setting).
 
 **Where a custom type lands.** `EnsureOrderList` inserts a type missing from the list after the
 last type of the **same category**. A custom type is `Unsupported`, and no stock type is, so it
@@ -582,7 +601,9 @@ category — until the game restarts. A deleted type's captured column is filter
 only.
 
 **Before starting.**
-1. Read the `CacheWorkGiversInOrder` postfix, to know whether the giver order conflicts too.
+1. ~~Read the `CacheWorkGiversInOrder` postfix.~~ Read 2026-09-17, above: between types GrimWorks'
+   list decides for pawns; within a type Work Studio's order holds until GrimWorks' per-giver
+   priorities differ. `WorkGiverPriorityRegistry` itself is not read.
 2. Decide who owns the order when both are installed: Work Studio stands down (and says so in its
    window), writes GrimWorks' list through its public `MoveWorkTypeToIndex`, or re-applies its
    own values after GrimWorks' hooks.
