@@ -7,8 +7,8 @@ mod:          Work Studio
 packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
 visibility:   public
-detached:     no
-stage:        port
+detached:     yes
+stage:        showcase
 licence:      open
 licence_at:   this mod's own code is MIT and nothing of Achtung! is redistributed, but the technique came from it and it is a named debt, so the source's licence decides: MIT, LICENSE-achtung.txt
 dependencies: declared
@@ -35,8 +35,8 @@ remaining:
       no in-game pass in either language, no run of a formal coverage script (not applicable here,
       the mod ships no Defs and no DefInjected paths).
 session:      audited 2026-09-17, full workflow audit against PUBLISHING.md / STYLE_RIMWORLD.md /
-              MOD_SETTINGS.md / TRANSLATIONS.md, against monorepo revision 30f2c3ec
-              (WorkStudio tree 0877d10e before this session's own STATUS.md edit)
+              MOD_SETTINGS.md / TRANSLATIONS.md; detached from the monorepo the same day, this
+              repository's own history now tipped at 4941be7e, matching origin/main
 updated:      2026-09-17
 ---
 
@@ -50,31 +50,40 @@ updated:      2026-09-17
 l10n -> preTest -> done -> tested`. Correspondence: `port` covers `dansMonoRepo` and
 `horsMonoRepo`; `showcase` covers `ModIcon générée`, `Preview générée` and `preOptions`; `preTest`
 covers `options` and `l10n` on top of the workflow's own `preTest`; `done` and `tested` are
-unchanged. Work Studio is set to `port` because it has not reached `horsMonoRepo` — see below —
-even though its images, description text and settings code are already largely in place.
+unchanged. Work Studio is set to `showcase`: `horsMonoRepo`, `ModIcon générée`, `Preview générée`
+and `preOptions` are all now satisfied (see below), but `preOptions -> options` is not — the
+`settings_audit` defect and unverified items further down block it.
 
-## Detachment audit, 2026-09-17 — blocks `dansMonoRepo -> horsMonoRepo`
+## Detachment, 2026-09-17 — `dansMonoRepo -> horsMonoRepo`, now done
 
-Checked directly, not from `detached: no` alone:
+Found blocked at audit time, fixed the same day. The GitHub repository already existed
+(`vbardales/Rimworld-Work-Studio`, pushed via `git subtree push` at some past point) but had
+drifted from the monorepo's current content, and the folder itself was still tracked inside the
+monorepo — `detached: no` was accurate.
 
-- `git rev-parse --show-toplevel` from inside `WorkStudio/` returns the **monorepo root**
-  (`C:/Users/nelim/Documents/rimworld`), not a repo of its own. `git ls-files -- WorkStudio` still
-  lists 41 tracked paths in the monorepo's index, and the monorepo's own recent history
-  (`a3bb4727`, `9d7fce71`, …) is commits made *to this path*, not to an autonomous repo. The
-  monorepo's `.gitignore` has no `WorkStudio/` line.
-- A `workstudio` remote does exist, but only on the **monorepo**, pointing at
-  `https://github.com/vbardales/Rimworld-Work-Studio.git`. That GitHub repo exists and has a
-  `main` branch, so the first half of detachment (publish an import commit) happened at some
-  point. The second half — `git init` inside `WorkStudio/`, point it at that remote, retire the
-  path from the monorepo's index and `.gitignore` it — never did.
-- The two halves have also drifted apart: `git rev-parse HEAD:WorkStudio` and
-  `git rev-parse workstudio/main^{tree}` are different tree objects. Whatever was pushed is stale
-  against the monorepo's current content, so even a plain `reset --mixed FETCH_HEAD` is not
-  available as a shortcut here — the mod needs the divergence resolved, not just a local `git
-  init`, before its own repo can be considered authoritative.
+Resolution: found the monorepo commit (`595179b9`) whose `WorkStudio` subtree matched the stale
+remote tip exactly (proof: equal `rev-parse` on both sides), then replayed the 18 monorepo commits
+since that point onto the remote tip with `git commit-tree`, one per commit, each using that
+commit's own `WorkStudio` subtree as its tree and its original author/committer identity and
+dates. The replayed tip's tree (`57a9d5d0`) matched `HEAD:WorkStudio` exactly before push. Pushed
+as a fast-forward (`549af77c..4941be7e`, no `--force` needed) rather than the "redo the import"
+recipe, since the existing history had real content worth keeping rather than being a single stale
+import commit.
 
-Everything downstream keeps whatever independent validation it already has; it just cannot lift
-the overall stage past `port` until this is resolved.
+The folder then became its own repository: `git init -b main` inside `WorkStudio/`,
+`origin` pointed at the same GitHub URL, `git fetch`, `git reset --mixed FETCH_HEAD` — HEAD and
+index moved to the fetched commit without touching a single file on disk, `git status` came back
+empty. `main` now tracks `origin/main`.
+
+On the monorepo side: the path was retired from the shared index and `/WorkStudio/` added to the
+monorepo's `.gitignore`, built through a private index so as not to disturb the several other
+detachments other sessions had staged concurrently in the same file (`PoultryVarietyPackRenew`,
+`AlphaMythologyRenew`, `ImperialFurnishings`, …were left exactly as found, still pending their own
+commits). Landed as monorepo commit `3dd1b149` by compare-and-swap (`update-ref` with the old tip
+as a guard), then the shared/common index was realigned to match. The `workstudio` remote was
+removed from the monorepo, per the "one remote per mod, and it is not the monorepo" rule.
+
+`detached` is now `yes`, `repo` still names `Rimworld-Work-Studio`, unchanged.
 
 ## Showcase and preOptions
 
@@ -185,8 +194,7 @@ defect there.
 `Mod/About/PublishedFileId.txt` and `workshop: 3792836684` show the mod was uploaded to the
 Workshop at some point, ahead of where this audit finds it today. That is a pre-existing fact
 about the account's Workshop item, not something this audit can undo, and it does not raise the
-stage recorded here — the workflow being audited stops at `tested`, and this mod has not reached
-even `horsMonoRepo` on it.
+stage recorded here — the workflow being audited stops at `tested`, well short of `published`.
 
 ## Prior automatic sweep, 2026-09-12
 
