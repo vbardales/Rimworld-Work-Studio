@@ -201,8 +201,9 @@ Read in full 2026-09-17, and the simple postfix is **not enough**:
 - **Duplicates are dropped by label.** `tmpUsedLabels` discards an option whose label another giver
   already produced. Whichever giver wins, the icon follows its work type; nothing to handle.
 - **Disabled options too.** Everything that reaches the end of the method gets through, including
-  "Cannot …: not assigned to …". Decide whether those carry the icon; it arguably helps, since it
-  names the work type the player has to enable.
+  "Cannot …: not assigned to …". **Settled 2026-09-17: they carry the icon too** — it names the
+  work type the player has to enable. So the postfix decorates every non-null option, with no
+  test on `Disabled`.
 - **The size is measured after us.** `FloatMenu` calls `SetSizeMode` on every option when it is
   built, and `IconOffset` counts `iconTex` then. Setting the field in a postfix reserves the icon's
   width; no need to go through a constructor.
