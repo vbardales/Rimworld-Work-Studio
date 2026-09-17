@@ -60,6 +60,23 @@ Two rules on top:
 sheet, never on every `Apply()`. A choice made in Busywork's or Work Type Tag's own screen is
 overwritten only by an explicit choice made in Work Studio.
 
+**But a custom type's Busywork marker does not survive a restart on its own.** Read 2026-09-17:
+- Busywork saves **every** entry of `WorkMarkers` into its own settings whenever they are written
+  (`BuildSavedList`), ours included, and rebuilds the dictionary at startup from that list
+  (`ApplyLoadedMarkers`, which clears it first), looking each type up with `GetNamedSilentFail`.
+- That happens in its `[StaticConstructorOnStartup]` bootstrap, **before** Work Studio's
+  `ExecuteWhenFinished` recreates the custom `WorkTypeDef`s. The lookup finds nothing, the entry is
+  dropped, and the next time Busywork writes its settings it is gone from its file too.
+- Stock types are not affected: their defs exist when Busywork looks, and Work Studio never
+  changes their `gerundLabel`, so their key stays valid.
+
+So the rule needs one addition for the Busywork link: **at startup, after `Apply()`, write the
+marker of every styled type that is missing from `WorkMarkers` and not in Busywork's
+`ClearedWorkDefs`**. It restores what Busywork could not, and never overwrites anything Busywork
+holds. On an explicit edit, overwrite as before. And when the player edits a custom type's
+`gerundLabel`, remove its entry before the change and put it back after: the key's hash moves with
+it.
+
 **What it means for the icon.** Without Useful Marks, only our action menu would show an icon. So
 without it the sheet offers a colour alone, and the action menu shows a dot in that colour.
 
@@ -376,8 +393,19 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
    - *No linked mod, no player choice:* no mark. The menu then looks exactly like vanilla.
    The fallback is computed when the menu is built, not stored: a colour changed in Work Type
    Tag's own window shows in the next menu.
-4. **Whether to expose `showMode`.** The colonist bar and the map can be told apart per marker
-   for free; decide whether the type sheet offers it or leaves Busywork's default.
+4. **Whether to expose `showMode`.** Read 2026-09-17 in Busywork and Useful Marks; it is not free:
+   - *Only the side path reads it.* Useful Marks' `DrawMarks` filters on `showMode`. Busywork's own
+     two draws — the colonist bar postfix and the prefix above the head — call `DrawMark`
+     directly, with no test on it. In Busywork's default "upper" alignment the setting would do
+     nothing.
+   - *Busywork never touches it.* No reference to `showMode` anywhere in its assembly, no control
+     in its settings window.
+   - *Busywork does not keep it.* Its saved format, `SavedMarker`, holds `defName`, `iconName`
+     and `color` only, and `BuildDefDictionary` rebuilds every entry with a fresh
+     `MarkerSettings`: after a restart `showMode` is back to `ColonistBarAndWorld`, and `atSide`
+     to the global alignment.
+   So a per-type choice would be ignored in the default alignment and forgotten at the next
+   start. Recommended: do not expose it.
 5. **Equivalence groups in the action menu.** Handled by the prefix/postfix pair above, not by a
    plain postfix. Still check in play on a frame, where Construction and Hauling givers compete,
    that the option shown carries the mark of the giver that won.
