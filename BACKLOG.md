@@ -484,6 +484,33 @@ the game's asset bundle, so its look is inferred from that use, and checked in p
    **This reopens an earlier line.** "Without Useful Marks the sheet offers a colour alone" was
    written when the icons were Useful Marks' own. With our marks inside Work Studio, the sheet can
    offer them — and the action menu show them — with or without Useful Marks.
+8. **How a player reaches a type's style.** Read 2026-09-17 in `Dialog_WorkTypes` and
+   `Dialog_EditWorkType`:
+   - *Today the two kinds are reached differently.* Under the task list of the selected type,
+     `DrawManageRow` shows **Rename · Edit · Delete** for a custom type and **Rename · Reset
+     tasks** for a stock one. The sheet, `Dialog_EditWorkType` (620 × 640), is custom-only, and
+     its skill list already takes all the room left above its Apply button.
+   - *Three ways in.*
+     - **A swatch in the type list**, before the label, on every row: it shows the type's
+       effective style — the player's choice, else the linked mods' fallback, else nothing — and
+       clicking it opens the style. One access for both kinds, and the list shows at a glance
+       which types are styled. Clicking the label still selects the row; the swatch needs its own
+       rect, carved from the label's.
+     - **A Style button in the manage row**: a third button for stock types, a fourth for custom
+       ones, which narrows all four.
+     - **A style section in the sheet** for custom types, plus a button for stock ones: two
+       paths to one setting, and the sheet has no room.
+   - *In every case, one shared dialog.* A small `Dialog_WorkTypeStyle`: the mark picker, a colour
+     button, and "use the linked mods' style" to clear the choice. The colour itself can use the
+     game's own picker: `RimWorld.Dialog_ColorPickerBase` is a public abstract `Window` with a hue
+     wheel, a palette and editable text fields, whose subclasses only supply the palette, the
+     default colour and `SaveColor(Color)` — `Dialog_AllowedAreaColorPicker` is a 97-line example.
+   - *Storage follows the existing overrides.* A `styleOverrides` keyed by `defName` for both
+     kinds, like `labelOverrides`, rather than fields in `CustomWorkTypeEntry`: one place for one
+     setting. It must join the four places the other dictionaries already go — `ExposeConfig`
+     (settings and export), `AdoptConfig` (import), the full reset in `WorkTypeRuntime`, and
+     `DeleteType`, which removes a deleted type's keys.
+   Recommended: the swatch in the list, opening the shared dialog.
 
 ---
 
