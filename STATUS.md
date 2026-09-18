@@ -132,18 +132,22 @@ file before this audit — absent means `unchecked` per MOD_SETTINGS.md, not a p
   (no dangling def reference, no wrong-type reference), `Check-TypeRefs.ps1` (the `workerClass`
   reference resolves to the mod's own assembly, not an unguarded third-party type), and
   `Check-ConfigErrors.ps1` (26 load-time rules applied, none triggered).
-- **Not verified**: no in-game or RIMMSQOL pass. Nothing confirms yet that RIMMSQOL (or another
-  MainButtons customization mod) actually lists this def, can reveal it, that the button then
-  activates and opens the window, or that edits made through it persist identically to edits made
-  through Mod options. This remains open in `remaining`.
-- No recorded functional pass on the settings window itself either: no log of opening/closing/
-  reopening through Mod options, changing an option and observing the effect, persistence across
-  a reload, or exercising the confirmation dialogs. `TESTING.md`'s twelve scenarios are about the
-  editor and its effects on the Work tab and colonists, not about the settings window.
+- **Half of it is now verified in game (2026-09-18).** `Tests/Pickle`'s `13-settings-window.feature`
+  builds the def's own `Worker` and activates it exactly as RimWorld would, and the run has it
+  green: the worker is constructed, `Activate()` runs, and `Dialog_WorkStudioSettings` opens. A
+  screenshot of that window is attached to the same report. **Not verified**: RIMMSQOL's own side —
+  that it lists this def, that revealing it puts a real button on the bar, and that clicking that
+  button is what opens the window. No test can close that one; it needs RIMMSQOL installed and a
+  person looking. This remains open in `remaining`.
+- The settings window itself now has a scenario (TESTING.md 13, added 2026-09-18) and a screenshot
+  from a real run, so "what it draws" is recorded. Still missing: opening it through **Mod options**
+  rather than the shortcut, changing an option and observing the effect, persistence across a
+  reload, and the "Reset the whole setup" confirmation dialog.
 
-Net: `partial`, not `not_applicable` (the settings are real and useful) and not `complete` (the
-shortcut now exists and is code- and DefInjected-verified, but no functional or RIMMSQOL pass has
-been run).
+Net: still `partial`. It is no longer "never exercised at runtime" — the shortcut door was opened
+for real on 2026-09-18 and the window drawn and photographed. What keeps it from `complete` is
+narrower than it was: the Mod options door, a value surviving a reload, the reset confirmation, and
+RIMMSQOL. Those four are what `preOptions -> options` now waits on.
 
 ### A real defect this settings work surfaced, found and fixed off-game
 

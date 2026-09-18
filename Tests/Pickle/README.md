@@ -118,8 +118,11 @@ consistent size. After a run:
 copies that set into `Art/Workshop/` under names meant for the page rather than for the test that
 took them. `Art/` is not shipped, so none of it reaches subscribers, and the files are gitignored
 by default — they change every run, and only a set worth publishing belongs in the history
-(`git add -f` one when it is). **They are not publication-ready as they come out**: Pickle's own
-runner panel sits in the corner of every frame and has to be cropped out.
+(`git add -f` one when it is).
+
+Pickle's own runner panel sits in the corner of every frame, so a capture is cropped by hand before
+it goes on the page. That was weighed and accepted on 2026-09-18 rather than worked around: the
+script already saves the finding and the naming, and cropping is one step in an image editor.
 
 A screenshot scenario waits *frames*, never ticks: the settings window sets `forcePause`, and a
 tick-based wait behind it would sit until its timeout.
