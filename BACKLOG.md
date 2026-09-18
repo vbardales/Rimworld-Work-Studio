@@ -28,7 +28,7 @@ The icon and colour then show up in five places, each owned by whichever mod dra
 | In front of the current job | **[baku] Work Type Tag** (3779138895) | Linked in 1.0.1 for its label cache only. Its per-type RGB record is reachable, through one internal field, see below. Colour only — it has no icon. |
 | Marker above the pawn, on the map | **Busywork** (3775253009), on **Useful Marks** (3506573327), both by Andromeda | `MarkerProvider.WorkMarkers`, a public static `Dictionary<WorkTypeDef, MarkerSettings>`. 104 icons in `Textures/Marks/`: 81 from Useful Marks, 23 from Busywork. |
 | Colonist bar portrait | **Busywork** | A postfix on `ColonistBarColonistDrawer.DrawColonist` draws `GetMarkerFor(colonist)` in the portrait's top-left corner — the same work marker, read 2026-09-17. In side alignments Useful Marks draws it instead, see below. |
-| Work tab column header | **GrimWorks: Work Manager** (3761759348) | `WorkTypeCategoryUtility.SetCategoryOverride(WorkTypeDef, GW_WorkManager_WorkTypeCategory)`, public static. It colours by **category** and named palette, not by type: a category also moves the column. **Not linked**, see the rule below. |
+| Work tab column header | **Work Studio itself, decided 2026-09-18** | Was filed under GrimWorks, which is now dropped from this plan: SkillIcons is handing its drawing code over. See "The icons come from SkillIcons" below. |
 | Right-click action menu | nobody | Our own patch, see below. |
 
 ### Licences of the linked mods
@@ -63,6 +63,90 @@ as "all rights reserved" and forbade copying a mark; that was wrong.
   draw time (`PassionIconAnimations.cs`). Its design rules carry over: the silhouette alone must
   be recognisable, and a tint is a hue remap, never a desaturation.
 
+### The icons come from SkillIcons — handover, 2026-09-18
+
+**Decided by Virginie, relayed by the SkillIcons session (stage `done`,
+`C:\Users\nelim\Documents\rimworld\SkillIcons`). Not started here, and not to be started without
+confirming the scope with her — this entry exists so the decision is not lost in a thread.**
+
+What she decided:
+
+1. The whole skill/work-type icon feature **moves into Work Studio**, including the **12 skill
+   icons drawn in the Bio tab**, not only the 23 work-type ones. SkillIcons goes back to being a
+   passions-only mod.
+2. Work Studio becomes the method for the **Work tab column header** row of the table above.
+   **GrimWorks is dropped from that plan entirely** — consistent with what this file already said
+   about it: its "colour" is a category, which also moves the column, so it could never receive a
+   per-type icon choice.
+3. **No fallback.** A player with SkillIcons and without Work Studio sees no skill or work-type
+   icons at all; SkillIcons keeps no copy. That is this file's own "never two drawings in one
+   place" rule, applied.
+
+This turns the "au pire, on fera les nôtres" line above into the actual plan, with the drawings
+already made rather than still to draw.
+
+**Where the material is.** SkillIcons commit `80d3446207d408480d8e69d9b1cd2a895a06384c`. The
+session was asked to hold the deletion and agreed, so at the time of writing it is **still in that
+tree**; after it goes, everything below is reachable with `git show` on that hash.
+
+| What | Where, in SkillIcons |
+|---|---|
+| The code | `_tools/animation-source/Source/SkillIcons/SkillTypeIcons.cs`, ~120 lines, two Harmony prefixes |
+| Skill textures | `Mod/1.6/Textures/Skills/`, 12 PNG named by `SkillDef` defName |
+| Work type textures | `Mod/1.6/Textures/WorkTypes/`, 23 PNG named by `WorkTypeDef` defName |
+| The drawings | `_tools/gen.js` lines **1144–1426**, `// ===== SKILLS` at 1144, `// ===== WORK TYPES` at 1284 |
+| Shared helpers it needs | the palette (l. 5+), primitives `fill/poly/circ/arc/line/cut/K/rot/lens` (l. 196–261), `head`, and the `mono` colour function |
+| Settings | `showSkillIcons`, `showWorkTypeIcons`, `workTabHeaderMode` (0 both / 1 icon only / 2 label only, clamped in `ExposeData`) |
+| Keys, EN+FR | `SkillIcons.Types`, `.SkillIcons`, `.SkillIconsDesc`, `.WorkTypeIcons`, `.WorkTypeIconsDesc`, `.HeaderBoth`, `.HeaderIcon`, `.HeaderLabel` |
+
+**How the two patches work**, as described by the session that wrote them:
+
+- A prefix on `RimWorld.SkillUI.DrawSkill(SkillRecord, Rect, SkillDrawMode, string)` **shrinks the
+  rect** and draws the skill icon in the freed space — deliberately layout-independent, it does not
+  hunt for the label, bar or passion positions.
+- A prefix on `PawnColumnWorker_WorkPriority.DoHeader`, falling back to `PawnColumnWorker.DoHeader`
+  through `AccessTools` when the subclass does not redeclare it. Returning `false` is what
+  implements "icon only", and it re-registers the tooltip the suppressed label carried
+  (`gerundLabel.CapitalizeFirst() + "\n\n" + description`, keyed on `shortHash`). **When it falls
+  back, every column is patched**, Name and Sex included; harmless, since those have no `workType`
+  and the prefix hands control straight back, but it looks alarming in a profiler and the code
+  carries a comment saying so.
+
+**Four defects in that settings UI, seen on screen 2026-09-18 — fix while porting, do not carry
+over:**
+
+1. The three header-mode radios have **no tooltip**, unlike the work-tab-mode radios right above
+   them, which all have one.
+2. **Nothing introduces the radio group** — no sub-heading; they hang straight off the two
+   checkboxes.
+3. They are **dead controls** when "icons on work tab columns" is unchecked, and nothing says so.
+   `MOD_SETTINGS.md` §3 requires a dependent control to communicate why it is unavailable.
+4. The French string says "colonnes du **Work Tab**" — untranslated, while the line above it
+   correctly says "onglet du personnage". RimWorld FR calls that tab **Travail**.
+
+**The design rule that comes with the drawings**, verbatim from SkillIcons' README, because each
+failure is a trap that recurs. This set obeys the **opposite** rule to the passions: monochrome,
+shape alone — colour already means "which passion" there, and making it mean "which skill" as well
+would render both unreadable.
+
+| icon | what went wrong | why |
+|---|---|---|
+| Shooting | the rifle became a horizontal smear | long thin objects have no silhouette at 20 px; this is why icon sets reach for a target |
+| Construction | the trowel read as a downward arrow | a triangle pointing down belongs to nobody |
+| Mining | the pickaxe read as an **umbrella** | an arc centred on a vertical handle *is* an umbrella — it took both asymmetry and a diagonal to fix |
+| Firefighter | the flame read as a water drop | a flame is named by its irregular base, not by its outline; a second tone did not help |
+
+Two things that section does not say, and that matter when porting:
+
+- **The silhouette sheet is what catches those.** The generator writes every drawing twice — once
+  in colour to `_tools/svg/<set>/`, once all-black to `_tools/sil/` with an `SK_`/`WT_` prefix — and
+  `_tools/build.sh` rasterises both through headless Chrome. **All four failures above look fine at
+  64 px.** Judging without regenerating the sheet at 20 px is judging at the wrong size.
+- **Nine work types deliberately reuse their skill's drawing**, through the `MEME_QUE` map in
+  `gen.js`. "Cook" and "Cooking" name one domain, and two glyphs would imply two notions. If Work
+  Studio later lets a player pick a per-type icon, that map is the sensible **default table**, not
+  something to unpick.
+
 ### When to link another mod, when to write our own code
 
 Agreed 2026-09-17, from the four assemblies read below. One question per place: who already draws
@@ -80,6 +164,9 @@ there, and does it store what we store?
      own header menu already sets it for our types.
 3. **Nobody draws there.** Write our own code.
    - Action menu, the only such place today.
+   - **Work tab column header, since 2026-09-18** — see the handover below. Case 2 had it filed
+     under GrimWorks; the decision moves it here, because the mod that actually stores one icon per
+     work type is giving its code away.
 
 Two rules on top:
 
