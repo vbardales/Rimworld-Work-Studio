@@ -698,12 +698,14 @@ namespace WorkStudio
                     listRect);
             }
 
+            var ambiguous = AmbiguousLabels(tasks);
+
             for (var i = 0; i < tasks.Count; i++)
             {
                 var row = new Rect(0f, i * RowHeight, viewRect.width, RowHeight);
 
                 ReorderableWidget.Reorderable(taskReorderGroup, row);
-                DrawTaskRow(row, tasks[i], i, tasks.Count);
+                DrawTaskRow(row, tasks[i], i, tasks.Count, ambiguous);
             }
 
             Widgets.EndScrollView();
@@ -717,7 +719,8 @@ namespace WorkStudio
             DrawManageRow(manageRow, type, custom);
         }
 
-        private void DrawTaskRow(Rect row, WorkGiverDef giver, int index, int count)
+        private void DrawTaskRow(Rect row, WorkGiverDef giver, int index, int count,
+            HashSet<string> ambiguous)
         {
             if (Mouse.IsOver(row))
             {
@@ -736,7 +739,7 @@ namespace WorkStudio
             var labelRect = new Rect(row.x + ArrowsWidth + 6f, row.y, moveRect.x - row.x - ArrowsWidth - 12f,
                 row.height);
 
-            DrawGiverLabel(labelRect, giver, showOrigin: true);
+            DrawGiverLabel(labelRect, giver, showOrigin: true, ambiguous: ambiguous);
 
             TooltipHandler.TipRegion(moveRect, "WorkStudio.MoveTip".Translate());
             if (Widgets.ButtonText(moveRect, ">") && !ReorderableWidget.Dragging)
@@ -819,6 +822,8 @@ namespace WorkStudio
 
             Widgets.BeginScrollView(listRect, ref addScroll, viewRect);
 
+            var ambiguous = AmbiguousLabels(candidates);
+
             var rowY = 0f;
             foreach (var giver in candidates)
             {
@@ -830,7 +835,7 @@ namespace WorkStudio
                     Widgets.DrawHighlight(row);
                 }
 
-                DrawGiverLabel(row, giver, showOrigin: false, showCurrent: true);
+                DrawGiverLabel(row, giver, showOrigin: false, showCurrent: true, ambiguous);
 
                 if (Widgets.ButtonInvisible(row))
                 {
@@ -855,8 +860,22 @@ namespace WorkStudio
                 .ToList();
         }
 
+        /// <summary>
+        /// The labels a list shows more than once. Two <see cref="WorkGiverDef"/>s may legitimately
+        /// carry the same label — vanilla ships several, and a mod list adds more — and the rows are
+        /// then indistinguishable on screen, which matters in a column whose whole purpose is
+        /// clicking one row rather than the other. Their defNames are drawn beside them.
+        /// </summary>
+        private static HashSet<string> AmbiguousLabels(List<WorkGiverDef> givers)
+        {
+            return new HashSet<string>(givers
+                .GroupBy(GiverLabel)
+                .Where(group => group.Count() > 1)
+                .Select(group => group.Key));
+        }
+
         private static void DrawGiverLabel(Rect rect, WorkGiverDef giver, bool showOrigin,
-            bool showCurrent = false)
+            bool showCurrent = false, HashSet<string> ambiguous = null)
         {
             var anchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -880,6 +899,23 @@ namespace WorkStudio
 
             var label = GiverLabel(giver);
             Widgets.Label(labelRect, label.Truncate(labelRect.width));
+
+            // Only when the label alone would not say which row this is: the defName is developer
+            // text, and putting it on every row would make the column harder to read, not easier.
+            if (ambiguous != null && ambiguous.Contains(label))
+            {
+                var used = Mathf.Min(Text.CalcSize(label).x, labelRect.width);
+                var defNameRect = new Rect(labelRect.x + used + 6f, labelRect.y,
+                    labelRect.width - used - 6f, labelRect.height);
+
+                if (defNameRect.width > 0f)
+                {
+                    var color = GUI.color;
+                    GUI.color = new Color(1f, 1f, 1f, 0.45f);
+                    Widgets.Label(defNameRect, giver.defName.Truncate(defNameRect.width));
+                    GUI.color = color;
+                }
+            }
 
             Text.Anchor = anchor;
 

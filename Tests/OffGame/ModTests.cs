@@ -77,6 +77,7 @@ internal static class Program
         TheWorkTypeTagCompat();
         TheBetterWorkTabColumnOrder();
         TheHideColumnRegression();
+        TheAmbiguousTaskLabels();
     }
 
     // --- the publicizer waiver -----------------------------------------------------------------
@@ -894,6 +895,55 @@ internal static class Program
 
         Check("showing the type again still keeps the priority",
             values[0] == 2 && cleaning.visible);
+    }
+
+    // --- the editor's duplicate-label disambiguation ------------------------------------------
+
+    // Two WorkGiverDefs can carry the same label and vanilla ships several - "construct placed
+    // frames" belongs to both Construction and Art, "carry to growth vat" appears twice in Hauling.
+    // On screen those rows were indistinguishable, in a column whose whole point is clicking one
+    // rather than the other, so the editor now draws the defName beside a label it shows twice.
+    // Which labels those are is a pure function, and therefore the one part of this that can be
+    // checked without a GUI at all.
+    private static void TheAmbiguousTaskLabels()
+    {
+        Console.WriteLine();
+        Console.WriteLine("the duplicate-label disambiguation both task columns use:");
+
+        Type dialogType = ModType("WorkStudio.Dialog_WorkTypes", true);
+        MethodInfo ambiguousLabels = dialogType == null ? null : AccessTools.Method(dialogType, "AmbiguousLabels");
+        if (ambiguousLabels == null)
+        {
+            Skip("Dialog_WorkTypes.AmbiguousLabels: not found");
+            return;
+        }
+
+        var shared = new List<WorkGiverDef>
+        {
+            new WorkGiverDef { defName = "PickleFramesConstruction", label = "construct placed frames" },
+            new WorkGiverDef { defName = "PickleFramesArt", label = "construct placed frames" },
+            new WorkGiverDef { defName = "PickleCleanFilth", label = "clean filth" },
+        };
+
+        HashSet<string> found;
+        try
+        {
+            found = (HashSet<string>)ambiguousLabels.Invoke(null, new object[] { shared });
+        }
+        catch (Exception e)
+        {
+            Skip("AmbiguousLabels: " + Innermost(e).GetType().Name + " - " + Innermost(e).Message);
+            return;
+        }
+
+        Check("a label two tasks share is reported ambiguous", found.Count == 1);
+        Check("the label reported is the shared one, capitalised the way the column draws it",
+            found.Contains("Construct placed frames"));
+        Check("a label only one task carries is left alone", !found.Contains("Clean filth"));
+
+        var alone = (HashSet<string>)ambiguousLabels.Invoke(null,
+            new object[] { new List<WorkGiverDef> { shared[2] } });
+        Check("a list with no duplicate at all reports none", alone.Count == 0);
     }
 
     // --- silencing Verse.Log ------------------------------------------------------------------

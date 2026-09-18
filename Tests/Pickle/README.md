@@ -108,6 +108,19 @@ only eyes can.
 Each of those files opens with the list of what to look for in its screenshots. **Run the suite
 once per language** and the same images serve as the English and French display pass.
 
+The same captures are also what the Steam page wants to show, in a clean fixture colony at a
+consistent size. After a run:
+
+```powershell
+.\Art\Update-WorkshopScreenshots.ps1
+```
+
+copies that set into `Art/Workshop/` under names meant for the page rather than for the test that
+took them. `Art/` is not shipped, so none of it reaches subscribers, and the files are gitignored
+by default — they change every run, and only a set worth publishing belongs in the history
+(`git add -f` one when it is). **They are not publication-ready as they come out**: Pickle's own
+runner panel sits in the corner of every frame and has to be cropped out.
+
 A screenshot scenario waits *frames*, never ticks: the settings window sets `forcePause`, and a
 tick-based wait behind it would sit until its timeout.
 

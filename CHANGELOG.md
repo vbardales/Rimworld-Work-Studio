@@ -9,6 +9,10 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 - A hidden MainButtons shortcut (`WorkStudio_Settings`), for RIMMSQOL and similar MainButtons customization mods to reveal. It opens the exact same settings window as Mod options → Work Studio, against the same settings instance, so both routes share values and persistence.
 
+### Changed
+
+- When two tasks in the same column carry the same label, each now shows its `defName` in grey beside it. Vanilla alone has several — *construct placed frames* belongs to both Construction and Art, *carry to growth vat* appears twice — and a mod list adds more; the rows were indistinguishable in a column whose whole purpose is clicking one of them rather than the other. A label shown only once is left alone.
+
 ### Fixed
 
 - `Source/WorkStudio.csproj` combined the Publicizer with `GenerateAssemblyInfo=false`, which silently dropped the waiver that lets this mod read and write a few private fields of `Pawn_WorkSettings` — the same fields `PriorityMemory.Restore` touches on every startup and every edit. Left alone, this was a `FieldAccessException` waiting to happen on at least one runtime (confirmed on the desktop CLR; never observed in the shipped game itself, whose Mono may not enforce the same check). One line restores the waiver.

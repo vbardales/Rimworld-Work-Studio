@@ -14,6 +14,12 @@ Source/bin/
 *.suo
 *.csproj.user
 
+# Workshop screenshots collected from a Pickle @review run by Art/Update-WorkshopScreenshots.ps1.
+# They are regenerated on every run and differ each time - time of day, colonists standing
+# elsewhere - so tracking them by default would fill the history with near-identical 2 MB captures.
+# A set actually worth publishing goes in deliberately: git add -f Art/Workshop/<file>.
+Art/Workshop/*.png
+
 # System
 Thumbs.db
 desktop.ini
