@@ -108,6 +108,88 @@ namespace WorkStudio.PickleSteps
         [When("I let the interface draw")]
         public async Task LetInterfaceDraw(PickleContext ctx) => await ctx.WaitFrames(2);
 
+        /// <summary>
+        /// The other door: vanilla's own Mod options window, hosting the very same
+        /// <c>DoSettingsWindowContents</c>. Opened the way the game opens it, with the mod instance,
+        /// so closing it also runs vanilla's <c>PreClose</c> — which is what writes the settings to
+        /// disk when a player leaves that window.
+        /// </summary>
+        [When("I open the settings window through Mod options")]
+        public async Task OpenSettingsModOptions(PickleContext ctx)
+        {
+            Find.WindowStack.Add(new Dialog_ModSettings(WorkStudioMod.Instance));
+            await ctx.WaitFrames(2);
+        }
+
+        [Then("the Mod options window is drawing Work Studio's own settings")]
+        public void ModOptionsDrawsOurs(PickleContext ctx)
+        {
+            var window = Find.WindowStack.WindowOfType<Dialog_ModSettings>();
+            ctx.Require(window != null, "no Dialog_ModSettings is open");
+
+            var field = typeof(Dialog_ModSettings).GetField("mod", BindingFlags.Instance | BindingFlags.NonPublic);
+            ctx.Require(field != null, "Dialog_ModSettings.mod no longer exists: update the steps");
+
+            // Reference equality, not a name match: it is the single WorkStudioMod instance that
+            // owns the single WorkStudioSettings both doors draw. Two instances would mean two
+            // configurations that only look alike.
+            ctx.Assert(ReferenceEquals(field.GetValue(window), WorkStudioMod.Instance),
+                $"Mod options is hosting '{field.GetValue(window)}', not the running WorkStudioMod");
+        }
+
+        [When("I close the settings window")]
+        public async Task CloseSettings(PickleContext ctx)
+        {
+            Find.WindowStack.WindowOfType<Dialog_ModSettings>()?.Close(doCloseSound: false);
+            Find.WindowStack.WindowOfType<Dialog_WorkStudioSettings>()?.Close(doCloseSound: false);
+            await ctx.WaitFrames(2);
+        }
+
+        [When("the settings are re-read from disk, as a restart would")]
+        public async Task ReloadSettings(PickleContext ctx)
+        {
+            SettingsSandbox.ReloadFromDisk();
+            await ctx.WaitFrames(2);
+        }
+
+        /// <summary>
+        /// Clicks a button by the translation key it draws, not by the text. Pickle tags a button by
+        /// what is on screen, so a literal in a feature file only ever matches one language; a key
+        /// matches whichever is running. Works for vanilla keys too - "Confirm" and "GoBack" are
+        /// what <c>Dialog_MessageBox.CreateConfirmation</c> labels its two buttons with.
+        /// </summary>
+        [When("I click the button keyed {string}")]
+        public async Task ClickKeyed(PickleContext ctx, string key) => await ctx.Click($"btn:{key.Translate()}");
+
+        /// <summary>
+        /// A destructive confirmation is deliberately not clickable the instant it appears. Waiting
+        /// on the dialog's own countdown beats guessing a number of frames, and says what it waits
+        /// for.
+        /// </summary>
+        [When("I wait for the confirmation to become clickable")]
+        public async Task WaitForConfirmation(PickleContext ctx)
+        {
+            var dialog = Find.WindowStack.WindowOfType<Dialog_MessageBox>();
+            ctx.Require(dialog != null, "no confirmation dialog is open to wait for");
+
+            var property = typeof(Dialog_MessageBox).GetProperty("TimeUntilInteractive",
+                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if (property == null)
+            {
+                await ctx.WaitFrames(2);
+                return;
+            }
+
+            await ctx.WaitUntil(() => (float)property.GetValue(dialog) <= 0f, 10f);
+        }
+
+        [Then("a confirmation dialog is open")]
+        public void ConfirmationOpen(PickleContext ctx)
+        {
+            ctx.Assert(Find.WindowStack.WindowOfType<Dialog_MessageBox>() != null,
+                "no Dialog_MessageBox is open: the action went through without asking");
+        }
+
         [When("I close all windows but the main tabs")]
         public async Task CloseTab(PickleContext ctx)
         {

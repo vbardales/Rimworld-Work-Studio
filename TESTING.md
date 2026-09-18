@@ -249,10 +249,24 @@ Open each in turn. Both show the same intro line, the same *Open the work type e
 *Import / export a setup* buttons, the same save note, and *Reset the whole setup* only when there
 is something to reset. Change something through one and reopen the other: the values follow.
 
-`Tests/Pickle`'s `13-settings-window.feature` asserts the shortcut's own half — the def's worker is
-built and activated the way RimWorld would, and the window it opens is checked — and attaches a
-screenshot of the result. **What stays manual is RIMMSQOL itself**: that it lists this def, that
-revealing it puts a real button on the bar, and that the button then opens the same window.
+Then the parts a machine can check on its own:
+
+- **Both doors lead to one room.** The hidden def's worker is built and activated the way RimWorld
+  would; Mod options is opened the way the game opens it, and the window that hosts our settings is
+  checked to be holding the running `WorkStudioMod` itself, by reference — two instances would mean
+  two configurations that merely look alike.
+- **A configuration survives a reload.** Leave the Mod options window (vanilla writes the file in
+  its `PreClose`), throw away the settings held in memory, read the file again: the custom type, the
+  moved task and the hidden column are all still there.
+- **The reset asks first.** With something to reset, the button is offered; clicking it opens a
+  confirmation and **destroys nothing yet**. Confirming clears the configuration; going back leaves
+  it untouched.
+
+`Tests/Pickle`'s `13-settings.feature` holds those, and `13b-settings-visual.feature` photographs
+the window through each door for a person to read.
+
+**What stays manual is RIMMSQOL itself**: that it lists this def, that revealing it puts a real
+button on the bar, and that the button then opens the same window. No test can reach that.
 
 ## Automated off game
 

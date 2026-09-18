@@ -68,6 +68,19 @@ namespace WorkStudio.PickleSteps
             File.Copy(BackupPath, SettingsPath, overwrite: true);
             File.Delete(BackupPath);
 
+            ReloadFromDisk();
+        }
+
+        /// <summary>
+        /// Throws away the settings held in memory and reads the file again, then applies what came
+        /// back — the nearest thing to a restart one process can do. <see cref="Mod.GetSettings{T}"/>
+        /// caches per mod instance, so the cache has to be dropped by hand or the file is never
+        /// touched; <see cref="LoadedModManager.ReadModSettings{T}"/> underneath it re-reads every
+        /// time. Used to put the player's own file back after a scenario, and by the scenario that
+        /// asks whether a configuration survives a reload.
+        /// </summary>
+        public static void ReloadFromDisk()
+        {
             var mod = WorkStudioMod.Instance;
             typeof(Mod).GetField("modSettings", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(mod, null);
             var settings = mod.GetSettings<WorkStudioSettings>();
