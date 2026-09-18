@@ -7,6 +7,7 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using HarmonyLib;
+using UnityEngine;
 using RimWorld;
 using Verse;
 
@@ -78,6 +79,8 @@ internal static class Program
         TheBetterWorkTabColumnOrder();
         TheHideColumnRegression();
         TheAmbiguousTaskLabels();
+        TheIconPatchTargets();
+        TheIconNames();
     }
 
     // --- the publicizer waiver -----------------------------------------------------------------
@@ -944,6 +947,82 @@ internal static class Program
         var alone = (HashSet<string>)ambiguousLabels.Invoke(null,
             new object[] { new List<WorkGiverDef> { shared[2] } });
         Check("a list with no duplicate at all reports none", alone.Count == 0);
+    }
+
+    // --- the icon patch targets, and the drawings themselves -----------------------------------
+
+    // Both targets are resolved by reflection at startup, one of them with a fall-back, so a
+    // signature change in a RimWorld update would show as icons quietly not drawing rather than as
+    // an error. These are the checks that would go red instead.
+    private static void TheIconPatchTargets()
+    {
+        Console.WriteLine();
+        Console.WriteLine("the skill and work type icon patch targets:");
+
+        MethodInfo drawSkill = AccessTools.Method(typeof(SkillUI), nameof(SkillUI.DrawSkill), new[]
+        {
+            typeof(SkillRecord), typeof(Rect), typeof(SkillUI.SkillDrawMode), typeof(string)
+        });
+        Check("SkillUI.DrawSkill(SkillRecord, Rect, SkillDrawMode, string) still exists", drawSkill != null);
+
+        // The prefix takes the rect by reference to shrink it: by position, since Harmony injects
+        // by name and a renamed parameter would silently stop the patch from receiving it.
+        if (drawSkill != null)
+        {
+            ParameterInfo[] parameters = drawSkill.GetParameters();
+            Check("its second parameter is the rect the prefix shrinks",
+                parameters.Length > 1 && parameters[1].ParameterType == typeof(Rect));
+        }
+
+        MethodInfo doHeader = AccessTools.DeclaredMethod(typeof(PawnColumnWorker_WorkPriority), "DoHeader")
+                              ?? AccessTools.Method(typeof(PawnColumnWorker), "DoHeader");
+        Check("a DoHeader to patch is found, declared or inherited", doHeader != null);
+        Console.WriteLine("    (found on " + (doHeader == null ? "nothing" : doHeader.DeclaringType.Name)
+            + (doHeader != null && doHeader.DeclaringType == typeof(PawnColumnWorker)
+                ? " - the fall-back, so every column is patched: harmless, see WorkTypeIcons)" : ")"));
+    }
+
+    // Every icon is named after the def it belongs to, and nothing at runtime says a name is wrong -
+    // ContentFinder simply returns null and the column draws bare. The shipped names are checked
+    // against the reference assembly's own defNames instead, which is the only place off-game that
+    // knows them. A name that belongs to no def would be a drawing nobody ever sees.
+    private static void TheIconNames()
+    {
+        Console.WriteLine();
+        Console.WriteLine("the shipped icons are named after real defs:");
+
+        string skills = Path.Combine(modFolder, "Textures", "WorkStudio", "Skills");
+        string workTypes = Path.Combine(modFolder, "Textures", "WorkStudio", "WorkTypes");
+        Check("Textures/WorkStudio/Skills exists", Directory.Exists(skills));
+        Check("Textures/WorkStudio/WorkTypes exists", Directory.Exists(workTypes));
+        if (!Directory.Exists(skills) || !Directory.Exists(workTypes)) return;
+
+        string[] skillNames = Directory.GetFiles(skills, "*.png").Select(Path.GetFileNameWithoutExtension).ToArray();
+        string[] typeNames = Directory.GetFiles(workTypes, "*.png").Select(Path.GetFileNameWithoutExtension).ToArray();
+
+        Console.WriteLine("    " + skillNames.Length + " skill icon(s), " + typeNames.Length + " work type icon(s)");
+        Check("some skill icons are shipped", skillNames.Length > 0);
+        Check("some work type icons are shipped", typeNames.Length > 0);
+
+        // DefDatabase is empty off-game, so the defNames come from the DefOf classes, which name
+        // every vanilla one as a static field.
+        var knownSkills = new HashSet<string>(typeof(SkillDefOf)
+            .GetFields(BindingFlags.Public | BindingFlags.Static)
+            .Where(f => f.FieldType == typeof(SkillDef)).Select(f => f.Name));
+        var knownTypes = new HashSet<string>(typeof(WorkTypeDefOf)
+            .GetFields(BindingFlags.Public | BindingFlags.Static)
+            .Where(f => f.FieldType == typeof(WorkTypeDef)).Select(f => f.Name));
+
+        string[] strayS = skillNames.Where(n => !knownSkills.Contains(n)).OrderBy(n => n).ToArray();
+        string[] strayT = typeNames.Where(n => !knownTypes.Contains(n)).OrderBy(n => n).ToArray();
+
+        // A DefOf class does not name every def a DLC or another mod adds, so an unknown name is
+        // reported rather than failed - what matters is seeing the list and recognising it.
+        Check("every skill icon is named after a SkillDefOf field"
+              + (strayS.Length > 0 ? "  (not in SkillDefOf: " + string.Join(", ", strayS) + ")" : ""),
+            strayS.Length == 0);
+        Console.WriteLine("    work type icons not named in WorkTypeDefOf (DLC or modded types, expected): "
+            + (strayT.Length == 0 ? "none" : string.Join(", ", strayT)));
     }
 
     // --- silencing Verse.Log ------------------------------------------------------------------

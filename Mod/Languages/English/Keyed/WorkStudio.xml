@@ -73,4 +73,19 @@
   <WorkStudio.Field.Skills>Relevant skills</WorkStudio.Field.Skills>
   <WorkStudio.Apply>Apply</WorkStudio.Apply>
 
+  <!-- Skill and work type icons, handed over from SkillIcons 2026-09-18. -->
+  <WorkStudio.Icons.Section>Icons</WorkStudio.Icons.Section>
+  <WorkStudio.Icons.Skills>Icons in the skill list</WorkStudio.Icons.Skills>
+  <WorkStudio.Icons.SkillsDesc>Draws an icon before each skill name in the character tab.</WorkStudio.Icons.SkillsDesc>
+  <WorkStudio.Icons.WorkTypes>Icons on Work tab columns</WorkStudio.Icons.WorkTypes>
+  <WorkStudio.Icons.WorkTypesDesc>Draws an icon at the foot of each Work tab column header.</WorkStudio.Icons.WorkTypesDesc>
+  <WorkStudio.Icons.HeaderMode>What a column header shows</WorkStudio.Icons.HeaderMode>
+  <WorkStudio.Icons.HeaderModeUnavailable>Available once icons on Work tab columns are switched on.</WorkStudio.Icons.HeaderModeUnavailable>
+  <WorkStudio.Icons.HeaderBoth>Icon and label</WorkStudio.Icons.HeaderBoth>
+  <WorkStudio.Icons.HeaderBothDesc>The usual header, with the icon added at its foot.</WorkStudio.Icons.HeaderBothDesc>
+  <WorkStudio.Icons.HeaderIcon>Icon only</WorkStudio.Icons.HeaderIcon>
+  <WorkStudio.Icons.HeaderIconDesc>Narrower columns, since the name is dropped. Hovering a header still says what the column is.</WorkStudio.Icons.HeaderIconDesc>
+  <WorkStudio.Icons.HeaderLabel>Label only</WorkStudio.Icons.HeaderLabel>
+  <WorkStudio.Icons.HeaderLabelDesc>The vanilla header, with no icon on it. The skill list keeps its own.</WorkStudio.Icons.HeaderLabelDesc>
+
 </LanguageData>

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 
 namespace WorkStudio
@@ -46,6 +47,18 @@ namespace WorkStudio
         /// <summary>Missing tasks already reported: the same warning is not repeated.</summary>
         public List<string> reportedMissingTasks = new List<string>();
 
+        /// <summary>
+        /// Icons in the character tab's skill list, and at the foot of each Work tab column
+        /// header. Display preferences, deliberately kept out of <see cref="ExposeConfig"/>:
+        /// importing someone else's setup should not silently change what your own screen draws.
+        /// </summary>
+        public bool showSkillIcons = true;
+
+        public bool showWorkTypeIcons = true;
+
+        /// <summary>One of <see cref="WorkTypeIcons"/>'s three header constants.</summary>
+        public int workTabHeaderMode = WorkTypeIcons.HeaderIconAndLabel;
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -55,6 +68,12 @@ namespace WorkStudio
 
             Scribe_Collections.Look(ref knownWorkTypes, "knownWorkTypes", LookMode.Value);
             Scribe_Collections.Look(ref reportedMissingTasks, "reportedMissingTasks", LookMode.Value);
+
+            Scribe_Values.Look(ref showSkillIcons, "showSkillIcons", true);
+            Scribe_Values.Look(ref showWorkTypeIcons, "showWorkTypeIcons", true);
+            Scribe_Values.Look(ref workTabHeaderMode, "workTabHeaderMode", WorkTypeIcons.HeaderIconAndLabel);
+            workTabHeaderMode = Mathf.Clamp(workTabHeaderMode, WorkTypeIcons.HeaderIconAndLabel,
+                WorkTypeIcons.HeaderLabelOnly);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.PostLoadInit)
             {

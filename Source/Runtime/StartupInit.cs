@@ -22,6 +22,10 @@ namespace WorkStudio
                 // it.
                 Patch_WorkTabButton.Apply(WorkStudioMod.HarmonyInstance);
 
+                // Same reason, one step further: the Work tab column header method is resolved by
+                // reflection and may not be declared where it is looked for.
+                WorkTypeIcons.Apply(WorkStudioMod.HarmonyInstance);
+
                 WorkTypeRuntime.Apply();
 
                 // After Apply: the report must describe the landscape as it really is, once our

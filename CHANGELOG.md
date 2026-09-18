@@ -7,6 +7,8 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ### Added
 
+- **An icon for each skill and each work type** — in the character tab's skill list, and at the foot of each Work tab column header. Three settings decide what shows: icons in the skill list, icons on the columns, and whether a header carries its icon, its label, or both. "Icon only" gives noticeably narrower columns and keeps the tooltip that says what the column is.
+- The drawings come from the **SkillIcons** mod, which handed the feature over on 2026-09-18 and keeps only its passion icons. They are monochrome on purpose: in that mod colour means "which passion", and letting it also mean "which skill" would make both unreadable. 12 skills and 23 work types, nine of which deliberately share their skill's drawing — *Cook* and *Cooking* name one domain.
 - A hidden MainButtons shortcut (`WorkStudio_Settings`), for RIMMSQOL and similar MainButtons customization mods to reveal. It opens the exact same settings window as Mod options → Work Studio, against the same settings instance, so both routes share values and persistence.
 
 ### Changed

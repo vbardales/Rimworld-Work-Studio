@@ -73,4 +73,19 @@
   <WorkStudio.Field.Skills>Compétences concernées</WorkStudio.Field.Skills>
   <WorkStudio.Apply>Appliquer</WorkStudio.Apply>
 
+  <!-- Icônes de compétence et de type de travail, reprises de SkillIcons le 2026-09-18. -->
+  <WorkStudio.Icons.Section>Icônes</WorkStudio.Icons.Section>
+  <WorkStudio.Icons.Skills>Icônes dans la liste des compétences</WorkStudio.Icons.Skills>
+  <WorkStudio.Icons.SkillsDesc>Dessine une icône devant chaque compétence, dans l'onglet du personnage.</WorkStudio.Icons.SkillsDesc>
+  <WorkStudio.Icons.WorkTypes>Icônes sur les colonnes de l'onglet Travail</WorkStudio.Icons.WorkTypes>
+  <WorkStudio.Icons.WorkTypesDesc>Dessine une icône au pied de chaque en-tête de colonne de l'onglet Travail.</WorkStudio.Icons.WorkTypesDesc>
+  <WorkStudio.Icons.HeaderMode>Ce que montre un en-tête de colonne</WorkStudio.Icons.HeaderMode>
+  <WorkStudio.Icons.HeaderModeUnavailable>Disponible une fois les icônes de colonnes activées.</WorkStudio.Icons.HeaderModeUnavailable>
+  <WorkStudio.Icons.HeaderBoth>Icône et libellé</WorkStudio.Icons.HeaderBoth>
+  <WorkStudio.Icons.HeaderBothDesc>L'en-tête habituel, avec l'icône ajoutée à son pied.</WorkStudio.Icons.HeaderBothDesc>
+  <WorkStudio.Icons.HeaderIcon>Icône seule</WorkStudio.Icons.HeaderIcon>
+  <WorkStudio.Icons.HeaderIconDesc>Colonnes plus étroites, puisque le nom disparaît. Survoler un en-tête dit toujours de quoi il s'agit.</WorkStudio.Icons.HeaderIconDesc>
+  <WorkStudio.Icons.HeaderLabel>Libellé seul</WorkStudio.Icons.HeaderLabel>
+  <WorkStudio.Icons.HeaderLabelDesc>L'en-tête vanilla, sans icône. La liste des compétences garde les siennes.</WorkStudio.Icons.HeaderLabelDesc>
+
 </LanguageData>

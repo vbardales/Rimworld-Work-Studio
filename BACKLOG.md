@@ -65,9 +65,15 @@ as "all rights reserved" and forbade copying a mark; that was wrong.
 
 ### The icons come from SkillIcons — handover, 2026-09-18
 
+**LANDED 2026-09-18, the same day it was handed over.** The drawings, the two Harmony prefixes,
+the three settings and the 13 keys are in the mod; `Art/icons/gen-icons.js` keeps the drawings'
+own source. See `STATUS.md`'s "Icons taken over from SkillIcons". **Nothing has been seen drawing
+in game yet**, and none of what follows about a per-type *choice* is started: what landed is one
+fixed icon per vanilla skill and work type, not a picker. The rest of this entry stands.
+
 **Decided by Virginie, relayed by the SkillIcons session (stage `done`,
-`C:\Users\nelim\Documents\rimworld\SkillIcons`). Not started here, and not to be started without
-confirming the scope with her — this entry exists so the decision is not lost in a thread.**
+`C:\Users\nelim\Documents\rimworld\SkillIcons`), and confirmed by her directly the same day:
+"intègre leurs dessins, la fonctionnalité telle quelle. On l'adaptera."**
 
 What she decided:
 

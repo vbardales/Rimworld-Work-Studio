@@ -1,4 +1,11 @@
----
+| `13b-settings-visual` | the settings window, a TESTING.md scenario 13 added the same day | that it reads correctly through either door |
+
+The asserting half went into `13-settings.feature` instead, and grew the same day into the three
+checks that close most of the settings gate: both doors lead to one settings instance, a
+configuration survives being written and re-read from disk, and the reset asks before destroying
+anything. Building the `WorkStudio_Settings` def's own `Worker` and activating it the way RimWorld
+would is what turned the "never exercised at runtime" half of the MainButtons item above into a
+written test. Only RIMMSQOL's own side of it stays manual.---
 localization: complete
 translation_en: complete
 translation_fr: complete
@@ -23,8 +30,8 @@ remaining:
   - fixed: TESTING.md scenario 7 ("the header and its width follow the new name") turned red in the 2026-09-18 run because the screenshot feature added that morning left the Work tab open, and a drawn table rebuilds the column worker the assertion expects to find thrown away. 07b now closes the tab behind it; the mod was never involved
   - unverified: several other 2026-09-17 Pickle failures trace to environment, not Work Studio - "Work types… opens the editor" hit the Concord/OS-click conflict TESTING.md's own note documents ("no tags recorded this frame"), and two of the three scenario-5 sub-scenarios failed on a ReflectionOnly UnityEngine.InputLegacyModule error that also broke the unrelated generic "save and reload steps" testsuite in the same run - a Pickle-framework issue
   - fixed: Tests/Pickle's own scenario 12 step had an ambiguous raw-save pawn lookup (a large save can carry more than one <nick>Keeper</nick>) and failed on that basis in the same run, not on a real Work Studio defect - Patch_WorkSettingsExposeData.Save() writes the positional list and the named dictionary in the same lockstep loop, so they cannot disagree if the lookup is correct. Narrowed 2026-09-17 to require a <workStudioPriorities> sibling and, if still ambiguous, a matching def count; not yet re-run
-  - unverified: the MainButtonDef shortcut (WorkStudio_Settings) is code- and mutation-verified off-game (Tests/OffGame) and, since 2026-09-18, has a written in-game check too - Tests/Pickle's 13-settings-window.feature builds the def's own Worker, activates it the way RimWorld would and asserts the window opens, plus a screenshot of it. Written, not yet run. What no test will ever cover is RIMMSQOL itself listing the def and revealing a real button for it
-  - unverified: settings otherwise have no recorded functional pass at all - no documented run of Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across reload, or the "Reset the whole setup" confirmation. TESTING.md gained a scenario 13 for this on 2026-09-18 and Tests/Pickle covers the shortcut half of it; the Mod options door and the round trip through a reload stay manual
+  - unverified: the MainButtonDef shortcut (WorkStudio_Settings) is code- and mutation-verified off-game (Tests/OffGame) and, since 2026-09-18, has a written in-game check too - Tests/Pickle's 13-settings.feature builds the def's own Worker, activates it the way RimWorld would and asserts the window opens, plus a screenshot of it. Written, not yet run. What no test will ever cover is RIMMSQOL itself listing the def and revealing a real button for it
+  - unverified: settings otherwise have no recorded functional pass at all - no documented run of Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across reload, or the "Reset the whole setup" confirmation. TESTING.md gained a scenario 13 for this on 2026-09-18, and Tests/Pickle 13-settings.feature now covers three of the four: both doors lead to one settings instance (checked by reference), a configuration survives being written and re-read from disk, and the reset asks before destroying anything - confirming clears, going back does not. Written, not yet run. Only RIMMSQOL stays out of reach
   - unverified: ConfigFile.PathFor/Folder/Export/Import stay untested even off-game - they all reach GenFilePaths.SaveDataFolderPath, and merely JIT-compiling that property throws outside a running Unity player; Tests/OffGame exercises the WorkStudioSettings/CustomWorkTypeEntry Scribe contract they wrap instead, at a path it computes itself
   - unverified: no in-game pass of English or French display yet (raw keys, clipping, fallback text) - the static localization gate is certified complete, but TRANSLATIONS.md tracks this runtime check separately and it must pass before claiming the translations tested in game. Since 2026-09-18 there is a scripted path for it: the four @review features attach screenshots of the editor, a renamed column, the drift dialog and the settings window, so running the suite once per language produces the evidence a person then reads. Written, never run
 session:      local_df8ae659-1a8e-4bf8-a74a-ff90c6c7ada7
@@ -132,7 +139,7 @@ file before this audit — absent means `unchecked` per MOD_SETTINGS.md, not a p
   (no dangling def reference, no wrong-type reference), `Check-TypeRefs.ps1` (the `workerClass`
   reference resolves to the mod's own assembly, not an unguarded third-party type), and
   `Check-ConfigErrors.ps1` (26 load-time rules applied, none triggered).
-- **Half of it is now verified in game (2026-09-18).** `Tests/Pickle`'s `13-settings-window.feature`
+- **Half of it is now verified in game (2026-09-18).** `Tests/Pickle`'s `13-settings.feature`
   builds the def's own `Worker` and activates it exactly as RimWorld would, and the run has it
   green: the worker is constructed, `Activate()` runs, and `Dialog_WorkStudioSettings` opens. A
   screenshot of that window is attached to the same report. **Not verified**: RIMMSQOL's own side —
@@ -180,9 +187,10 @@ was code-owned, so this was a pure Keyed audit. That changed 2026-09-17 with the
 shortcut (see the settings audit above): one Def, two DefInjected-covered fields, checked with
 `scripts/Check-DefInjected.ps1` (0 errors). The Keyed audit below is unaffected.
 
-- `Mod/Languages/English/Keyed/WorkStudio.xml` and the French counterpart both hold exactly 63
-  keys, and a full diff of the key lists is empty: no key exists in one language and not the
-  other.
+- `Mod/Languages/English/Keyed/WorkStudio.xml` and the French counterpart both hold exactly 76
+  keys (63 at the audit; 13 added 2026-09-18 with the icon feature), and a full diff of the key
+  lists is empty: no key exists in one language and not the other. `Tests/OffGame` re-checks that
+  parity, and the placeholder parity, on every run rather than on trust.
 - Traced every `.Translate()` call site under `Source/`, including the two places that pass a key
   through a variable instead of a literal (`Dialog_WorkTypes.cs`'s `DrawArrow(..., tooltipKey)`,
   called with `"WorkStudio.MoveUp"` and `"WorkStudio.MoveDown"`, and `Dialog_EditWorkType.cs`'s
@@ -480,9 +488,9 @@ that assert nothing and attach a screenshot), four features were written:
 | `03-three-columns` | TESTING.md 3, which had no automated coverage at all | the three columns read as described, in either language |
 | `07b-rename-visual` | the visual half of 7 | the column is as wide as its new name needs |
 | `10b-drift-warning-wording` | the wording half of 10 | four keys, four filled placeholders, nothing clipped |
-| `13-settings-window` | a new TESTING.md scenario 13 | the settings window, and both doors agreeing |
+| `13b-settings-visual` | the settings window, a TESTING.md scenario 13 added the same day | that it reads correctly through either door |
 
-`13-settings-window`'s first scenario is a real assertion, not a screenshot: it builds the
+`13-settings`'s first scenario is a real assertion, not a screenshot: it builds the
 `WorkStudio_Settings` def's own `Worker`, activates it the way RimWorld would, and checks the window
 opens — which turns the "never exercised at runtime" half of the MainButtons item above into a
 written test. Only RIMMSQOL's own side of it stays manual.
@@ -494,6 +502,52 @@ settings window sets `forcePause`, so a tick-based wait behind it would sit unti
 
 **All four are written and build clean; none has been run.** Like everything else opened since the
 2026-09-17 pass, they wait on a live run.
+
+## Icons taken over from SkillIcons, 2026-09-18
+
+Decided by Virginie, relayed by the SkillIcons session and confirmed by her here: the skill and
+work-type icon feature moves into Work Studio, drawings included, and SkillIcons goes back to being
+a passions-only mod. GrimWorks is dropped from the "Work tab column header" plan `BACKLOG.md`
+carried — consistent with what that file already argued, since a GrimWorks "colour" is a category
+and a category also moves the column. No fallback: without Work Studio there are no icons, which is
+this mod's own "never two drawings in one place" rule applied.
+
+What landed:
+
+- **35 drawings**, 127 KB total, under `Mod/Textures/WorkStudio/Skills` (12) and
+  `.../WorkTypes` (23). Namespaced under `WorkStudio/` rather than shipped at the top level, so a
+  player who still has SkillIcons installed during the handover does not get two mods claiming the
+  same `ContentFinder` paths.
+- **`Source/UI/WorkTypeIcons.cs`**, the two Harmony prefixes, ported with identifiers in English
+  per this repository's rule and hooked into the existing Harmony instance from `StartupInit`
+  rather than a static constructor of its own. The skill prefix **shrinks the rect** and lets the
+  game draw in what is left, which is what keeps it independent of `DrawSkill`'s internal layout.
+  The header prefix returns `false` for "icon only" and re-registers the tooltip the suppressed
+  label carried.
+- **Three settings** (`showSkillIcons`, `showWorkTypeIcons`, `workTabHeaderMode`), in `ExposeData`
+  only and deliberately **not** in `ExposeConfig`: importing someone else's setup should not change
+  what your own screen draws.
+- **13 Keyed entries**, English and French.
+- **`Art/icons/gen-icons.js`**, the drawings' own source, so they stay changeable instead of
+  becoming 35 PNGs nobody can redraw. Not wired to a build here — Work Studio has no `_tools`
+  chain — and it carries the rule that comes with it: judge on the silhouette sheet **at 20 px**,
+  never at 64, where all four failures SkillIcons records look fine.
+
+Four defects in that settings UI were fixed while porting rather than carried over: the three
+header-mode radios had no tooltip while the ones above them did, nothing introduced the group, they
+were dead controls when work-type icons were off with nothing saying why (`MOD_SETTINGS.md` §3), and
+the French read "colonnes du Work Tab" — untranslated, where RimWorld FR says *Travail*.
+
+Two things `Tests/OffGame` now protects, since both patch targets are resolved by reflection and a
+signature change would show as icons quietly not drawing: that `SkillUI.DrawSkill`'s four-argument
+overload still exists with the rect in second place, and that a `DoHeader` is still found. **Worth
+recording: it is declared on `PawnColumnWorker_WorkPriority` in 1.6**, so the fall-back that would
+have patched every column, Name and Sex included, does not trigger. A third check reads the shipped
+icon names against `SkillDefOf`/`WorkTypeDefOf`, so a drawing named after nothing cannot ship
+silently.
+
+**Not verified in game.** Nothing here has been seen drawing: the feature builds, its patch targets
+exist, its names match, and that is all this session can say.
 
 ## Note, outside this workflow's ladder
 

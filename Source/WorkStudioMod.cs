@@ -51,6 +51,52 @@ namespace WorkStudio
                     destructive: true));
             }
 
+            listing.GapLine(10f);
+
+            listing.Label("WorkStudio.Icons.Section".Translate());
+            listing.CheckboxLabeled("WorkStudio.Icons.Skills".Translate(), ref Settings.showSkillIcons,
+                "WorkStudio.Icons.SkillsDesc".Translate());
+            listing.CheckboxLabeled("WorkStudio.Icons.WorkTypes".Translate(), ref Settings.showWorkTypeIcons,
+                "WorkStudio.Icons.WorkTypesDesc".Translate());
+
+            listing.Gap(4f);
+            listing.Label("WorkStudio.Icons.HeaderMode".Translate());
+
+            if (!Settings.showWorkTypeIcons)
+            {
+                // The three choices below only decide how an icon shares the header with its label,
+                // so they mean nothing while no icon is drawn there. Saying so beats offering
+                // controls that do nothing, which is what MOD_SETTINGS.md asks of a dependent
+                // control.
+                GUI.color = new Color(1f, 1f, 1f, 0.6f);
+                listing.Label("WorkStudio.Icons.HeaderModeUnavailable".Translate());
+                GUI.color = Color.white;
+            }
+            else
+            {
+                if (listing.RadioButton("WorkStudio.Icons.HeaderBoth".Translate(),
+                        Settings.workTabHeaderMode == WorkTypeIcons.HeaderIconAndLabel, 8f,
+                        "WorkStudio.Icons.HeaderBothDesc".Translate()))
+                {
+                    Settings.workTabHeaderMode = WorkTypeIcons.HeaderIconAndLabel;
+                }
+
+                if (listing.RadioButton("WorkStudio.Icons.HeaderIcon".Translate(),
+                        Settings.workTabHeaderMode == WorkTypeIcons.HeaderIconOnly, 8f,
+                        "WorkStudio.Icons.HeaderIconDesc".Translate()))
+                {
+                    Settings.workTabHeaderMode = WorkTypeIcons.HeaderIconOnly;
+                }
+
+                if (listing.RadioButton("WorkStudio.Icons.HeaderLabel".Translate(),
+                        Settings.workTabHeaderMode == WorkTypeIcons.HeaderLabelOnly, 8f,
+                        "WorkStudio.Icons.HeaderLabelDesc".Translate()))
+                {
+                    Settings.workTabHeaderMode = WorkTypeIcons.HeaderLabelOnly;
+                }
+            }
+
+
             listing.Gap();
 
             GUI.color = new Color(1f, 1f, 1f, 0.6f);
