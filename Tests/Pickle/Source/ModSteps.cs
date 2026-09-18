@@ -88,6 +88,26 @@ namespace WorkStudio.PickleSteps
             ctx.Assert(false, $"the Work types button is drawn here and should not be");
         }
 
+        /// <summary>
+        /// Opens the settings window the way the hidden <c>WorkStudio_Settings</c> MainButtonDef
+        /// does — through the def's own <see cref="MainButtonDef.Worker"/>, so what runs is the
+        /// worker RimWorld would build and call, not a window this step made itself. That is the
+        /// half of the shortcut a machine can check; whether RIMMSQOL lists and reveals the button
+        /// stays manual.
+        /// </summary>
+        [When("I open the settings window through the MainButtons shortcut")]
+        public async Task OpenSettingsShortcut(PickleContext ctx)
+        {
+            var def = DefDatabase<MainButtonDef>.GetNamedSilentFail("WorkStudio_Settings");
+            ctx.Require(def != null, "the MainButtonDef 'WorkStudio_Settings' is not loaded");
+            def.Worker.Activate();
+            await ctx.WaitFrames(2);
+        }
+
+        /// <summary>A frame-based pause, for a screenshot of something a step just opened.</summary>
+        [When("I let the interface draw")]
+        public async Task LetInterfaceDraw(PickleContext ctx) => await ctx.WaitFrames(2);
+
         [When("I close all windows but the main tabs")]
         public async Task CloseTab(PickleContext ctx)
         {

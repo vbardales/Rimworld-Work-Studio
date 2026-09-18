@@ -87,11 +87,29 @@ type would read the first one's value.
 
 | TESTING.md | Why |
 | --- | --- |
-| 3, the column titles | Wording on screen, for a person to read |
+| 3, the column titles | `03` walks the editor there and screenshots it, tagged `@review`; a person reads |
 | 6, the pointer starting a drag | Only the drop is replayed |
+| 7, the header width after a rename | `07b` screenshots the Work tab, tagged `@review`; a person looks |
 | 7, Work Type Tag's current-job label | Not written |
 | 10, a real mod list change and restart | The startup check is run on a recorded list instead |
+| 10, the dialog's wording | `10b` screenshots it, tagged `@review`; a person reads |
 | 11, what Better Work Tab owns | Documented behaviour of another mod |
+| 13, RIMMSQOL revealing the button | Another mod's own UI; `13` covers the worker and the window it opens |
+
+## The `@review` features: automated trip, human verdict
+
+`03-three-columns`, `07b-rename-visual`, `10b-drift-warning-wording` and the second scenario of
+`13-settings-window` **assert nothing**. They drive the game to the state a manual scenario
+describes and call Pickle's own `I take a screenshot` step; the image goes into the report and a
+person decides. The pattern is Architect Studio's (`04b-arrows-at-150-percent`), and it buys the
+half of a manual test that a machine can do reliably — the trip — without pretending to judge what
+only eyes can.
+
+Each of those files opens with the list of what to look for in its screenshots. **Run the suite
+once per language** and the same images serve as the English and French display pass.
+
+A screenshot scenario waits *frames*, never ticks: the settings window sets `forcePause`, and a
+tick-based wait behind it would sit until its timeout.
 
 **12, removing the mod, is covered a different way.** A companion mod bound to Work Studio's own
 assembly cannot script "and now the mod is gone" from inside itself, so `12-removing-the-mod.feature`

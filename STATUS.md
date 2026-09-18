@@ -21,12 +21,12 @@ remaining:
   - defect: TESTING.md scenario 6 ("the arrows move a type one place") failed - Research landed right after Patient instead of where the test expected. Not yet distinguished from interference by another loaded mod touching Research or the Work tab's ordering
   - unverified: several other 2026-09-17 Pickle failures trace to environment, not Work Studio - "Work types… opens the editor" hit the Concord/OS-click conflict TESTING.md's own note documents ("no tags recorded this frame"), and two of the three scenario-5 sub-scenarios failed on a ReflectionOnly UnityEngine.InputLegacyModule error that also broke the unrelated generic "save and reload steps" testsuite in the same run - a Pickle-framework issue
   - fixed: Tests/Pickle's own scenario 12 step had an ambiguous raw-save pawn lookup (a large save can carry more than one <nick>Keeper</nick>) and failed on that basis in the same run, not on a real Work Studio defect - Patch_WorkSettingsExposeData.Save() writes the positional list and the named dictionary in the same lockstep loop, so they cannot disagree if the lookup is correct. Narrowed 2026-09-17 to require a <workStudioPriorities> sibling and, if still ambiguous, a matching def count; not yet re-run
-  - unverified: the MainButtonDef shortcut (WorkStudio_Settings) is code- and mutation-verified off-game (Tests/OffGame) but has never been exercised at runtime - no RIMMSQOL or other MainButtons customization mod test revealing it, activating it, and confirming it opens the same settings with the same values as Mod options -> Work Studio
-  - unverified: settings otherwise have no recorded functional pass at all - no documented run of Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across reload, or the "Reset the whole setup" confirmation
+  - unverified: the MainButtonDef shortcut (WorkStudio_Settings) is code- and mutation-verified off-game (Tests/OffGame) and, since 2026-09-18, has a written in-game check too - Tests/Pickle's 13-settings-window.feature builds the def's own Worker, activates it the way RimWorld would and asserts the window opens, plus a screenshot of it. Written, not yet run. What no test will ever cover is RIMMSQOL itself listing the def and revealing a real button for it
+  - unverified: settings otherwise have no recorded functional pass at all - no documented run of Mod options -> Work Studio: open/close/reopen, each control's effect, persistence across reload, or the "Reset the whole setup" confirmation. TESTING.md gained a scenario 13 for this on 2026-09-18 and Tests/Pickle covers the shortcut half of it; the Mod options door and the round trip through a reload stay manual
   - unverified: ConfigFile.PathFor/Folder/Export/Import stay untested even off-game - they all reach GenFilePaths.SaveDataFolderPath, and merely JIT-compiling that property throws outside a running Unity player; Tests/OffGame exercises the WorkStudioSettings/CustomWorkTypeEntry Scribe contract they wrap instead, at a path it computes itself
-  - unverified: no in-game pass of English or French display yet (raw keys, clipping, fallback text) - the static localization gate is certified complete, but TRANSLATIONS.md tracks this runtime check separately and it must pass before claiming the translations tested in game
+  - unverified: no in-game pass of English or French display yet (raw keys, clipping, fallback text) - the static localization gate is certified complete, but TRANSLATIONS.md tracks this runtime check separately and it must pass before claiming the translations tested in game. Since 2026-09-18 there is a scripted path for it: the four @review features attach screenshots of the editor, a renamed column, the drift dialog and the settings window, so running the suite once per language produces the evidence a person then reads. Written, never run
 session:      local_df8ae659-1a8e-4bf8-a74a-ff90c6c7ada7
-updated:      2026-09-17
+updated:      2026-09-18
 ---
 
 # Work Studio — status
@@ -381,6 +381,33 @@ list, is the fastest way to tell a real defect from environmental noise here.
 Mod options directly; scenario 3 and the visual halves of 7 and 11 (`Tests/OffGame` already proves
 each underlying mechanism against the real third-party assembly, not that either renders correctly
 on screen); the other half of scenario 12 (an actual restart without the mod); FR/EN display.
+
+## Screenshot scenarios, 2026-09-18: the trip automated, the verdict left to a person
+
+Several of the items just listed were stuck for the same reason — they are judged by eye, so no
+assertion can close them — while the *trip* to the state they judge is exactly what this suite
+already does well. Following the pattern SkillIcons and Architect Studio use (`@review` features
+that assert nothing and attach a screenshot), four features were written:
+
+| Feature | Covers | What a person then judges |
+| --- | --- | --- |
+| `03-three-columns` | TESTING.md 3, which had no automated coverage at all | the three columns read as described, in either language |
+| `07b-rename-visual` | the visual half of 7 | the column is as wide as its new name needs |
+| `10b-drift-warning-wording` | the wording half of 10 | four keys, four filled placeholders, nothing clipped |
+| `13-settings-window` | a new TESTING.md scenario 13 | the settings window, and both doors agreeing |
+
+`13-settings-window`'s first scenario is a real assertion, not a screenshot: it builds the
+`WorkStudio_Settings` def's own `Worker`, activates it the way RimWorld would, and checks the window
+opens — which turns the "never exercised at runtime" half of the MainButtons item above into a
+written test. Only RIMMSQOL's own side of it stays manual.
+
+Three new steps carry the trips (`I open the work type editor`, `I select the work type`,
+`I search the other tasks for`, plus `I open the settings window through the MainButtons shortcut`
+and a frame-based `I let the interface draw`). They wait frames rather than ticks on purpose: the
+settings window sets `forcePause`, so a tick-based wait behind it would sit until its timeout.
+
+**All four are written and build clean; none has been run.** Like everything else opened since the
+2026-09-17 pass, they wait on a live run.
 
 ## Note, outside this workflow's ladder
 

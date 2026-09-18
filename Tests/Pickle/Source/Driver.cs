@@ -74,6 +74,14 @@ namespace WorkStudio.PickleSteps
             field.SetValue(dialog, type);
         }
 
+        /// <summary>The right column's search box, typed into rather than clicked.</summary>
+        public static void Search(PickleContext ctx, Dialog_WorkTypes dialog, string text)
+        {
+            var field = typeof(Dialog_WorkTypes).GetField("addSearch", Instance);
+            ctx.Require(field != null, "Dialog_WorkTypes.addSearch no longer exists: update the steps");
+            field.SetValue(dialog, text);
+        }
+
         public static int ReorderGroup(Dialog_WorkTypes dialog, string field)
         {
             return (int)typeof(Dialog_WorkTypes).GetField(field, Instance).GetValue(dialog);

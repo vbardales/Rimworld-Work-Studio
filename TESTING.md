@@ -232,6 +232,28 @@ The priority half is also proven from the raw save, without an actual restart, b
 `Tests/Pickle/Mod/Pickle/Features/12-removing-the-mod.feature`: see
 `Tests/Pickle/README.md`'s "What stays manual" section for what that does and does not cover.
 
+## 13 — The settings window, both doors
+
+**Proves** that the two ways into the settings are one room, not two. Added 2026-09-18: the twelve
+scenarios above are all about the editor and what it does to the Work tab and to colonists, and
+none of them ever opened the settings.
+
+There are two doors, and they must agree because they share a single `WorkStudioSettings` instance:
+
+- **Mod options → Work Studio**, which always works and is how the editor is reached when the Work
+  tab button fails.
+- **The hidden `WorkStudio_Settings` MainButtons shortcut**, which draws nothing by itself: it
+  exists so that RIMMSQOL, or another MainButtons customisation mod, can reveal it as a button.
+
+Open each in turn. Both show the same intro line, the same *Open the work type editor* and
+*Import / export a setup* buttons, the same save note, and *Reset the whole setup* only when there
+is something to reset. Change something through one and reopen the other: the values follow.
+
+`Tests/Pickle`'s `13-settings-window.feature` asserts the shortcut's own half — the def's worker is
+built and activated the way RimWorld would, and the window it opens is checked — and attaches a
+screenshot of the result. **What stays manual is RIMMSQOL itself**: that it lists this def, that
+revealing it puts a real button on the bar, and that the button then opens the same window.
+
 ## Automated off game
 
 `Tests/OffGame/` instances the shipped `Mod/Assemblies/WorkStudio.dll` against the installed
@@ -252,20 +274,35 @@ dotnet build Tests/OffGame/WorkStudio.Tests.csproj -c Release
 
 ## Automated in game: Pickle
 
-Scenarios 1, 2, 4 to 10, and half of 12 (the raw-save half, not an actual restart) are also written
-in Gherkin under `Tests/Pickle/`, played inside RimWorld by the Pickle test mod. Its README says
-how to run them and which parts stay manual.
+Scenarios 1, 2, 4 to 10, 13, and half of 12 (the raw-save half, not an actual restart) are also
+written in Gherkin under `Tests/Pickle/`, played inside RimWorld by the Pickle test mod. Its README
+says how to run them and which parts stay manual.
 
 Run for the first time 2026-09-17, against the full live mod list (150+ mods): scenarios 1, 4, 7,
 9 and 10 passed in full; 2, 5, 6, 8 and 12 each had at least one failure, some traced to the
 Concord conflict above or to a Pickle-framework issue, others not yet explained. See STATUS.md's
 "In-game pass, 2026-09-17" section for the breakdown and what stays open.
 
+### Screenshots, for what only a person can judge
+
+Added 2026-09-18, following the same pattern as Architect Studio's own suite: the features tagged
+`@review` (`03-three-columns`, `07b-rename-visual`, `10b-drift-warning-wording`, `13-settings-window`)
+**assert nothing**. They walk the game to the state a manual scenario describes and attach a
+screenshot to the report; a person looks at it and decides. The trip is automated and reproducible,
+the judgement stays human.
+
+That covers what no assertion can reach: whether three columns read as three columns, whether a
+renamed column is wide enough for its new name, whether a translated dialog clips or shows a raw
+key. Each file's header lists what to look for in its screenshots.
+
+**Run the suite once per language** and the same screenshots double as the English and French
+display pass that `TRANSLATIONS.md` records separately from the static localization gate.
+
 ## What a pass means
 
 **Scenarios 1, 2, 4 and 5 gate publishing.** They cover loading, the button that failed twice, the
 feature itself, and the priority safety that is the mod's reason to exist.
 
-3, 6, 7, 8, 9 and 10 are behaviour worth getting right, but a defect there is a patch note rather
-than a blocker. 11 and 12 confirm documented behaviour; if they disagree with the documentation,
-the documentation is what needs fixing.
+3, 6, 7, 8, 9, 10 and 13 are behaviour worth getting right, but a defect there is a patch note
+rather than a blocker. 11 and 12 confirm documented behaviour; if they disagree with the
+documentation, the documentation is what needs fixing.

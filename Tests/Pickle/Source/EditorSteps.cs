@@ -11,6 +11,43 @@ namespace WorkStudio.PickleSteps
     [PickleSteps]
     public class EditorSteps
     {
+        // ---------------------------------------------------------------- opening and looking
+
+        // Every mutation step below opens the editor implicitly through Driver.Editor, because what
+        // it needs is the object, not the window. The three steps here exist for the screenshot
+        // scenarios, where the window being on screen, with the right thing selected, IS the test.
+        // They wait frames rather than ticks: the editor does not pause the game, but the settings
+        // window does, and a tick-based wait there would sit until its timeout.
+
+        [When("I open the work type editor")]
+        public async Task OpenEditor(PickleContext ctx)
+        {
+            Driver.Editor(ctx);
+            await ctx.WaitFrames(2);
+        }
+
+        [When("I close the work type editor")]
+        public async Task CloseEditor(PickleContext ctx)
+        {
+            Find.WindowStack.WindowOfType<Dialog_EditWorkType>()?.Close(doCloseSound: false);
+            Find.WindowStack.WindowOfType<Dialog_WorkTypes>()?.Close(doCloseSound: false);
+            await ctx.WaitFrames(2);
+        }
+
+        [When("I select the work type {string}")]
+        public async Task SelectType(PickleContext ctx, string type)
+        {
+            Driver.Select(ctx, Driver.Editor(ctx), Driver.WorkType(ctx, type));
+            await ctx.WaitFrames(2);
+        }
+
+        [When("I search the other tasks for {string}")]
+        public async Task SearchOtherTasks(PickleContext ctx, string text)
+        {
+            Driver.Search(ctx, Driver.Editor(ctx), text);
+            await ctx.WaitFrames(2);
+        }
+
         // ---------------------------------------------------------------- mutations
 
         /// <summary>
