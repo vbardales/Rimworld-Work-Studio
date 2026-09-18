@@ -15,12 +15,26 @@ namespace WorkStudio.PickleSteps
     [PickleSteps]
     public class ColonySteps
     {
+        /// <summary>
+        /// Every pawn this step class ever had to initialize, by thingIDNumber. A colonist whose
+        /// work settings are initialized HERE, rather than by the game, comes back with vanilla's
+        /// own starting spread - about six types at 3, the rest at 0 - and every value a scenario
+        /// set earlier is gone. That is indistinguishable from "something reset the priorities"
+        /// unless it is recorded, which is what this is for: see Describe below.
+        /// </summary>
+        private static readonly HashSet<int> initializedHere = new HashSet<int>();
+
         private static Pawn Colonist(PickleContext ctx, string nickname)
         {
             var pawn = PawnsFinder.AllMaps_FreeColonists.FirstOrDefault(p =>
                 string.Equals(p.Name?.ToStringShort, nickname, StringComparison.OrdinalIgnoreCase));
             ctx.Require(pawn != null, $"no free colonist is called '{nickname}'");
             ctx.Require(pawn.workSettings != null, $"'{nickname}' has no work settings");
+            if (!pawn.workSettings.EverWork)
+            {
+                initializedHere.Add(pawn.thingIDNumber);
+            }
+
             pawn.workSettings.EnableAndInitializeIfNotAlreadyInitialized();
             return pawn;
         }
@@ -41,6 +55,17 @@ namespace WorkStudio.PickleSteps
             ctx.Assert(pawn.workSettings.GetPriority(def) == priority,
                 $"the game did not keep priority {priority} for {Driver.Describe(def)} on '{nickname}': it reads " +
                 $"{pawn.workSettings.GetPriority(def)} right after the call. {Describe(pawn, def)}");
+
+            // And read the DefMap itself, not through GetPriority: a mod that answers GetPriority
+            // from its own store (Enhanced Work Tab does, when time-aware priorities are on) would
+            // make the assertion above pass while vanilla's own list never received the value. The
+            // 2026-09-18 run needs this to tell a write that never landed from a value overwritten
+            // afterwards - the Then step's raw reading alone cannot say which happened.
+            ctx.Assert(RawPriority(pawn, def) == priority,
+                $"the vanilla DefMap did not receive priority {priority} for {Driver.Describe(def)} on " +
+                $"'{nickname}': SetPriority ran, GetPriority reads {pawn.workSettings.GetPriority(def)}, but the " +
+                $"list itself holds {RawPriority(pawn, def)}. Something is answering for the priorities " +
+                $"instead of storing them. {Describe(pawn, def)}");
         }
 
         private static string Describe(Pawn pawn, WorkTypeDef def)
@@ -48,7 +73,9 @@ namespace WorkStudio.PickleSteps
             return $"disabled={pawn.WorkTypeIsDisabled(def)}, visible={def.visible}, " +
                 $"useWorkPriorities={Current.Game.playSettings.useWorkPriorities}, " +
                 $"hidden by the mod={WorkStudioMod.Settings.hiddenTypes.Contains(def.defName)}, " +
-                $"raw DefMap value={RawPriority(pawn, def)}";
+                $"raw DefMap value={RawPriority(pawn, def)}, " +
+                $"pawn #{pawn.thingIDNumber}, work settings initialized by the suite=" +
+                $"{initializedHere.Contains(pawn.thingIDNumber)}";
         }
 
         /// <summary>

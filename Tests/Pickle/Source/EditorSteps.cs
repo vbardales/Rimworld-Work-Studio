@@ -164,9 +164,24 @@ namespace WorkStudio.PickleSteps
             public List<WorkTypeDef> Rows;
         }
 
+        /// <summary>
+        /// An arrow is the one editor control a scenario drives with no repaint behind it, and the
+        /// editor's row list is a cache <c>DoWindowContents</c> drops at the top of every pass —
+        /// so a real click always acts on a list rebuilt that same frame, while this step, left to
+        /// itself, would act on whatever the last pass built, possibly several scenarios ago. That
+        /// is what turned "the arrows move a type one place" red on 2026-09-18: the arrow rewrote
+        /// every priority from a list that predated the sandbox reset between scenarios, putting
+        /// Research back where it had been rather than moving Cooking. A drag never had the problem,
+        /// because <c>ReorderableWidget</c> only hands out its callback during a repaint, so those
+        /// steps cannot run without one. Letting the window draw first gives the arrow the same
+        /// footing.
+        /// </summary>
         [When("I press the {word} arrow on the work type {string}")]
-        public void TypeArrow(PickleContext ctx, string direction, string type)
+        public async Task TypeArrow(PickleContext ctx, string direction, string type)
         {
+            Driver.Editor(ctx);
+            await ctx.WaitFrames(2);
+
             ctx.Set(new PositionBefore { Rows = Driver.TypesInOrder() });
             Driver.Call(ctx, Driver.Editor(ctx), "ShiftType", Driver.WorkType(ctx, type), Delta(ctx, direction));
         }
@@ -195,25 +210,29 @@ namespace WorkStudio.PickleSteps
         }
 
         [When("I press the {word} arrow on the task {string} of {string}")]
-        public void TaskArrow(PickleContext ctx, string direction, string giver, string type)
+        public async Task TaskArrow(PickleContext ctx, string direction, string giver, string type)
         {
             var dialog = Driver.Editor(ctx);
             Driver.Select(ctx, dialog, Driver.WorkType(ctx, type));
+            await ctx.WaitFrames(2); // same reason as TypeArrow above
             Driver.Call(ctx, dialog, "ShiftTask", Driver.Task(ctx, giver), Delta(ctx, direction));
         }
 
         [When("I press the up arrow on the first work type")]
-        public void FirstTypeUp(PickleContext ctx)
+        public async Task FirstTypeUp(PickleContext ctx)
         {
+            Driver.Editor(ctx);
+            await ctx.WaitFrames(2); // same reason as TypeArrow above
             Driver.Call(ctx, Driver.Editor(ctx), "ShiftType", Driver.TypesInOrder().First(), -1);
         }
 
         [When("I press the down arrow on the last task of {string}")]
-        public void LastTaskDown(PickleContext ctx, string type)
+        public async Task LastTaskDown(PickleContext ctx, string type)
         {
             var dialog = Driver.Editor(ctx);
             var def = Driver.WorkType(ctx, type);
             Driver.Select(ctx, dialog, def);
+            await ctx.WaitFrames(2); // same reason as TypeArrow above
             Driver.Call(ctx, dialog, "ShiftTask", def.workGiversByPriority.Last(), 1);
         }
 

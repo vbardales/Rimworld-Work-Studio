@@ -13,12 +13,14 @@ licence_at:   this mod's own code is MIT and nothing of Achtung! is redistribute
 settings_audit: partial
 dependencies: declared
 showcase:     complete
-tested_on:    2026-09-17
+tested_on:    2026-09-18
 workshop:     3792836684
 remaining:
-  - defect: TESTING.md scenario 5 ("deleting a type in a running game keeps every other priority in place") failed in the 2026-09-17 Pickle run - Pickle second's priority dropped from 3 to 0 after deleting Pickle first, even though PriorityMemory.Restore looks up saved priorities by name and tracing Apply()/SyncCustomTypes step by step found no fault on paper. A first hypothesis (1trickPwnyta's Defaults) was raised and refuted by reading her real config. Strong second hypothesis, mechanism confirmed by decompiling the real 1.6 assembly but not yet confirmed live: Enhanced Work Tab (natee.EnhancedWorkTab) prefixes Pawn_WorkSettings.GetPriority to answer from its own per-pawn store instead of the vanilla DefMap whenever "time-aware priorities" is on (default true, no override in her config), and only learns new values through SetPriority - which PriorityMemory.Restore never calls, writing the DefMap's backing list directly instead. ColonySteps.cs's Describe() now also reports the raw DefMap value by reflection, which settles this outright on the next run: if HasPriority fails but the raw value is correct, this is confirmed
-  - defect: TESTING.md scenario 8 ("hide a column"), both scenarios, failed the same way in the same run - Cleaning's priority dropped from 2 to 0 after hide/show, reproducibly. Tracing Apply()'s pipeline by hand found no fault, and Tests/OffGame's TheHideColumnRegression (added 2026-09-17) now proves that by driving the real WorkTypeRuntime.Apply() against a fake WorkTypeDef and pawn: hiding and re-showing the type leaves its priority untouched, and the check is mutation-confirmed sensitive (breaking PriorityMemory.Capture() turns it red). This rules out Apply()'s own reconciliation as the cause. Same Enhanced Work Tab hypothesis and same raw-value diagnostic as scenario 5 above apply here too
-  - defect: TESTING.md scenario 6 ("the arrows move a type one place") failed - Research landed right after Patient instead of where the test expected. Not yet distinguished from interference by another loaded mod touching Research or the Work tab's ordering
+  - defect: TESTING.md scenario 8 ("hide a column"), both scenarios, still failed in the 2026-09-18 run - 'Keeper' reads 0 for Cleaning where the scenario set 2. Apply()'s own reconciliation is ruled out (Tests/OffGame's mutation-confirmed TheHideColumnRegression drives the real pipeline and the priority survives), and so is the Enhanced Work Tab hypothesis: the raw DefMap reads 0 too, not just GetPriority. What the 2026-09-18 failure message adds is the shape of the whole map - every value 3 or 0, nothing else - which is what a freshly initialized Pawn_WorkSettings looks like, not a shifted or corrupted one. So something re-initializes or replaces the pawn's work settings between the When and the Then. Two diagnostics added the same day split what is left: SetPriority now asserts the raw value at write time (never written vs overwritten later), and Describe reports the pawn id and whether the suite itself initialized those settings
+  - defect: TESTING.md scenario 12's raw-save check failed differently in the 2026-09-18 run - position 0 (Firefighter) holds 3 positionally but 0 by name. Patch_WorkSettingsExposeData.Save builds the named dictionary from the same values list vanilla wrote as <vals> moments earlier in the same ExposeData pass, so they cannot disagree unless that list changed in between; Enhanced Work Tab does not patch ExposeData (checked). Firefighter is one of the 3s in scenario 8's default-looking spread, so this is most likely the same unknown seen from the save side
+  - fixed: TESTING.md scenario 6 ("the arrows move a type one place") was a test artifact, not a defect - settled 2026-09-18. The editor's row list is a cache DoWindowContents drops at the top of every draw pass, so a real arrow click always acts on a list rebuilt that frame; the step called ShiftType directly with no repaint behind it and acted on a list from before the between-scenario reset, then ApplyTypeOrder rewrote every priority from it. The drag scenarios never had the problem because ReorderableWidget only hands out its callback during a repaint. The four arrow steps now let the window draw first
+  - fixed: TESTING.md scenario 5's three failures in the 2026-09-18 run were Pickle's Log.Error guard firing on other mods' errors (a Yet another Optimizer / VEF WorkGiver NullReferenceException, and the known UnityEngine.InputLegacyModule framework error), not on this mod's assertions - the 2026-09-17 reading of scenario 5 did not recur
+  - fixed: TESTING.md scenario 7 ("the header and its width follow the new name") turned red in the 2026-09-18 run because the screenshot feature added that morning left the Work tab open, and a drawn table rebuilds the column worker the assertion expects to find thrown away. 07b now closes the tab behind it; the mod was never involved
   - unverified: several other 2026-09-17 Pickle failures trace to environment, not Work Studio - "Work types… opens the editor" hit the Concord/OS-click conflict TESTING.md's own note documents ("no tags recorded this frame"), and two of the three scenario-5 sub-scenarios failed on a ReflectionOnly UnityEngine.InputLegacyModule error that also broke the unrelated generic "save and reload steps" testsuite in the same run - a Pickle-framework issue
   - fixed: Tests/Pickle's own scenario 12 step had an ambiguous raw-save pawn lookup (a large save can carry more than one <nick>Keeper</nick>) and failed on that basis in the same run, not on a real Work Studio defect - Patch_WorkSettingsExposeData.Save() writes the positional list and the named dictionary in the same lockstep loop, so they cannot disagree if the lookup is correct. Narrowed 2026-09-17 to require a <workStudioPriorities> sibling and, if still ambiguous, a matching def count; not yet re-run
   - unverified: the MainButtonDef shortcut (WorkStudio_Settings) is code- and mutation-verified off-game (Tests/OffGame) and, since 2026-09-18, has a written in-game check too - Tests/Pickle's 13-settings-window.feature builds the def's own Worker, activates it the way RimWorld would and asserts the window opens, plus a screenshot of it. Written, not yet run. What no test will ever cover is RIMMSQOL itself listing the def and revealing a real button for it
@@ -381,6 +383,86 @@ list, is the fastest way to tell a real defect from environmental noise here.
 Mod options directly; scenario 3 and the visual halves of 7 and 11 (`Tests/OffGame` already proves
 each underlying mechanism against the real third-party assembly, not that either renders correctly
 on screen); the other half of scenario 12 (an actual restart without the mod); FR/EN display.
+
+## In-game pass, 2026-09-18: the Work Studio suite alone, 29/37
+
+Second run, this time filtered to Work Studio's own suite (37 scenarios, not the 162 of the whole
+machine), Concord disabled as `Tests/Pickle/README.md` says. **29 passed, 8 failed.** Read from
+`PickleReports/junit.xml` and `summary.md`.
+
+**Three things the 2026-09-17 pass left open are now closed, green:**
+
+- **Scenario 2 is 3/3.** "Work types… opens the editor" passes. The English-label bug fixed the
+  night before was real and is gone: on a French client the step now resolves
+  `WorkStudio.OpenEditorShort` and finds the button.
+- **The MainButtons shortcut works at runtime.** "the hidden shortcut opens the settings window"
+  passes — the def's own `Worker` is built and activated the way RimWorld would, and the window
+  opens. That was `unverified` since the shortcut was written. Only RIMMSQOL's own side is left.
+- **All five screenshot scenarios pass and their images are in the report**, so the `@review`
+  pattern works end to end here.
+
+**Scenario 5 is no longer evidence of anything in this mod.** All three failures are Pickle's
+`Log.Error during scenario` guard firing on *other mods'* errors, not on a failed assertion:
+`[Yet another Optimizer] Keeper threw exception in WorkGiver VEF.Plants.WorkGiver_ExtractFlower:
+NullReferenceException` for the first, and the known `UnityEngine.InputLegacyModule` ReflectionOnly
+framework error for the other two. The priority assertions themselves never failed. The 2026-09-17
+reading of scenario 5 ("'Keeper' should have 3 for Pickle second; it has 0") did not recur.
+
+**Scenario 8 still fails, and the diagnostic added for it did its job — by refuting the hypothesis
+it was built to test.** The failure now reads:
+
+    'Keeper' should have 2 for Cleaning; it has 0. disabled=False, visible=False,
+    useWorkPriorities=True, hidden by the mod=True, raw DefMap value=0.
+
+**The raw `DefMap` value is 0 too**, so Enhanced Work Tab answering `GetPriority` from its own store
+is *not* what is happening: vanilla's own list holds 0. That hypothesis is closed. What the same
+message shows instead is the whole map — `Firefighter=3, Patient=3, Doctor=0, PatientBedRest=3,
+HaulingUrgent=0, …` — every value either 3 or 0, and nothing else. That is not a shifted list or a
+corrupted one; **it has the shape of a pawn whose work settings were initialized from scratch**
+(vanilla's `EnableAndInitialize` gives about six types a 3, plus the `alwaysStartActive` ones, and
+leaves the rest at 0). A reconfiguration that merely hides a column cannot produce that shape, so
+something is re-initializing or replacing the settings between the `When` and the `Then`.
+
+Two diagnostics were added the same day to split what remains, both in `ColonySteps.cs`:
+
+- `SetPriority` now asserts the **raw** `DefMap` value right after the call, not only `GetPriority`.
+  That separates "the write never reached vanilla's list" from "it reached it and was overwritten
+  afterwards" — the one question the `Then`-side reading cannot answer on its own.
+- `Describe` now reports the pawn's `thingIDNumber` and whether **this suite** had to initialize its
+  work settings. If a `Then` reads a pawn the suite itself initialized, the default-looking spread
+  above is explained outright, and by the suite rather than by the mod.
+
+**Scenario 6 is explained, and it was the test's fault, not the mod's.** The failure message shows
+the arrow did not move `Cooking` at all; what moved is `Research`, from last in the "before" list
+back to its vanilla third place, with every `naturalPriority` rewritten to vanilla values. The
+editor's row list is a cache that `DoWindowContents` drops at the top of **every** draw pass — the
+comment there says so, and names this exact hazard. A real arrow click therefore always acts on a
+list rebuilt that same frame. The step, calling `ShiftType` directly with no repaint behind it, acted
+on whatever the last pass had built — a list from before the sandbox reset between scenarios — and
+`ApplyTypeOrder` then rewrote every priority from it. A drag never had the problem, because
+`ReorderableWidget` only hands out its callback during a repaint, so those steps cannot run without
+one; and indeed both drag scenarios pass. The four arrow steps now let the window draw first.
+
+**Scenario 7 broke because of the screenshot feature added that morning, and that is fixed.**
+"the header and its width follow the new name" asserts that a rename threw the column's worker away
+(`workerInt == null`). The new `07b-rename-visual` opens the Work tab for its screenshot and left it
+open; a drawn table rebuilds the worker on the very next repaint, so 07 found one and failed. `07b`
+now closes the tab behind it. The mod was never involved.
+
+**Scenario 12 still fails, differently, and is now linked to scenario 8.** The raw-save check reads
+`position 0 (Firefighter) holds 3 positionally but 0 by name`. `Patch_WorkSettingsExposeData.Save`
+builds the named dictionary from `settings.priorities.values` — the *same* list vanilla had written
+as `<vals>` moments earlier in the same `ExposeData` pass — so the two cannot disagree unless that
+list changed in between. Enhanced Work Tab does not patch `ExposeData` (checked: its patches are
+`GetPriority`, `SetPriority`, `WorkGiversInOrder`, `CacheWorkGiversInOrder` and UI), so the writer is
+something else. The value in question, Firefighter, is one of the 3s in scenario 8's default-looking
+spread — the two failures are most likely the same unknown seen from two sides.
+
+Net: of the three defects carried since 2026-09-17, **scenario 6 is closed as a test artifact,
+scenario 5 is closed as other mods' log noise**, and scenario 8 remains — narrowed from "something
+zeroes one priority" to "something hands this pawn a freshly initialized set of work settings", with
+scenario 12 as its likely second face. Nothing here points at `WorkTypeRuntime.Apply()`, which
+`Tests/OffGame` exercises end to end and which the run's own passing scenarios (4, 9, 10) depend on.
 
 ## Screenshot scenarios, 2026-09-18: the trip automated, the verdict left to a person
 
