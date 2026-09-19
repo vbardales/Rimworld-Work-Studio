@@ -807,14 +807,20 @@ namespace WorkStudio
             y += SearchHeight + 4f;
 
             // The gesture cannot be guessed from the header or from the rows: say so.
+            //
+            // Measured, not assumed: the {0} is a work type's label, and a player can rename a type
+            // to anything. A fixed-height box clipped the wrap at both ends - the same defect
+            // Architect Studio found on its own intro paragraphs 2026-09-19, reported across and
+            // fixed here before anyone hit it.
             var color = GUI.color;
             GUI.color = new Color(1f, 1f, 1f, 0.5f);
             Text.Font = GameFont.Tiny;
-            Widgets.Label(new Rect(inner.x, y, inner.width, 20f),
-                "WorkStudio.AddHint".Translate(TypeLabel(selectedType)));
+            var hint = "WorkStudio.AddHint".Translate(TypeLabel(selectedType));
+            var hintHeight = Text.CalcHeight(hint, inner.width);
+            Widgets.Label(new Rect(inner.x, y, inner.width, hintHeight), hint);
             Text.Font = GameFont.Small;
             GUI.color = color;
-            y += 22f;
+            y += hintHeight + 2f;
 
             var candidates = Candidates();
             var listRect = new Rect(inner.x, y, inner.width, inner.yMax - y);

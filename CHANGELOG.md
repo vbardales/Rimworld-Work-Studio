@@ -11,6 +11,10 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 - The drawings come from the **SkillIcons** mod, which handed the feature over on 2026-09-18 and keeps only its passion icons. They are monochrome on purpose: in that mod colour means "which passion", and letting it also mean "which skill" would make both unreadable. 12 skills and 23 work types, nine of which deliberately share their skill's drawing — *Cook* and *Cooking* name one domain.
 - A hidden MainButtons shortcut (`WorkStudio_Settings`), for RIMMSQOL and similar MainButtons customization mods to reveal. It opens the exact same settings window as Mod options → Work Studio, against the same settings instance, so both routes share values and persistence.
 
+### Fixed
+
+- The help line under the editor's search box was drawn in a fixed-height box, so it was clipped as soon as it wrapped — which a long work type name is enough to cause, and a player can rename a type to anything. It is measured now.
+
 ### Changed
 
 - When two tasks in the same column carry the same label, each now shows its `defName` in grey beside it. Vanilla alone has several — *construct placed frames* belongs to both Construction and Art, *carry to growth vat* appears twice — and a mod list adds more; the rows were indistinguishable in a column whose whole purpose is clicking one of them rather than the other. A label shown only once is left alone.

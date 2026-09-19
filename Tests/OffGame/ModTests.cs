@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using HarmonyLib;
@@ -81,6 +82,7 @@ internal static class Program
         TheAmbiguousTaskLabels();
         TheIconPatchTargets();
         TheIconNames();
+        ThePickleStepTable();
     }
 
     // --- the publicizer waiver -----------------------------------------------------------------
@@ -1023,6 +1025,106 @@ internal static class Program
             strayS.Length == 0);
         Console.WriteLine("    work type icons not named in WorkTypeDefOf (DLC or modded types, expected): "
             + (strayT.Length == 0 ? "none" : string.Join(", ", strayT)));
+    }
+
+    // --- the Pickle suite's step table, which is global across every mod ------------------------
+
+    // Pickle matches a scenario line against EVERY loaded suite's steps at once, so two mods that
+    // phrase a step identically make both of them ambiguous and neither runs. That happened on
+    // 2026-09-19: this suite and Architect Studio's both declared "I click the button keyed
+    // {string}", and five of their scenarios died on "Ambiguous step: Multiple matches found".
+    // Nothing in a build catches it - the suites never see each other until the game loads them
+    // together - so the rule is checked here instead: every step this suite declares must name
+    // something of Work Studio's.
+    private static readonly string[] DomainMarkers =
+    {
+        "work studio", "work type", "work tab", "task", "priority", "priorities"
+    };
+
+    // What Pickle itself provides. Listed rather than guessed: a step used in a feature and found
+    // in neither place is a typo, and a typo only shows up as a failed scenario in a live run.
+    private static readonly string[] PickleBuiltIns =
+    {
+        "I close all dialogs",
+        "I open the {string} tab",
+        "I spawn a {string} at ({int}, {int})",
+        "I take a screenshot {string}",
+        "I wait for {string} to have job {string}",
+        "a colonist {string} exists",
+        "game speed is {word}",
+        "mod {string} is loaded",
+        "mod {string} loads after {string}",
+        "the save {string} is loaded",
+        "window {string} is open",
+    };
+
+    private static void ThePickleStepTable()
+    {
+        Console.WriteLine();
+        Console.WriteLine("the Pickle suite's steps, against a table shared with every other mod:");
+
+        string root = Path.GetFullPath(Path.Combine(modFolder, ".."));
+        string sourceFolder = Path.Combine(root, "Tests", "Pickle", "Source");
+        string featureFolder = Path.Combine(root, "Tests", "Pickle", "Mod", "Pickle", "Features");
+        if (!Directory.Exists(sourceFolder) || !Directory.Exists(featureFolder))
+        {
+            Skip("Tests/Pickle not found beside the mod folder");
+            return;
+        }
+
+        var declared = new List<string>();
+        foreach (string file in Directory.GetFiles(sourceFolder, "*.cs"))
+        {
+            foreach (Match m in Regex.Matches(File.ReadAllText(file),
+                         "\\[(?:When|Then|Given)\\(\"([^\"]*)\""))
+            {
+                declared.Add(m.Groups[1].Value);
+            }
+        }
+
+        Console.WriteLine("    " + declared.Count + " step(s) declared");
+        Check("the suite declares steps at all", declared.Count > 0);
+
+        string[] bare = declared
+            .Where(s => !DomainMarkers.Any(marker => s.ToLowerInvariant().Contains(marker)))
+            .OrderBy(s => s).ToArray();
+        Check("every declared step names something of Work Studio's, so it cannot collide with "
+              + "another mod's suite" + (bare.Length > 0 ? ": " + string.Join(" / ", bare) : ""),
+            bare.Length == 0);
+
+        Regex[] known = declared.Concat(PickleBuiltIns).Select(StepPattern).ToArray();
+        var unknown = new SortedSet<string>();
+
+        foreach (string file in Directory.GetFiles(featureFolder, "*.feature"))
+        {
+            foreach (string raw in File.ReadAllLines(file))
+            {
+                string line = raw.Trim();
+                Match keyword = Regex.Match(line, "^(Given|When|Then|And|But)\\s+(.*)$");
+                if (!keyword.Success) continue;
+
+                string step = keyword.Groups[2].Value;
+                if (!known.Any(pattern => pattern.IsMatch(step)))
+                {
+                    unknown.Add(Path.GetFileName(file) + ": " + step);
+                }
+            }
+        }
+
+        Check("every step a feature file uses is declared here or is a known Pickle built-in"
+              + (unknown.Count > 0 ? "\n          " + string.Join("\n          ", unknown) : ""),
+            unknown.Count == 0);
+    }
+
+    /// <summary>Cucumber's placeholders, as the regex Pickle matches a scenario line with.</summary>
+    private static Regex StepPattern(string step)
+    {
+        string pattern = Regex.Escape(step)
+            .Replace("\\{string}", "\"[^\"]*\"")
+            .Replace("\\{int}", "-?\\d+")
+            .Replace("\\{word}", "\\S+")
+            .Replace("\\(s\\)", "s?");
+        return new Regex("^" + pattern + "$");
     }
 
     // --- silencing Verse.Log ------------------------------------------------------------------

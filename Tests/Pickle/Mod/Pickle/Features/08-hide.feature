@@ -4,7 +4,7 @@ Feature: hide a column
   Background:
     Given the save "test-colony" is loaded
     And a colonist "Keeper" exists
-    And "Keeper" can do "Cleaning" and "Hauling"
+    And "Keeper" can do the work types "Cleaning" and "Hauling"
     When I set "Keeper" to priority 2 for "Cleaning"
 
   Scenario: the column goes, the work stays

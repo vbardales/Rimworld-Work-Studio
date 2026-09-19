@@ -21,5 +21,5 @@ Feature: the drift warning's wording
     Given the last startup saw a work type "PickleVanishedWork" that is gone now
     When I close the work type editor
     And Work Studio runs its startup check
-    And I let the interface draw
+    And I let the Work Studio interface draw
     And I take a screenshot "drift warning dialog"

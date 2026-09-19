@@ -95,7 +95,7 @@ namespace WorkStudio.PickleSteps
         /// half of the shortcut a machine can check; whether RIMMSQOL lists and reveals the button
         /// stays manual.
         /// </summary>
-        [When("I open the settings window through the MainButtons shortcut")]
+        [When("I open Work Studio's settings through the MainButtons shortcut")]
         public async Task OpenSettingsShortcut(PickleContext ctx)
         {
             var def = DefDatabase<MainButtonDef>.GetNamedSilentFail("WorkStudio_Settings");
@@ -105,7 +105,7 @@ namespace WorkStudio.PickleSteps
         }
 
         /// <summary>A frame-based pause, for a screenshot of something a step just opened.</summary>
-        [When("I let the interface draw")]
+        [When("I let the Work Studio interface draw")]
         public async Task LetInterfaceDraw(PickleContext ctx) => await ctx.WaitFrames(2);
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace WorkStudio.PickleSteps
         /// so closing it also runs vanilla's <c>PreClose</c> — which is what writes the settings to
         /// disk when a player leaves that window.
         /// </summary>
-        [When("I open the settings window through Mod options")]
+        [When("I open Work Studio's settings through Mod options")]
         public async Task OpenSettingsModOptions(PickleContext ctx)
         {
             Find.WindowStack.Add(new Dialog_ModSettings(WorkStudioMod.Instance));
@@ -137,7 +137,7 @@ namespace WorkStudio.PickleSteps
                 $"Mod options is hosting '{field.GetValue(window)}', not the running WorkStudioMod");
         }
 
-        [When("I close the settings window")]
+        [When("I close Work Studio's settings window")]
         public async Task CloseSettings(PickleContext ctx)
         {
             Find.WindowStack.WindowOfType<Dialog_ModSettings>()?.Close(doCloseSound: false);
@@ -145,7 +145,7 @@ namespace WorkStudio.PickleSteps
             await ctx.WaitFrames(2);
         }
 
-        [When("the settings are re-read from disk, as a restart would")]
+        [When("Work Studio's settings are re-read from disk, as a restart would")]
         public async Task ReloadSettings(PickleContext ctx)
         {
             SettingsSandbox.ReloadFromDisk();
@@ -158,7 +158,7 @@ namespace WorkStudio.PickleSteps
         /// matches whichever is running. Works for vanilla keys too - "Confirm" and "GoBack" are
         /// what <c>Dialog_MessageBox.CreateConfirmation</c> labels its two buttons with.
         /// </summary>
-        [When("I click the button keyed {string}")]
+        [When("I click the Work Studio button keyed {string}")]
         public async Task ClickKeyed(PickleContext ctx, string key) => await ctx.Click($"btn:{key.Translate()}");
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace WorkStudio.PickleSteps
         /// on the dialog's own countdown beats guessing a number of frames, and says what it waits
         /// for.
         /// </summary>
-        [When("I wait for the confirmation to become clickable")]
+        [When("I wait for Work Studio's confirmation to become clickable")]
         public async Task WaitForConfirmation(PickleContext ctx)
         {
             var dialog = Find.WindowStack.WindowOfType<Dialog_MessageBox>();
@@ -183,14 +183,14 @@ namespace WorkStudio.PickleSteps
             await ctx.WaitUntil(() => (float)property.GetValue(dialog) <= 0f, 10f);
         }
 
-        [Then("a confirmation dialog is open")]
+        [Then("Work Studio asks to confirm first")]
         public void ConfirmationOpen(PickleContext ctx)
         {
             ctx.Assert(Find.WindowStack.WindowOfType<Dialog_MessageBox>() != null,
                 "no Dialog_MessageBox is open: the action went through without asking");
         }
 
-        [When("I close all windows but the main tabs")]
+        [When("I close all windows but the main tabs, for Work Studio")]
         public async Task CloseTab(PickleContext ctx)
         {
             Find.MainTabsRoot.EscapeCurrentTab(playSound: false);
@@ -199,20 +199,20 @@ namespace WorkStudio.PickleSteps
 
         // ---------------------------------------------------------------- export and import
 
-        [When("I export the setup as {string}")]
+        [When("I export the Work Studio setup as {string}")]
         public void Export(PickleContext ctx, string name)
         {
             ctx.Assert(ConfigFile.Export(SettingsSandbox.FilePrefix + name, out var error), $"export failed: {error}");
         }
 
-        [When("I import the setup {string}")]
+        [When("I import the Work Studio setup {string}")]
         public void Import(PickleContext ctx, string name)
         {
             var path = ConfigFile.PathFor(SettingsSandbox.FilePrefix + name);
             ctx.Assert(ConfigFile.Import(path, out var error), $"import failed: {error}");
         }
 
-        [When("I import a truncated copy of the setup {string}")]
+        [When("I import a truncated copy of the Work Studio setup {string}")]
         public void ImportBroken(PickleContext ctx, string name)
         {
             var path = ConfigFile.PathFor(SettingsSandbox.FilePrefix + name);
@@ -227,13 +227,13 @@ namespace WorkStudio.PickleSteps
             public bool Succeeded;
         }
 
-        [Then("the import is refused")]
+        [Then("the Work Studio import is refused")]
         public void Refused(PickleContext ctx)
         {
             ctx.Assert(!ctx.Get<ImportOutcome>().Succeeded, "a truncated file was reported as imported");
         }
 
-        [Then("the exported file {string} does not contain {string}")]
+        [Then("the exported Work Studio file {string} does not contain {string}")]
         public void FileLacks(PickleContext ctx, string name, string text)
         {
             var content = File.ReadAllText(ConfigFile.PathFor(SettingsSandbox.FilePrefix + name));
@@ -263,10 +263,10 @@ namespace WorkStudio.PickleSteps
             });
         }
 
-        [When("I remember the whole setup")]
+        [When("I remember Work Studio's whole setup")]
         public void Remember(PickleContext ctx) => ctx.Set(new ConfigSnapshot { Text = DescribeConfig() });
 
-        [Then("the whole setup is as remembered")]
+        [Then("Work Studio's whole setup is as remembered")]
         public void AsRemembered(PickleContext ctx)
         {
             var before = ctx.Get<ConfigSnapshot>().Text.Split('\n');
@@ -275,7 +275,7 @@ namespace WorkStudio.PickleSteps
             ctx.Assert(diffs.Count == 0, "the setup differs:\n" + string.Join("\n", diffs));
         }
 
-        [Then("nothing is left to reset")]
+        [Then("nothing is left to reset in Work Studio")]
         public void NothingLeft(PickleContext ctx)
         {
             ctx.Assert(!WorkTypeRuntime.HasOverrides(), "the reset button is still offered:\n" + DescribeConfig());
@@ -308,7 +308,7 @@ namespace WorkStudio.PickleSteps
             public int Before;
         }
 
-        [Then("it opens {int} warning dialog(s)")]
+        [Then("Work Studio opens {int} warning dialog(s)")]
         public void Dialogs(PickleContext ctx, int expected)
         {
             var now = Find.WindowStack.Windows.OfType<Dialog_MessageBox>().ToList();

@@ -10,4 +10,4 @@ Feature: rename a work type
   Scenario: an empty name goes back to the original
     When I rename the work type "Hauling" to "Portage"
     And I rename the work type "Hauling" to ""
-    Then nothing is left to reset
+    Then nothing is left to reset in Work Studio

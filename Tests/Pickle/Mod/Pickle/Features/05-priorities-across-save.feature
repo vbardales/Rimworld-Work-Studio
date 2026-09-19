@@ -9,7 +9,7 @@ Feature: priorities survive a reconfiguration across a save
   Background:
     Given the save "test-colony" is loaded
     And a colonist "Keeper" exists
-    And "Keeper" can do "Handling" and "Cleaning"
+    And "Keeper" can do the work types "Handling" and "Cleaning"
     When I create the work type "Pickle first"
     And I move the task "Milk" into "Pickle first"
     And I create the work type "Pickle second"
@@ -26,9 +26,9 @@ Feature: priorities survive a reconfiguration across a save
     And "Keeper" has priority 4 for "Hauling"
 
   Scenario: a save written with two types, loaded with one
-    When I save the game as "two-types"
+    When I save the Work Studio test game as "two-types"
     And I delete the work type "Pickle first"
-    And I load the game "two-types"
+    And I load the Work Studio test game "two-types"
     Then "Keeper" has priority 3 for "Pickle second"
     And "Keeper" has priority 1 for "Doctor"
     And "Keeper" has priority 4 for "Hauling"
@@ -36,9 +36,9 @@ Feature: priorities survive a reconfiguration across a save
   Scenario: a save written with one type, loaded with two
     # The reverse: the second type exists again when the save made without it is read.
     When I delete the work type "Pickle first"
-    And I save the game as "one-type"
+    And I save the Work Studio test game as "one-type"
     And I create the work type "Pickle first"
-    And I load the game "one-type"
+    And I load the Work Studio test game "one-type"
     Then "Keeper" has priority 3 for "Pickle second"
     And "Keeper" has priority 1 for "Doctor"
     And "Keeper" has priority 4 for "Hauling"

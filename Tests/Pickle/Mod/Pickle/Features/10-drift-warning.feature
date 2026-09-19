@@ -11,13 +11,13 @@ Feature: the mod list drift warning
   Scenario: a vanished type raises the warning once, and not again
     Given the last startup saw a work type "PickleVanishedWork" that is gone now
     When Work Studio runs its startup check
-    Then it opens 1 warning dialog
+    Then Work Studio opens 1 warning dialog
     When I close all dialogs
     And Work Studio runs its startup check
-    Then it opens 0 warning dialogs
+    Then Work Studio opens 0 warning dialogs
 
   Scenario: no configuration, no warning
     Given the last startup saw a work type "PickleVanishedWork" that is gone now
-    When I reset the whole setup
+    When I reset Work Studio's whole setup
     And Work Studio runs its startup check
-    Then it opens 0 warning dialogs
+    Then Work Studio opens 0 warning dialogs

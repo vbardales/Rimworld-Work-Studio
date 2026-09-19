@@ -20,9 +20,9 @@ Feature: reordering types and tasks
     Then the work type "Cooking" moved 1 place down
 
   Scenario: the up arrow on the first type does nothing
-    When I remember the whole setup
+    When I remember Work Studio's whole setup
     And I press the up arrow on the first work type
-    Then the whole setup is as remembered
+    Then Work Studio's whole setup is as remembered
 
   Scenario: a task dragged downwards lands where it was dropped
     Given the tasks of "Handling" include "Slaughter, Milk, Shear, Tame, Train" in that order
@@ -35,6 +35,6 @@ Feature: reordering types and tasks
     Then the task "Train" of "Handling" comes right before "Milk"
 
   Scenario: the down arrow on the last task does nothing
-    When I remember the whole setup
+    When I remember Work Studio's whole setup
     And I press the down arrow on the last task of "Handling"
-    Then the whole setup is as remembered
+    Then Work Studio's whole setup is as remembered

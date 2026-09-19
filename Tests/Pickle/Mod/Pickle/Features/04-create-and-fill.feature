@@ -36,7 +36,7 @@ Feature: create a work type, and fill it
     And a colonist "Porter" exists
     When I create the work type "Pickle hauling"
     And I move the task "HaulGeneral" into "Pickle hauling"
-    And "Porter" does nothing but "Pickle hauling"
+    And "Porter" does nothing but the work type "Pickle hauling"
     And I spawn a "Steel" at (152, 155)
     And game speed is ultrafast
     Then I wait for "Porter" to have job "HaulToCell"

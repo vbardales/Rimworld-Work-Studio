@@ -110,7 +110,7 @@ namespace WorkStudio.PickleSteps
                 string.Join(", ", Driver.TypesInOrder().Select(t => $"{t.defName}={pawn.workSettings.GetPriority(t)}")));
         }
 
-        [Given("{string} can do {string} and {string}")]
+        [Given("{string} can do the work types {string} and {string}")]
         public void CanDo(PickleContext ctx, string nickname, string a, string b)
         {
             var pawn = Colonist(ctx, nickname);
@@ -122,7 +122,7 @@ namespace WorkStudio.PickleSteps
             }
         }
 
-        [When("{string} does nothing but {string}")]
+        [When("{string} does nothing but the work type {string}")]
         public void OnlyThis(PickleContext ctx, string nickname, string type)
         {
             var pawn = Colonist(ctx, nickname);
@@ -152,7 +152,7 @@ namespace WorkStudio.PickleSteps
 
         // ---------------------------------------------------------------- save and load
 
-        [When("I save the game as {string}")]
+        [When("I save the Work Studio test game as {string}")]
         public void Save(PickleContext ctx, string name)
         {
             var file = SettingsSandbox.FilePrefix + name;
@@ -166,7 +166,7 @@ namespace WorkStudio.PickleSteps
         /// the case the named priorities exist for: a save written with one set of types, read with
         /// another. Waits the way Pickle's own fixture step does.
         /// </summary>
-        [When("I load the game {string}", TimeoutSeconds = 130f)]
+        [When("I load the Work Studio test game {string}", TimeoutSeconds = 130f)]
         public async Task Load(PickleContext ctx, string name)
         {
             var file = SettingsSandbox.FilePrefix + name;

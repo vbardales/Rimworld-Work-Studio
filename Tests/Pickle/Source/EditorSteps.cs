@@ -107,7 +107,7 @@ namespace WorkStudio.PickleSteps
             Driver.Call(ctx, Driver.Editor(ctx), "SetVisible", Driver.WorkType(ctx, type), true);
         }
 
-        [When("I reset the whole setup")]
+        [When("I reset Work Studio's whole setup")]
         public void ResetAll(PickleContext ctx) => WorkTypeRuntime.ResetAll();
 
         /// <summary>

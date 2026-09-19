@@ -20,9 +20,9 @@ Feature: a renamed work type in the Work tab
     When I rename the work type "Hauling" to "Portage des marchandises"
     And I close the work type editor
     And I open the "Work" tab
-    And I let the interface draw
+    And I let the Work Studio interface draw
     And I take a screenshot "Work tab, Hauling renamed"
     # Leaving the Work tab open would spoil the next scenario in the run: 07 asserts that a rename
     # threw the column's worker away, and a table left on screen rebuilds it on the very next
     # repaint. Found the hard way on 2026-09-18, when adding this file turned 07 red.
-    And I close all windows but the main tabs
+    And I close all windows but the main tabs, for Work Studio

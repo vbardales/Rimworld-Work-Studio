@@ -18,9 +18,9 @@ Feature: what the settings window looks like
     And I close the work type editor
 
   Scenario: through the MainButtons shortcut
-    When I open the settings window through the MainButtons shortcut
+    When I open Work Studio's settings through the MainButtons shortcut
     And I take a screenshot "settings window, opened by the MainButtons shortcut"
 
   Scenario: through Mod options
-    When I open the settings window through Mod options
+    When I open Work Studio's settings through Mod options
     And I take a screenshot "settings window, opened through Mod options"
