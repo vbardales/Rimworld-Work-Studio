@@ -56,6 +56,11 @@ namespace WorkStudio.PickleSteps
                 $"the game did not keep priority {priority} for {Driver.Describe(def)} on '{nickname}': it reads " +
                 $"{pawn.workSettings.GetPriority(def)} right after the call. {Describe(pawn, def)}");
 
+            // From here on, every change to this pawn's priority for this type is recorded, with
+            // the stack trace of whatever writes a zero. Four runs have narrowed scenario 8 by
+            // elimination without ever saying WHEN the value dies or WHO takes it.
+            PriorityProbe.Watch(pawn, def);
+
             // And read the DefMap itself, not through GetPriority: a mod that answers GetPriority
             // from its own store (Enhanced Work Tab does, when time-aware priorities are on) would
             // make the assertion above pass while vanilla's own list never received the value. The
@@ -106,7 +111,8 @@ namespace WorkStudio.PickleSteps
             var def = Driver.WorkType(ctx, type);
             var actual = pawn.workSettings.GetPriority(def);
             ctx.Assert(actual == expected,
-                $"'{nickname}' should have {expected} for {Driver.Describe(def)}; it has {actual}. {Describe(pawn, def)}. Every priority: " +
+                $"'{nickname}' should have {expected} for {Driver.Describe(def)}; it has {actual}. {Describe(pawn, def)}. " +
+                $"Probe: {PriorityProbe.Report()}. Every priority: " +
                 string.Join(", ", Driver.TypesInOrder().Select(t => $"{t.defName}={pawn.workSettings.GetPriority(t)}")));
         }
 
