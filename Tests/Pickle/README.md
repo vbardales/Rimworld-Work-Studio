@@ -51,8 +51,20 @@ the mod first. Feature files need no build.
 ## Run
 
 - **In game**: dev mode on, debug actions menu, *Pickle*. Tick the Work Studio suite, *Run selected*.
+- **Scripted**: `.\Tests\Pickle\Run-Pickle.ps1` drives the game that is already open;
+  `-Launch` starts one, which is what a step assembly built since that game started needs.
 - **Unattended**: `RimWorldWin64.exe "-pickle-run=Work Studio - Pickle tests"`. The filter is the
   companion mod's name, exactly. Reports land in `PickleReports` beside the saves.
+
+The machine has one RimWorld and that RimWorld has one Pickle runner, so two sessions starting a
+run at the same time destroy each other silently. The script takes
+`%LOCALAPPDATA%\rimworld-pickle-run.lock` first, with `CreateNew` so the file system arbitrates,
+and gives it back in a `finally`. Start a run any other way and nothing holds that lock.
+
+`PickleReports` likewise holds one report for the whole machine: `summary.md` and `junit.xml` are
+rewritten by whichever suite ran last, whatever mod it belonged to. Read the outcome back from
+`http://localhost:27750/state`, which names the mod each scenario belongs to — a scenario the
+running game has never played reads `Pending` there, and no report can tell you that.
 
 Scenario 02 clicks real buttons through OS input: the pointer moves on its own while it runs.
 
