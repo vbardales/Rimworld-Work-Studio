@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <name>Work Studio</name>
-  <author>nelim</author>
+  <author>Nelim</author>
   <packageId>nelim.workstudio</packageId>
   <url>https://github.com/vbardales/Rimworld-Work-Studio</url>
   <supportedVersions>
