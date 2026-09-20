@@ -24,6 +24,11 @@ Feature: create a work type, and fill it
   Scenario: a colonist's cell for the new type takes a priority
     Given the save "test-colony" is loaded
     And a colonist "Keeper" exists
+    # A custom type inherits the workTags of the tasks moved into it, and CleanFilth carries
+    # ManualDumb - which the fixture's randomly generated backstories may well forbid. Without
+    # this the scenario asks the game for work its colonist is not allowed to do, and the game is
+    # right to refuse. Same premise as 05, 08 and 12.
+    And "Keeper" is given backstories that disable no work type
     When I create the work type "Pickle cleaning"
     And I move the task "CleanFilth" into "Pickle cleaning"
     And I set "Keeper" to priority 2 for "Pickle cleaning"
@@ -34,6 +39,9 @@ Feature: create a work type, and fill it
   Scenario: a colonist assigned only to the new type goes and does its task
     Given the save "test-colony" is loaded
     And a colonist "Porter" exists
+    # HaulGeneral carries ManualDumb too. This one passed on 2026-09-20 only because the fixture
+    # happened to draw backstories that allow it, which is not a property to rely on.
+    And "Porter" is given backstories that disable no work type
     When I create the work type "Pickle hauling"
     And I move the task "HaulGeneral" into "Pickle hauling"
     And "Porter" does nothing but the work type "Pickle hauling"
