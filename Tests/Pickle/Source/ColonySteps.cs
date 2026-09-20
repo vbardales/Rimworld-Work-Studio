@@ -386,10 +386,31 @@ namespace WorkStudio.PickleSteps
                 .Select(e => int.Parse(e.Value)).ToList();
             ctx.Require(vals != null, $"'{nickname}' has no <priorities><vals> in the raw save - vanilla's own node is missing");
 
-            var named = workSettings.Element("workStudioPriorities")?.Elements("li")
-                .ToDictionary(e => e.Element("key")?.Value, e => int.Parse(e.Element("value")?.Value ?? "0"));
-            ctx.Require(named != null,
-                $"'{nickname}' has no <workStudioPriorities> in the raw save - Patch_WorkSettingsExposeData did not run");
+            // Scribe does not write a Dictionary as one <li> per pair. With LookMode.Value on both
+            // sides it writes two parallel lists, <keys> and <values>. Reading the node's own
+            // Elements("li") therefore finds nothing, and ToDictionary hands back an EMPTY
+            // dictionary - not null, so a null check passes it. Every lookup below then answers
+            // "absent", TryGetValue returns 0, and the first colonist with a non-zero priority
+            // reads as a disagreement between the two lists. That is what failed this scenario on
+            // 2026-09-20, against saves whose lists agree perfectly: 27 entries for each of 9
+            // colonists, checked afterwards, not one mismatch.
+            var node = workSettings.Element("workStudioPriorities");
+            var keys = node?.Element("keys")?.Elements("li").Select(e => e.Value).ToList();
+            var numbers = node?.Element("values")?.Elements("li").Select(e => int.Parse(e.Value)).ToList();
+            ctx.Require(keys != null && numbers != null,
+                $"'{nickname}'s <workStudioPriorities> carries no <keys>/<values> lists in the raw save - either " +
+                "Patch_WorkSettingsExposeData did not run, or Scribe_Collections changed the shape it writes a " +
+                "dictionary in, and this step is reading for the old one");
+            ctx.Require(keys.Count == numbers.Count,
+                $"'{nickname}'s named priorities are malformed: {keys.Count} keys for {numbers.Count} values");
+            ctx.Require(keys.Count > 0,
+                $"'{nickname}'s named priorities are empty - nothing to compare the positional list against");
+
+            var named = new Dictionary<string, int>(keys.Count);
+            for (var i = 0; i < keys.Count; i++)
+            {
+                named[keys[i]] = numbers[i];
+            }
 
             // The order PriorityMemory and the ExposeData patch actually iterate: DefDatabase's own
             // list, aligned with def.index and therefore with the positional save - not the
@@ -404,10 +425,16 @@ namespace WorkStudio.PickleSteps
             ctx.Assert(vals.Count == typesInOrder.Count,
                 $"the raw priorities list has {vals.Count} entries for {typesInOrder.Count} work types");
 
+            // A type absent from the named list and a type named with a 0 are two different
+            // findings, and TryGetValue's default tells them apart for neither. Asking first keeps
+            // a step that cannot read the node at all from reporting a mod defect.
             for (var i = 0; i < nonCustom.Count; i++)
             {
                 var type = nonCustom[i];
-                named.TryGetValue(type.defName, out var expected);
+                ctx.Assert(named.ContainsKey(type.defName),
+                    $"position {i} ({type.defName}) is missing from the named list altogether - the two lists are " +
+                    "written in lockstep, so a type in one and not the other means the save is not what this step thinks it is");
+                var expected = named[type.defName];
                 ctx.Assert(vals[i] == expected,
                     $"position {i} ({type.defName}) holds {vals[i]} positionally but {expected} by name - " +
                     "a mod-less load reading this position would misassign it");
@@ -416,8 +443,11 @@ namespace WorkStudio.PickleSteps
             for (var i = 0; i < custom.Count; i++)
             {
                 var type = custom[i];
-                named.TryGetValue(type.defName, out var expected);
                 var position = nonCustom.Count + i;
+                ctx.Assert(named.ContainsKey(type.defName),
+                    $"custom type '{type.defName}' is missing from the named list, so nothing says what its trailing " +
+                    $"position {position} is supposed to hold");
+                var expected = named[type.defName];
                 ctx.Assert(vals[position] == expected,
                     $"the trailing position {position} for custom type '{type.defName}' holds {vals[position]} " +
                     $"positionally but {expected} by name - it would not simply drop off the end as expected");
