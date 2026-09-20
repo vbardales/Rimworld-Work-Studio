@@ -92,8 +92,50 @@ namespace WorkStudio.PickleSteps
             // Only a write that takes the value away is worth a trace; the scenario's own write of
             // the value it wants is noise, and the traces are long.
             Timeline.Add(priority == 0
-                ? "SetPriority(0) FROM " + Caller()
+                ? "SetPriority(0) FROM " + Caller() + " [" + WhyDisabled(w) + "]"
                 : "SetPriority(" + priority + ")");
+        }
+
+        /// <summary>
+        /// What the game believes about this work type at the instant it takes the priority away.
+        /// The 2026-09-20 run proved the zero comes from vanilla's own Disable, called by
+        /// Notify_DisabledWorkTypesChanged from inside PriorityMemory.Restore - so the game holds
+        /// this type to be disabled for this pawn right then, while the assertion a moment later
+        /// reads disabled=False. Something it consults is therefore wrong only during Apply, and
+        /// this says which: the disabled list it just built, the type's own workTags (what a
+        /// backstory is matched against, and the one field this mod rewrites on its own types), and
+        /// the backstories doing the disabling.
+        /// </summary>
+        private static string WhyDisabled(WorkTypeDef w)
+        {
+            try
+            {
+                var pawn = watchedPawn;
+                var disabled = pawn.GetDisabledWorkTypes();
+                var names = new List<string>();
+                foreach (var d in disabled)
+                {
+                    names.Add(d.defName);
+                }
+
+                var backstories = new List<string>();
+                if (pawn.story != null)
+                {
+                    foreach (var b in pawn.story.AllBackstories)
+                    {
+                        backstories.Add(b.defName + ":" + b.workDisables);
+                    }
+                }
+
+                return "workTags=" + w.workTags + ", visible=" + w.visible
+                       + ", index=" + w.index
+                       + ", disabled list=[" + string.Join(" ", names.ToArray()) + "]"
+                       + ", backstories=[" + string.Join(" ", backstories.ToArray()) + "]";
+            }
+            catch (Exception e)
+            {
+                return "could not be read: " + e.GetType().Name;
+            }
         }
 
         private static void Note(string label)

@@ -1,11 +1,4 @@
-| `13b-settings-visual` | the settings window, a TESTING.md scenario 13 added the same day | that it reads correctly through either door |
-
-The asserting half went into `13-settings.feature` instead, and grew the same day into the three
-checks that close most of the settings gate: both doors lead to one settings instance, a
-configuration survives being written and re-read from disk, and the reset asks before destroying
-anything. Building the `WorkStudio_Settings` def's own `Worker` and activating it the way RimWorld
-would is what turned the "never exercised at runtime" half of the MainButtons item above into a
-written test. Only RIMMSQOL's own side of it stays manual.---
+---
 localization: complete
 translation_en: complete
 translation_fr: complete
@@ -20,11 +13,11 @@ licence_at:   this mod's own code is MIT and nothing of Achtung! is redistribute
 settings_audit: partial
 dependencies: declared
 showcase:     complete
-tested_on:    2026-09-18
+tested_on:    2026-09-20
 workshop:     3792836684
 remaining:
-  - defect: TESTING.md scenario 8 ("hide a column"), both scenarios, still failed in the 2026-09-18 run - 'Keeper' reads 0 for Cleaning where the scenario set 2. Apply()'s own reconciliation is ruled out (Tests/OffGame's mutation-confirmed TheHideColumnRegression drives the real pipeline and the priority survives), and so is the Enhanced Work Tab hypothesis: the raw DefMap reads 0 too, not just GetPriority. What the 2026-09-18 failure message adds is the shape of the whole map - every value 3 or 0, nothing else - which is what a freshly initialized Pawn_WorkSettings looks like, not a shifted or corrupted one. So something re-initializes or replaces the pawn's work settings between the When and the Then. Two diagnostics added the same day split what is left: SetPriority now asserts the raw value at write time (never written vs overwritten later), and Describe reports the pawn id and whether the suite itself initialized those settings
-  - defect: TESTING.md scenario 12's raw-save check failed differently in the 2026-09-18 run - position 0 (Firefighter) holds 3 positionally but 0 by name. Patch_WorkSettingsExposeData.Save builds the named dictionary from the same values list vanilla wrote as <vals> moments earlier in the same ExposeData pass, so they cannot disagree unless that list changed in between; Enhanced Work Tab does not patch ExposeData (checked). Firefighter is one of the 3s in scenario 8's default-looking spread, so this is most likely the same unknown seen from the save side
+  - defect: TESTING.md scenario 8 ("hide a column") and scenario 5 ("deleting a type") both fail for the SAME reason, named on 2026-09-20 by PriorityProbe's stack trace and no longer a matter of elimination: PriorityMemory.Restore writes the remembered priorities into the DefMap, then calls pawn.Notify_DisabledWorkTypesChanged(), and vanilla's implementation walks pawn.GetDisabledWorkTypes() calling Disable (= SetPriority(w, 0)) on each. The probe reads before Apply=2, after Restore=0, with the chain Apply -> Restore -> Pawn.Notify_DisabledWorkTypesChanged -> Pawn_WorkSettings.Disable -> SetPriority(0). This mod's own code; no third-party mod is involved, and Enhanced Work Tab was absent from the mod list for this run anyway. The notify call is deliberate and its reason is sound (restoring by name overwrites the zeroes vanilla puts on work a pawn may not do), so the defect is that it consults GetDisabledWorkTypes at a moment when that list is wrong: the same failure message reports disabled=False when the assertion reads it a moment later. Vanilla's GetDisabledWorkTypes was read in full and consults nothing about visibility, so hiding is not what makes it disabled. The probe was extended the same day to report the disabled list, the type's workTags, its index and the pawn's backstories at the instant of the zeroing; one run separates a workTags problem from a stale index. Not fixed, and deliberately not guessed at: simply dropping the notify would reintroduce the bug it exists to prevent
+  - defect: TESTING.md scenario 12's raw-save check still fails (position 0 holds one value positionally and another by name). Almost certainly the same defect as scenarios 5 and 8 seen from the save side: Patch_WorkSettingsExposeData.Save builds the named dictionary from the same values list vanilla wrote moments earlier, so they can only disagree if that list changed in between - and the zeroing named on 2026-09-20 is exactly such a change. Recheck once that one is fixed rather than chasing it separately
   - fixed: TESTING.md scenario 6 ("the arrows move a type one place") was a test artifact, not a defect - settled 2026-09-18. The editor's row list is a cache DoWindowContents drops at the top of every draw pass, so a real arrow click always acts on a list rebuilt that frame; the step called ShiftType directly with no repaint behind it and acted on a list from before the between-scenario reset, then ApplyTypeOrder rewrote every priority from it. The drag scenarios never had the problem because ReorderableWidget only hands out its callback during a repaint. The four arrow steps now let the window draw first
   - fixed: TESTING.md scenario 5's three failures in the 2026-09-18 run were Pickle's Log.Error guard firing on other mods' errors (a Yet another Optimizer / VEF WorkGiver NullReferenceException, and the known UnityEngine.InputLegacyModule framework error), not on this mod's assertions - the 2026-09-17 reading of scenario 5 did not recur
   - fixed: TESTING.md scenario 7 ("the header and its width follow the new name") turned red in the 2026-09-18 run because the screenshot feature added that morning left the Work tab open, and a drawn table rebuilds the column worker the assertion expects to find thrown away. 07b now closes the tab behind it; the mod was never involved
@@ -35,7 +28,7 @@ remaining:
   - unverified: ConfigFile.PathFor/Folder/Export/Import stay untested even off-game - they all reach GenFilePaths.SaveDataFolderPath, and merely JIT-compiling that property throws outside a running Unity player; Tests/OffGame exercises the WorkStudioSettings/CustomWorkTypeEntry Scribe contract they wrap instead, at a path it computes itself
   - unverified: no in-game pass of English or French display yet (raw keys, clipping, fallback text) - the static localization gate is certified complete, but TRANSLATIONS.md tracks this runtime check separately and it must pass before claiming the translations tested in game. Since 2026-09-18 there is a scripted path for it: the four @review features attach screenshots of the editor, a renamed column, the drift dialog and the settings window, so running the suite once per language produces the evidence a person then reads. Written, never run
 session:      local_df8ae659-1a8e-4bf8-a74a-ff90c6c7ada7
-updated:      2026-09-18
+updated:      2026-09-20
 ---
 
 # Work Studio — status
@@ -490,18 +483,60 @@ that assert nothing and attach a screenshot), four features were written:
 | `10b-drift-warning-wording` | the wording half of 10 | four keys, four filled placeholders, nothing clipped |
 | `13b-settings-visual` | the settings window, a TESTING.md scenario 13 added the same day | that it reads correctly through either door |
 
-`13-settings`'s first scenario is a real assertion, not a screenshot: it builds the
-`WorkStudio_Settings` def's own `Worker`, activates it the way RimWorld would, and checks the window
-opens — which turns the "never exercised at runtime" half of the MainButtons item above into a
+The asserting half went into `13-settings.feature` instead, and grew the same day into the three
+checks that close most of the settings gate: both doors lead to one settings instance, a
+configuration survives being written and re-read from disk, and the reset asks before destroying
+anything. Building the `WorkStudio_Settings` def's own `Worker` and activating it the way RimWorld
+would is what turned the "never exercised at runtime" half of the MainButtons item above into a
 written test. Only RIMMSQOL's own side of it stays manual.
 
 Three new steps carry the trips (`I open the work type editor`, `I select the work type`,
-`I search the other tasks for`, plus `I open the settings window through the MainButtons shortcut`
-and a frame-based `I let the interface draw`). They wait frames rather than ticks on purpose: the
+`I search the other tasks for`, plus `I open Work Studio's settings through the MainButtons shortcut`
+and a frame-based `I let the Work Studio interface draw`). They wait frames rather than ticks on purpose: the
 settings window sets `forcePause`, so a tick-based wait behind it would sit until its timeout.
 
 **All four are written and build clean; none has been run.** Like everything else opened since the
 2026-09-17 pass, they wait on a live run.
+
+## The scenario 8 and 5 failures, named at last: 2026-09-20
+
+Four runs of elimination ended here. `PriorityProbe`, added the day before, put a stack trace on
+every `SetPriority(0)` for the watched pawn and type, and the run returned the same chain for both
+scenarios:
+
+    before Apply=2 | SetPriority(0) FROM Pawn_WorkSettings.SetPriority
+      <- Pawn_WorkSettings.Disable
+      <- Pawn_WorkSettings.Notify_DisabledWorkTypesChanged
+      <- Pawn.Notify_DisabledWorkTypesChanged
+      <- WorkStudio.PriorityMemory.Restore
+      <- WorkStudio.WorkTypeRuntime.Apply
+    | after PriorityMemory.Restore=0 | after Apply=0
+
+**It is this mod's own code, and no other mod is involved.** `PriorityMemory.Restore` writes the
+remembered priorities into the `DefMap`, then calls `pawn.Notify_DisabledWorkTypesChanged()` — which
+is deliberate, and the reason is sound: restoring by name overwrites the zeroes vanilla puts on work
+a pawn is not allowed to do, so they have to be reapplied. Vanilla's implementation walks
+`pawn.GetDisabledWorkTypes()` and calls `Disable` on each, and `Disable` is `SetPriority(w, 0)`.
+
+What makes it a defect rather than the intended behaviour is that **the game considers the type
+disabled at that instant and not a moment later**: the same failure message reports
+`disabled=False, visible=False` when the assertion reads it. So `GetDisabledWorkTypes()` answers
+differently during `Apply()` than after it, and `Restore` calls it at exactly the wrong moment —
+after `RebuildDefs` has reindexed the database and `ClearBackstoryCaches` has emptied every
+backstory's cached list, so the first thing to ask for that list rebuilds it against a def landscape
+that is still half-rewritten.
+
+Vanilla's own `Pawn.GetDisabledWorkTypes` was read in full: nothing in it consults `visible`, so
+hiding a column is not what makes the game call it disabled. The remaining candidates are what the
+backstory cache is rebuilt *against* — a work type's `workTags`, which this mod rewrites on its own
+types in `ComputeInheritance` — or a stale index. The probe was extended the same day to report, at
+the instant of the zeroing, the disabled list it just built, the type's `workTags`, its index and
+the pawn's backstories. One more run separates the two.
+
+**Not fixed yet, and deliberately not guessed at.** The obvious move — stop calling
+`Notify_DisabledWorkTypesChanged` from `Restore` — would reintroduce the bug that call exists to
+prevent: a pawn keeping a priority on work it cannot do. The fix has to keep that guarantee while
+not consulting a list built mid-rebuild, and which of the two mechanisms is at work decides how.
 
 ## Icons taken over from SkillIcons, 2026-09-18
 
