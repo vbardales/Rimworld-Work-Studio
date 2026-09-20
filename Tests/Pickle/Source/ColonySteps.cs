@@ -116,6 +116,27 @@ namespace WorkStudio.PickleSteps
                 string.Join(", ", Driver.TypesInOrder().Select(t => $"{t.defName}={pawn.workSettings.GetPriority(t)}")));
         }
 
+        /// <summary>
+        /// Asks whether the colonist may really do this work, and asks it of a cache that has just
+        /// been dropped.
+        /// <para>
+        /// This guard existed to keep a scenario from testing a work type its colonist is not
+        /// allowed to touch, and on 2026-09-20 it turned out to be the thing that let exactly that
+        /// happen. The fixture's "Keeper" is generated with random backstories; that run drew
+        /// <c>Rancher43</c>, whose <c>workDisables</c> is <c>ManualDumb</c>, which vanilla's own
+        /// Cleaning carries — so Keeper genuinely could not clean, and Hauling, HaulingUrgent and
+        /// KAU_UrgentHaul were out too. The guard passed anyway, because
+        /// <c>Pawn.GetDisabledWorkTypes</c> answers from a cache that nothing had invalidated yet.
+        /// The scenario then set a priority the game later took away — correctly — the moment
+        /// <c>WorkTypeRuntime.Apply</c> cleared the backstory caches and the question was asked
+        /// honestly.
+        /// </para>
+        /// <para>
+        /// Dropping the caches here asks the real question. It does not call
+        /// <c>Notify_DisabledWorkTypesChanged</c>, which would zero priorities as a side effect;
+        /// it only forces the next read to recompute.
+        /// </para>
+        /// </summary>
         [Given("{string} can do the work types {string} and {string}")]
         public void CanDo(PickleContext ctx, string nickname, string a, string b)
         {
@@ -123,10 +144,57 @@ namespace WorkStudio.PickleSteps
             foreach (var type in new[] { a, b })
             {
                 var def = Driver.WorkType(ctx, type);
-                ctx.Require(!pawn.WorkTypeIsDisabled(def),
-                    $"the generated colonist '{nickname}' cannot do '{type}'; give them another backstory in the scenario");
+                var cachedAnswer = pawn.WorkTypeIsDisabled(def);
+                DropDisabledWorkTypeCaches(pawn);
+                var realAnswer = pawn.WorkTypeIsDisabled(def);
+
+                ctx.Require(!realAnswer,
+                    $"the generated colonist '{nickname}' cannot do '{type}': " +
+                    $"{DisablingBackstories(pawn)}, and {type} carries {def.workTags}. " +
+                    (cachedAnswer == realAnswer
+                        ? "Give them another backstory in the scenario, or pick another work type."
+                        : "The cached answer said otherwise, which is how this went unnoticed until " +
+                          "2026-09-20: the priority was set, then correctly taken away as soon as " +
+                          "Work Studio cleared the backstory caches."));
             }
         }
+
+        private static void DropDisabledWorkTypeCaches(Pawn pawn)
+        {
+            foreach (var name in new[] { "cachedDisabledWorkTypes", "cachedDisabledWorkTypesPermanent" })
+            {
+                typeof(Pawn).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)
+                    ?.SetValue(pawn, null);
+            }
+
+            // Private, and this test assembly carries no publicizer, so reflection stands in for one.
+            var cache = typeof(BackstoryDef).GetField("cachedDisabledWorkTypes",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            if (cache != null)
+            {
+                foreach (var backstory in DefDatabase<BackstoryDef>.AllDefsListForReading)
+                {
+                    cache.SetValue(backstory, null);
+                }
+            }
+        }
+
+        private static string DisablingBackstories(Pawn pawn)
+        {
+            if (pawn.story == null)
+            {
+                return "it has no backstories";
+            }
+
+            var said = new List<string>();
+            foreach (var backstory in pawn.story.AllBackstories)
+            {
+                said.Add($"{backstory.defName} disables {backstory.workDisables}");
+            }
+
+            return string.Join(", ", said.ToArray());
+        }
+
 
         [When("{string} does nothing but the work type {string}")]
         public void OnlyThis(PickleContext ctx, string nickname, string type)

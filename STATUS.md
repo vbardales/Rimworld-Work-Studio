@@ -16,8 +16,8 @@ showcase:     complete
 tested_on:    2026-09-20
 workshop:     3792836684
 remaining:
-  - defect: TESTING.md scenario 8 ("hide a column") and scenario 5 ("deleting a type") both fail for the SAME reason, named on 2026-09-20 by PriorityProbe's stack trace and no longer a matter of elimination: PriorityMemory.Restore writes the remembered priorities into the DefMap, then calls pawn.Notify_DisabledWorkTypesChanged(), and vanilla's implementation walks pawn.GetDisabledWorkTypes() calling Disable (= SetPriority(w, 0)) on each. The probe reads before Apply=2, after Restore=0, with the chain Apply -> Restore -> Pawn.Notify_DisabledWorkTypesChanged -> Pawn_WorkSettings.Disable -> SetPriority(0). This mod's own code; no third-party mod is involved, and Enhanced Work Tab was absent from the mod list for this run anyway. The notify call is deliberate and its reason is sound (restoring by name overwrites the zeroes vanilla puts on work a pawn may not do), so the defect is that it consults GetDisabledWorkTypes at a moment when that list is wrong: the same failure message reports disabled=False when the assertion reads it a moment later. Vanilla's GetDisabledWorkTypes was read in full and consults nothing about visibility, so hiding is not what makes it disabled. The probe was extended the same day to report the disabled list, the type's workTags, its index and the pawn's backstories at the instant of the zeroing; one run separates a workTags problem from a stale index. Not fixed, and deliberately not guessed at: simply dropping the notify would reintroduce the bug it exists to prevent
-  - defect: TESTING.md scenario 12's raw-save check still fails (position 0 holds one value positionally and another by name). Almost certainly the same defect as scenarios 5 and 8 seen from the save side: Patch_WorkSettingsExposeData.Save builds the named dictionary from the same values list vanilla wrote moments earlier, so they can only disagree if that list changed in between - and the zeroing named on 2026-09-20 is exactly such a change. Recheck once that one is fixed rather than chasing it separately
+  - defect: TESTING.md scenarios 5, 8 and 12 fail because the SUITE tests work its colonist may not do - settled 2026-09-20, and not a defect in the mod. The fixture generates "Keeper" with random backstories; that run drew Rancher43, a rancher, whose workDisables is ManualDumb - which vanilla's own Cleaning, Hauling, HaulingUrgent and KAU_UrgentHaul all carry, checked in Core's own XML, and Cleaning's workTags turn out untouched by this mod. So vanilla zeroing those priorities is correct, and PriorityMemory.Restore calling Notify_DisabledWorkTypesChanged is right. The guard that should have caught it passed because Pawn.GetDisabledWorkTypes answers from a cache nothing had invalidated until WorkTypeRuntime.Apply cleared the backstory caches and the question was asked honestly for the first time. That guard now drops those caches before asking, and names the disabling backstory when it refuses. What remains open: any scenario naming a work type is a coin flip on that run's backstories, so four feature files need to stop hardcoding one - a decision, not yet taken
+  - defect: TESTING.md scenario 12's raw-save check fails for the same reason as 5 and 8 above - the positional and named lists disagree because the game correctly zeroed work the colonist may not do, between vanilla writing one node and this mod writing the other. Recheck once the fixture stops naming work types its colonist cannot do
   - fixed: TESTING.md scenario 6 ("the arrows move a type one place") was a test artifact, not a defect - settled 2026-09-18. The editor's row list is a cache DoWindowContents drops at the top of every draw pass, so a real arrow click always acts on a list rebuilt that frame; the step called ShiftType directly with no repaint behind it and acted on a list from before the between-scenario reset, then ApplyTypeOrder rewrote every priority from it. The drag scenarios never had the problem because ReorderableWidget only hands out its callback during a repaint. The four arrow steps now let the window draw first
   - fixed: TESTING.md scenario 5's three failures in the 2026-09-18 run were Pickle's Log.Error guard firing on other mods' errors (a Yet another Optimizer / VEF WorkGiver NullReferenceException, and the known UnityEngine.InputLegacyModule framework error), not on this mod's assertions - the 2026-09-17 reading of scenario 5 did not recur
   - fixed: TESTING.md scenario 7 ("the header and its width follow the new name") turned red in the 2026-09-18 run because the screenshot feature added that morning left the Work tab open, and a drawn table rebuilds the column worker the assertion expects to find thrown away. 07b now closes the tab behind it; the mod was never involved
@@ -537,6 +537,42 @@ the pawn's backstories. One more run separates the two.
 `Notify_DisabledWorkTypesChanged` from `Restore` — would reintroduce the bug that call exists to
 prevent: a pawn keeping a priority on work it cannot do. The fix has to keep that guarantee while
 not consulting a list built mid-rebuild, and which of the two mechanisms is at work decides how.
+
+### Settled 2026-09-20, second run: the mod is not at fault, the fixture is
+
+The extended probe answered in one run, and it reverses the verdict above:
+
+    workTags=ManualDumb, Commoner, Cleaning, AllWork, visible=False, index=18,
+    disabled list=[Hauling Cleaning HaulingUrgent KAU_UrgentHaul],
+    backstories=[MusicalKid86:None Rancher43:ManualDumb]
+
+Both halves were then checked against vanilla's own XML rather than taken on trust:
+`Core/Defs/WorkTypeDefs/WorkTypes.xml` gives Cleaning exactly `ManualDumb, Cleaning, Commoner,
+AllWork` — so **this mod never touched those tags**, and the stale-index theory dies with the
+`workTags` one. `Core/Defs/BackstoryDefs/Shuffled/Offworld_Nonspecific_Adult.xml` gives `Rancher43`
+(a *rancher*) a `workDisables` of `ManualDumb`.
+
+**So Keeper genuinely cannot clean, and vanilla zeroing that priority is correct.** The four types
+in the disabled list are exactly the `ManualDumb` ones. `PriorityMemory.Restore` calling
+`Notify_DisabledWorkTypesChanged` is right, and so is what it does.
+
+What went wrong is the scenario: it set a priority on work its colonist is not allowed to do. The
+`Given "Keeper" can do the work types …` guard exists to prevent precisely that, and it passed —
+because `Pawn.GetDisabledWorkTypes` answers from a cache nothing had invalidated yet, so the game
+said "allowed" until `WorkTypeRuntime.Apply` cleared the backstory caches and the question was asked
+honestly for the first time. The mod made the game tell the truth, and the truth was that the
+scenario's premise was false.
+
+The guard now drops `Pawn.cachedDisabledWorkTypes`, its permanent twin and every
+`BackstoryDef.cachedDisabledWorkTypes` before asking, so it asks the real question. Its failure
+message names the disabling backstory, what it disables and the type's own tags, and says explicitly
+when the cached answer differed from the real one — which is how this hid for four runs.
+
+**The fixture's colonist is generated with random backstories.** That is the deeper problem and it
+is not fixed: any scenario naming a work type is a coin flip on whether that run's Keeper may do it.
+Scenarios 5, 8 and 12 all name one. The next step is to stop hardcoding the type — pick one the
+colonist can actually do, or give the fixture a colonist with no `workDisables` — and that is a
+change to four feature files, left for a decision rather than made unilaterally.
 
 ## Icons taken over from SkillIcons, 2026-09-18
 
