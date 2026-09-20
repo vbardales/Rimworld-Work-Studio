@@ -12,6 +12,7 @@ Feature: what removing the mod would leave behind, read from the raw save
   Background:
     Given the save "test-colony" is loaded
     And a colonist "Keeper" exists
+    And "Keeper" is given backstories that disable no work type
     And "Keeper" can do the work types "Handling" and "Cleaning"
     When I create the work type "Pickle removed"
     And I move the task "Milk" into "Pickle removed"

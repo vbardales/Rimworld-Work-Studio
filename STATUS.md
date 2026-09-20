@@ -16,8 +16,8 @@ showcase:     complete
 tested_on:    2026-09-20
 workshop:     3792836684
 remaining:
-  - defect: TESTING.md scenarios 5, 8 and 12 fail because the SUITE tests work its colonist may not do - settled 2026-09-20, and not a defect in the mod. The fixture generates "Keeper" with random backstories; that run drew Rancher43, a rancher, whose workDisables is ManualDumb - which vanilla's own Cleaning, Hauling, HaulingUrgent and KAU_UrgentHaul all carry, checked in Core's own XML, and Cleaning's workTags turn out untouched by this mod. So vanilla zeroing those priorities is correct, and PriorityMemory.Restore calling Notify_DisabledWorkTypesChanged is right. The guard that should have caught it passed because Pawn.GetDisabledWorkTypes answers from a cache nothing had invalidated until WorkTypeRuntime.Apply cleared the backstory caches and the question was asked honestly for the first time. That guard now drops those caches before asking, and names the disabling backstory when it refuses. What remains open: any scenario naming a work type is a coin flip on that run's backstories, so four feature files need to stop hardcoding one - a decision, not yet taken
-  - defect: TESTING.md scenario 12's raw-save check fails for the same reason as 5 and 8 above - the positional and named lists disagree because the game correctly zeroed work the colonist may not do, between vanilla writing one node and this mod writing the other. Recheck once the fixture stops naming work types its colonist cannot do
+  - fixed: TESTING.md scenarios 5, 8 and 12 were failing because the SUITE tested work its colonist may not do - settled and repaired 2026-09-20, never a defect in the mod. The fixture generates "Keeper" with random backstories; that run drew Rancher43, a rancher, whose workDisables is ManualDumb - which vanilla's own Cleaning, Hauling, HaulingUrgent and KAU_UrgentHaul all carry, checked in Core's own XML, with Cleaning's workTags untouched by this mod. So vanilla zeroing those priorities was correct, and PriorityMemory.Restore calling Notify_DisabledWorkTypesChanged is right. The guard meant to catch it passed because Pawn.GetDisabledWorkTypes answers from a cache nothing had invalidated until WorkTypeRuntime.Apply cleared the backstory caches. Two repairs: that guard now drops the pawn's two caches and every backstory's before asking, and names the disabling backstory when it refuses; and the three Backgrounds now give Keeper backstories and traits that forbid no work at all, so the scenarios can go on naming Cleaning and mean it. Not yet re-run
+  - fixed: TESTING.md scenario 12's raw-save check failed for the same reason as 5 and 8 - the positional and named lists disagreed because the game correctly zeroed work the colonist could not do, between vanilla writing one node and this mod writing the other. Repaired by the same change; not yet re-run
   - fixed: TESTING.md scenario 6 ("the arrows move a type one place") was a test artifact, not a defect - settled 2026-09-18. The editor's row list is a cache DoWindowContents drops at the top of every draw pass, so a real arrow click always acts on a list rebuilt that frame; the step called ShiftType directly with no repaint behind it and acted on a list from before the between-scenario reset, then ApplyTypeOrder rewrote every priority from it. The drag scenarios never had the problem because ReorderableWidget only hands out its callback during a repaint. The four arrow steps now let the window draw first
   - fixed: TESTING.md scenario 5's three failures in the 2026-09-18 run were Pickle's Log.Error guard firing on other mods' errors (a Yet another Optimizer / VEF WorkGiver NullReferenceException, and the known UnityEngine.InputLegacyModule framework error), not on this mod's assertions - the 2026-09-17 reading of scenario 5 did not recur
   - fixed: TESTING.md scenario 7 ("the header and its width follow the new name") turned red in the 2026-09-18 run because the screenshot feature added that morning left the Work tab open, and a drawn table rebuilds the column worker the assertion expects to find thrown away. 07b now closes the tab behind it; the mod was never involved
@@ -573,6 +573,21 @@ is not fixed: any scenario naming a work type is a coin flip on whether that run
 Scenarios 5, 8 and 12 all name one. The next step is to stop hardcoding the type — pick one the
 colonist can actually do, or give the fixture a colonist with no `workDisables` — and that is a
 change to four feature files, left for a decision rather than made unilaterally.
+
+**Repaired the same day, by her choice between the two options.** The fixture now gets a colonist
+that forbids nothing: `Given "Keeper" is given backstories that disable no work type` swaps any
+childhood or adulthood backstory whose `workDisables` is not `None` for one that forbids nothing,
+removes any trait that disables work, drops the caches and checks that the pawn really has an empty
+disabled list — naming what still forbids the work if something else does (a gene, a quest, an
+ideoligion role, a life stage), since those would need a different answer.
+
+Replacing the backstory rather than picking a work type at run time was the choice made: the
+scenarios go on naming Cleaning, and now mean it. Skills and passions are untouched — only what the
+colonist is permitted to do changes. The three Backgrounds that name a work type (05, 08, 12) call
+it right after the colonist is created, and the honest guard that follows double-checks the result.
+
+**Not re-run yet.** What this predicts: scenarios 5, 8 and 12 go green, since the only thing wrong
+with them was a premise the game was right to refuse.
 
 ## Icons taken over from SkillIcons, 2026-09-18
 

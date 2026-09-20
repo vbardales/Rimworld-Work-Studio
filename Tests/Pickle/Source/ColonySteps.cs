@@ -159,6 +159,81 @@ namespace WorkStudio.PickleSteps
             }
         }
 
+        /// <summary>
+        /// Gives the colonist backstories and traits that forbid no work at all.
+        /// <para>
+        /// The fixture generates "Keeper" with random ones, so every scenario that names a work type
+        /// was a coin flip on that run's draw: 2026-09-20 drew <c>Rancher43</c>, a rancher, whose
+        /// <c>workDisables</c> is <c>ManualDumb</c> — which vanilla's Cleaning, Hauling,
+        /// HaulingUrgent and KAU_UrgentHaul all carry. The scenarios then set priorities the game
+        /// was right to take away, and three of them had been failing on it for four runs.
+        /// </para>
+        /// <para>
+        /// Replacing the backstory rather than picking a work type at random keeps the scenarios
+        /// readable: they can go on naming Cleaning, and mean it. Skills and passions are untouched —
+        /// only what the pawn is permitted to do changes.
+        /// </para>
+        /// </summary>
+        [Given("{string} is given backstories that disable no work type")]
+        public void NoWorkDisables(PickleContext ctx, string nickname)
+        {
+            var pawn = Colonist(ctx, nickname);
+            ctx.Require(pawn.story != null, $"'{nickname}' has no story tracker to give backstories to");
+
+            ReplaceIfDisabling(ctx, pawn, BackstorySlot.Childhood);
+            ReplaceIfDisabling(ctx, pawn, BackstorySlot.Adulthood);
+
+            // Traits forbid work too, and a generated pawn can carry one that does.
+            if (pawn.story.traits != null)
+            {
+                foreach (var trait in pawn.story.traits.allTraits.ToList())
+                {
+                    if (trait.GetDisabledWorkTypes().Any())
+                    {
+                        pawn.story.traits.RemoveTrait(trait);
+                    }
+                }
+            }
+
+            DropDisabledWorkTypeCaches(pawn);
+            pawn.Notify_DisabledWorkTypesChanged();
+
+            var left = pawn.GetDisabledWorkTypes();
+            ctx.Require(left.Count == 0,
+                $"'{nickname}' still cannot do {Driver.Names(left)} after being given harmless " +
+                $"backstories - something other than a backstory or a trait forbids it " +
+                $"(a gene, a quest, an ideoligion role, its life stage). {DisablingBackstories(pawn)}");
+        }
+
+        private static void ReplaceIfDisabling(PickleContext ctx, Pawn pawn, BackstorySlot slot)
+        {
+            var current = pawn.story.GetBackstory(slot);
+            if (current == null || current.workDisables == WorkTags.None)
+            {
+                return;
+            }
+
+            // Never a child backstory on an adult: the setter logs a warning for that, and a warning
+            // in the middle of a scenario is noise nobody will thank us for.
+            var replacement = DefDatabase<BackstoryDef>.AllDefsListForReading.FirstOrDefault(b =>
+                b.slot == slot
+                && b.workDisables == WorkTags.None
+                && !b.spawnCategories.Contains("Child"));
+
+            ctx.Require(replacement != null,
+                $"no {slot} backstory in this mod list forbids no work at all, so the colonist "
+                + "cannot be made harmless");
+
+            if (slot == BackstorySlot.Childhood)
+            {
+                pawn.story.Childhood = replacement;
+            }
+            else
+            {
+                pawn.story.Adulthood = replacement;
+            }
+        }
+
         private static void DropDisabledWorkTypeCaches(Pawn pawn)
         {
             foreach (var name in new[] { "cachedDisabledWorkTypes", "cachedDisabledWorkTypesPermanent" })
