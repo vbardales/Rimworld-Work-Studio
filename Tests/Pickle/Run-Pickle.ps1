@@ -47,6 +47,17 @@ param(
     [switch]$Force
 )
 
+
+# -Launch is refused since 2026-09-21. Starting the Windows game takes her screen, and on
+# 2026-09-20 three sessions did it without her asking. A suite runs in the WSL install now:
+#   pwsh -File scripts/Run-PickleWsl.ps1 -Mod <Mod>
+# What remains here is driving a game SHE already has open, through Pickle's dashboard.
+if ($Launch) {
+    Write-Host 'Lancer le RimWorld de Windows est interdit : il prend son ecran.' -ForegroundColor Red
+    Write-Host 'Utilise  pwsh -File scripts/Run-PickleWsl.ps1 -Mod <Mod>  (WSL, sous Xvfb).' -ForegroundColor Yellow
+    exit 5
+}
+
 $ErrorActionPreference = 'Stop'
 
 $lockPath = Join-Path $env:LOCALAPPDATA 'rimworld-pickle-run.lock'
