@@ -70,8 +70,62 @@ namespace WorkStudio.PickleSteps
         /// </summary>
         private static string EditorButtonTag() => $"btn:{"WorkStudio.OpenEditorShort".Translate()}";
 
+        /// <summary>
+        /// Says what is actually under the pointer before a click is sent, and names the mod it
+        /// belongs to. Pickle's own failure is "tag not found", which reads like the button is
+        /// missing when in truth something is sitting on top of it — Architect Studio spent a run
+        /// on that, and it was a third-party window whose ASSEMBLY was the only thing that
+        /// identified it; by type name alone they took it for a vanilla tutorial window.
+        /// <para>
+        /// Hovering first is not politeness: <c>Input.mousePosition</c> is sampled once per frame,
+        /// so the pointer has to be where the click will land, a frame earlier, for the question to
+        /// mean anything.
+        /// </para>
+        /// </summary>
+        private static async Task WarnIfCovered(PickleContext ctx, string tag, Type expected = null)
+        {
+            try
+            {
+                await ctx.Hover(tag);
+            }
+            catch (Exception)
+            {
+                return; // no tag to hover: Pickle's own message says that better than this can
+            }
+
+            await ctx.WaitFrames(2);
+
+            var under = Find.WindowStack.GetWindowAt(UI.MousePositionOnUIInverted);
+            if (under == null)
+            {
+                return;
+            }
+
+            // With a type in hand, ask for that type. Without one - the keyed click reaches
+            // whatever window drew the button - ask instead that the window belong to the game or
+            // to this mod, which is what catches a third party sitting on top.
+            string assembly = under.GetType().Assembly.GetName().Name;
+            bool acceptable = expected != null
+                ? expected.IsInstanceOfType(under)
+                : assembly == "Assembly-CSharp" || assembly == typeof(WorkStudioMod).Assembly.GetName().Name;
+
+            if (acceptable)
+            {
+                return;
+            }
+
+            ctx.Assert(false,
+                $"'{tag}' is under another window: {under.GetType().FullName} from {assembly}"
+                + (expected != null ? $", where {expected.Name} was expected" : string.Empty)
+                + ". The click would go to that window, and Pickle would report the tag as missing.");
+        }
+
         [When("I click the Work types button")]
-        public async Task ClickOpenEditor(PickleContext ctx) => await ctx.Click(EditorButtonTag());
+        public async Task ClickOpenEditor(PickleContext ctx)
+        {
+            await WarnIfCovered(ctx, EditorButtonTag(), typeof(MainTabWindow));
+            await ctx.Click(EditorButtonTag());
+        }
 
         [Then("the Work Studio button is not drawn")]
         public async Task NotDrawn(PickleContext ctx)
@@ -159,7 +213,12 @@ namespace WorkStudio.PickleSteps
         /// what <c>Dialog_MessageBox.CreateConfirmation</c> labels its two buttons with.
         /// </summary>
         [When("I click the Work Studio button keyed {string}")]
-        public async Task ClickKeyed(PickleContext ctx, string key) => await ctx.Click($"btn:{key.Translate()}");
+        public async Task ClickKeyed(PickleContext ctx, string key)
+        {
+            var tag = $"btn:{key.Translate()}";
+            await WarnIfCovered(ctx, tag);
+            await ctx.Click(tag);
+        }
 
         /// <summary>
         /// A destructive confirmation is deliberately not clickable the instant it appears. Waiting
@@ -195,6 +254,76 @@ namespace WorkStudio.PickleSteps
         {
             Find.MainTabsRoot.EscapeCurrentTab(playSound: false);
             await ctx.WaitFrames(2);
+        }
+
+        // ---------------------------------------------------------------- publication screenshots
+
+        /// <summary>
+        /// Windows whose <c>drawInScreenshotMode</c> this step turned off, so they can be turned
+        /// back on. A scenario that dies between the two would otherwise leave the game with no
+        /// interface at all, which is why <see cref="RestoreInterface"/> also runs after every
+        /// scenario.
+        /// </summary>
+        private static readonly List<Window> hiddenWindows = new List<Window>();
+        private static bool screenshotModeWasActive;
+
+        /// <summary>
+        /// Leaves only this mod's own windows on the map: the game's screenshot mode already draws
+        /// nothing but windows that ask for it, so clearing the flag on everything else removes the
+        /// tab bar, the alerts, the colonist bar, the dev tools - and Pickle's own runner panel,
+        /// which sat in the corner of every @review capture until 2026-09-20 and had to be cropped
+        /// out by hand. Pickle's windows are spotted by assembly rather than by type name, since it
+        /// draws more than one.
+        /// </summary>
+        [When("I hide the interface around Work Studio's windows")]
+        public async Task HideInterface(PickleContext ctx)
+        {
+            var root = Find.UIRoot;
+            ctx.Require(root != null, "no UIRoot: the game is not drawing anything to photograph");
+
+            screenshotModeWasActive = root.screenshotMode.Active;
+
+            // Ours keep their default, which is to draw; only Pickle's own are taken out. The tab
+            // bar, the alerts, the colonist bar and the dev tools are not windows at all - screenshot
+            // mode drops those by itself.
+            foreach (var window in Find.WindowStack.Windows)
+            {
+                bool isPickle = window.GetType().Assembly.GetName().Name
+                    .StartsWith("RimWorks.Pickle", StringComparison.OrdinalIgnoreCase);
+
+                if (isPickle && window.drawInScreenshotMode)
+                {
+                    window.drawInScreenshotMode = false;
+                    hiddenWindows.Add(window);
+                }
+            }
+
+            root.screenshotMode.Active = true;
+            await ctx.WaitFrames(2);
+        }
+
+        [When("I bring the interface back around Work Studio's windows")]
+        public async Task ShowInterface(PickleContext ctx)
+        {
+            RestoreInterface(ctx);
+            await ctx.WaitFrames(2);
+        }
+
+        [AfterScenario]
+        public void RestoreInterface(PickleContext ctx)
+        {
+            foreach (var window in hiddenWindows)
+            {
+                window.drawInScreenshotMode = true;
+            }
+
+            hiddenWindows.Clear();
+
+            var root = Find.UIRoot;
+            if (root != null && !screenshotModeWasActive)
+            {
+                root.screenshotMode.Active = false;
+            }
         }
 
         // ---------------------------------------------------------------- export and import

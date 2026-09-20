@@ -4,7 +4,14 @@
     Steam page rather than for the test that produced them.
 
 .DESCRIPTION
-    Tests/Pickle's @review features (03-three-columns, 07b-rename-visual, 10b-drift-warning-wording,
+    Tests/Pickle's 14-publication-shots.feature builds a scene worth showing - a work type named the
+    way a player would name it, real tasks moved into it - and photographs it with the interface
+    around the windows hidden, through the game's own screenshot mode. Run that feature with the
+    game IN ENGLISH: the Workshop page is English.
+
+    Older note, kept because it is still true of the  captures:
+
+        Tests/Pickle's @review features (03-three-columns, 07b-rename-visual, 10b-drift-warning-wording,
     13-settings-window) exist so a person can judge what no assertion can. They also happen to
     photograph exactly what the Workshop page needs to show, in a clean fixture colony, at a
     consistent size, every run. This copies that set out of the report folder under stable names.
@@ -35,15 +42,14 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-# Pickle names a manual screenshot after the label the step passed, so these track the strings in
-# the feature files. A renamed screenshot step must be renamed here too - the script says so rather
-# than silently producing a short set.
 $wanted = [ordered] @{
-    'manual--editor--Handling-selected--step0.png'                        = '01-editor-three-columns.png'
-    'manual--editor--other-tasks-searched-for-clean--step0.png'           = '02-editor-searching-other-tasks.png'
-    'manual--Work-tab--Hauling-renamed--step0.png'                        = '03-work-tab-renamed-column.png'
-    'manual--settings-window--opened-by-the-MainButtons-shortcut--step0.png' = '04-settings-window.png'
-    'manual--drift-warning-dialog--step0.png'                             = '05-mod-list-drift-warning.png'
+    # Pickle names a manual screenshot after the label the step passed, turning every character
+    # that is not a letter or a digit into a dash - so "Workshop page, the editor" becomes
+    # "Workshop-page--the-editor". A renamed screenshot step must be renamed here too; the script
+    # says which one it could not find rather than silently producing a short set.
+    "manual--Workshop-page--the-editor--step0.png"      = "01-the-editor.png"
+    "manual--Workshop-page--the-new-column--step0.png"  = "02-the-new-column.png"
+    "manual--Workshop-page--the-settings--step0.png"    = "03-the-settings.png"
 }
 
 if (-not (Test-Path -LiteralPath $ReportFolder)) {

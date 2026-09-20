@@ -120,9 +120,19 @@ took them. `Art/` is not shipped, so none of it reaches subscribers, and the fil
 by default — they change every run, and only a set worth publishing belongs in the history
 (`git add -f` one when it is).
 
-Pickle's own runner panel sits in the corner of every frame, so a capture is cropped by hand before
-it goes on the page. That was weighed and accepted on 2026-09-18 rather than worked around: the
-script already saves the finding and the naming, and cropping is one step in an image editor.
+Pickle's own runner panel used to sit in the corner of every frame, and cropping it by hand was
+weighed and accepted on 2026-09-18. It is not needed any more: `I hide the interface around Work
+Studio's windows` turns on the game's own screenshot mode, which draws only windows that ask for
+it, and clears that flag on Pickle's own — so the tab bar, the alerts, the colonist bar, the dev
+tools and the runner panel all go, leaving the mod's window on the map. The step restores what it
+changed, and an `[AfterScenario]` restores it again in case a scenario dies in between, which would
+otherwise leave the game with no interface at all. Learned from Architect Studio's session,
+2026-09-20.
+
+`14-publication-shots.feature` uses it, and builds its own scene rather than photographing whatever
+the fixture holds: a screenshot of a test configuration puts names like "Pickle herding" on a store
+page. **Run that one with the game in English**; the @review features are the ones to run in each
+language.
 
 A screenshot scenario waits *frames*, never ticks: the settings window sets `forcePause`, and a
 tick-based wait behind it would sit until its timeout.
