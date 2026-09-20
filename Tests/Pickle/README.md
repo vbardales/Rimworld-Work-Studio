@@ -113,6 +113,38 @@ and a test that only creates a type passes with or without the mod's protection.
 creates two, saves, deletes the first and loads the save: without the named priorities, the second
 type would read the first one's value.
 
+## Why each of these is in Gherkin and not off-game
+
+Pickle does not replace the off-game suite, it completes it, and it costs incomparably more: a run
+takes the machine over — real clicks, real pointer — for minutes, where `Tests/OffGame` answers in
+seconds. So a scenario that repeats what a unit test already proves confiscates the machine every
+run for nothing, and belongs deleted rather than kept just in case. Every feature here was put
+against that rule on 2026-09-20, with the timings of the 20:48 run as the measure of what it costs.
+
+| Feature | Cost | What only a running game can show |
+| --- | --- | --- |
+| `02` the Work tab button | 55.0 s | Real OS clicks, which go to whichever window owns the point — the failure other mods cause and no unit test reproduces |
+| `13` the settings window, both doors | 52.9 s | Vanilla's own `Dialog_ModSettings`, its `PreClose` writing the file, and a configuration re-read from disk |
+| `05` priorities across a save | 40.3 s | What survives a save and a reload, with the def database rebuilt in between |
+| `03`, `07b`, `10b`, `13b`, `14` | 89.4 s | Screenshots a person reads. They assert nothing by design |
+| `04` create and fill | 18.5 s | A def created at runtime, the column rebuilt, and a colonist actually picking the task up |
+| `08` hide a column | 17.1 s | The column leaving the drawn table, and the colonist still picking `CleanFilth` up |
+| `10` the drift warning | 16.2 s | A dialog opening on a real window stack, once and not twice |
+| `12` removing the mod | 8.6 s | Writing a real save, whose raw XML is then the evidence |
+| `06` reordering | 1.7 s | Drops replayed through the callback the column registered on its **last repaint**, and arrows acting on a row list rebuilt that frame — the frame-cache defect of 2026-09-18 lived exactly there |
+| `09` export, reset, import | 1.5 s | `ConfigFile` reaches `GenFilePaths.SaveDataFolderPath`, which throws outside a Unity player: off-game cannot run this at all |
+| `01` loading and patches | 1.2 s | Harmony having actually applied, in a real load order, beside the other mods |
+| `07` rename | 0.3 s | The column worker measuring the header width once and keeping it |
+
+One overlap is real and stays: `Tests/OffGame` reproduces TESTING.md scenario 8 against the real
+`WorkTypeRuntime.Apply()` and already proves that hiding and showing leave the priority alone, which
+`08` asserts too. It is kept because `08` also shows the column leaving the table and the colonist
+still picking the work up, which off-game cannot; the two extra `Then` lines ride along in a
+scenario that has to run anyway and cost no machine time of their own.
+
+The four cheapest features together come to 4.7 seconds. Deleting them would buy nothing and lose
+the frame-cache and load-order checks, so nothing was deleted.
+
 ## What stays manual
 
 | TESTING.md | Why |
