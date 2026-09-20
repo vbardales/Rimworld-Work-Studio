@@ -51,10 +51,19 @@ the mod first. Feature files need no build.
 ## Run
 
 - **In game**: dev mode on, debug actions menu, *Pickle*. Tick the Work Studio suite, *Run selected*.
-- **Scripted**: `.\Tests\Pickle\Run-Pickle.ps1` drives the game that is already open;
-  `-Launch` starts one, which is what a step assembly built since that game started needs.
+- **Scripted**: `.\Tests\Pickle\Run-Pickle.ps1` drives the game that is already open. It cannot
+  start one, on purpose — see below.
 - **Unattended**: `RimWorldWin64.exe "-pickle-run=Work Studio - Pickle tests"`. The filter is the
-  companion mod's name, exactly. Reports land in `PickleReports` beside the saves.
+  companion mod's name, exactly. Reports land in `PickleReports` beside the saves. This is also
+  what a build made since the running game started needs, since the assemblies are read at startup.
+
+**Starting the game is a person's job, never a script's.** `Run-Pickle.ps1` had a `-Launch` switch
+guarded by a `Get-Process` check, and on 2026-09-20 that guard let a launch through against a game
+that was still coming up: a game starting is not yet a process, so no check of this kind can see
+it. The second instance cut off what the first was doing — the same evening, one killed SkillIcons'
+run, which died without writing a report and left nothing in the next one to explain the gap. The
+switch was removed rather than hardened. The script now has no `Start-Process` at all: with no game
+open it prints the unattended command above and stops.
 
 The machine has one RimWorld and that RimWorld has one Pickle runner, so two sessions starting a
 run at the same time destroy each other silently. The script takes

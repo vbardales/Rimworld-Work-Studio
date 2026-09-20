@@ -6,15 +6,26 @@
     instance, and a second /run lands on a runner that is already busy. Both leave the report
     unwritten, which is how an afternoon gets spent reading a report from hours earlier.
 
-    Without -Launch the script drives the game that is already open, through Pickle's dashboard:
-    the assemblies are read at startup, so a game older than the build tests the previous one, and
-    the script refuses rather than let that pass unnoticed. With -Launch it starts a game, which is
-    what a freshly built assembly needs - and only when none is running at all.
+    This script cannot start RimWorld, and that is deliberate. It drives the game that is already
+    open, through Pickle's dashboard, and does nothing at all when none is. It used to have a
+    -Launch switch guarded by a Get-Process check, and on 2026-09-20 that guard let a launch
+    through against a game that was still coming up: a game starting is not yet a process, so no
+    check of this kind can see it. A second RimWorld cuts off whatever the first was doing - the
+    same evening, one killed SkillIcons' run, which died without writing a report and left nothing
+    in the next one to say why. The switch is gone rather than hardened, because the rule is not to
+    launch, not to launch carefully.
 
-    A second RimWorld is never started and the running one is never closed. On 2026-09-20 a second
-    launch cut off SkillIcons' run mid-flight; it died without writing a report, and nothing in the
-    next one said why. An unattended run closes its own game when it ends; a game that was already
-    open stays open, because it carries work nothing shows and that is its owner's call.
+    Starting the game is the owner's, by hand:
+
+        RimWorldWin64.exe "-pickle-run=Work Studio - Pickle tests"
+
+    which runs the suite unattended and closes its own game at the end. A game that was already
+    open is never closed by anything here: it carries work nothing shows, and that is its owner's
+    call.
+
+    The assemblies are read at startup, so a game older than the build tests the previous one while
+    you read the new one's source. The script refuses that rather than let it pass unnoticed - it
+    is the one case where the answer is to restart the game, which is again yours to do.
 
     PickleReports holds one report for the whole machine, not one per mod: summary.md, junit.xml
     and the rest are rewritten by whichever suite ran last. On 2026-09-20 this suite was believed
@@ -31,7 +42,6 @@
 param(
     [string]$Mod = 'Work Studio - Pickle tests',
     [int]$Port = 27750,
-    [switch]$Launch,
     [int]$TimeoutMinutes = 90,
     [int]$KeepReports = 5,
     [switch]$Force
@@ -57,10 +67,6 @@ function Get-Game {
     return Get-Process -Name RimWorldWin64 -ErrorAction SilentlyContinue
 }
 
-function Test-GameRunning {
-    return $null -ne (Get-Game)
-}
-
 # The step assembly and the mod assembly are read when the game starts. Driving a game older than
 # the build means testing the previous build while reading the new one's source, which is a whole
 # evening if it goes unnoticed - so it is checked here rather than left to whoever remembers.
@@ -75,7 +81,7 @@ function Assert-BuildOlderThanGame($game) {
     }
     if ($newer.Count -gt 0) {
         throw ("This game started before the build it would be running:`n" + ($newer -join "`n") +
-               "`nRestart the game to load it. This script will not do it for you while a game is open.")
+               "`nRestart the game yourself to load it: this script never starts or closes one.")
     }
 }
 
@@ -243,43 +249,16 @@ function Show-Outcome($startedAt) {
     if ($failed.Count -gt 0) { exit 1 }
 }
 
-# Before the lock, because this answer does not depend on who holds it and refusing early is
-# cheaper than refusing late: one RimWorld runs on this machine, and starting a second cuts off
-# whatever the first was doing. On 2026-09-20 a second launch killed SkillIcons' run mid-flight,
-# which died without writing its report - the work is lost on both sides and nothing says why.
-if ($Launch -and (Test-GameRunning)) {
-    throw 'RimWorld is already running. Drive it without -Launch, or wait: this script never starts a second instance and never closes the one that is open.'
-}
-
 Enter-Lock
 try {
     Show-Leftovers 'Before the run'
 
-    if ($Launch) {
-        if (Test-GameRunning) {
-            throw 'RimWorld started while this script was taking the lock. Nothing was launched.'
-        }
-        # The filter is the companion mod's name, exactly; PowerShell would otherwise cut the
-        # argument at the first space and Pickle would find no scenario at all.
-        $arguments = "-pickle-run=`"$Mod`""
-        Save-PreviousReport
-        Write-Host "Launching RimWorld for '$Mod'..."
-        $game = Start-Process -FilePath $gamePath -ArgumentList $arguments -PassThru
-        $deadline = (Get-Date).AddMinutes($TimeoutMinutes)
-        while (-not $game.HasExited) {
-            if ((Get-Date) -gt $deadline) { throw "The run is still going after $TimeoutMinutes minutes; the game is left alone, check it yourself." }
-            Start-Sleep -Seconds 15
-        }
-        $junit = Join-Path $reportRoot 'junit.xml'
-        if (-not (Test-Path $junit)) { throw "The game exited without writing ${junit}: the run never reached its end." }
-        Write-Host "Report written: $junit"
-        Show-Leftovers 'After the run'
-        return
-    }
-
     $game = Get-Game
     if (-not $game) {
-        throw 'No RimWorld is running. Start one with -Launch, which is also what a step assembly built since that game started needs.'
+        throw ("No RimWorld is running, and this script does not start one. Open the game yourself, then run this " +
+               "again - or run the suite unattended with:`n" +
+               "    & '$gamePath' '-pickle-run=`"$Mod`"'`n" +
+               'which closes its own game at the end. The same command is what a build newer than the running game needs.')
     }
     Assert-BuildOlderThanGame $game
 
