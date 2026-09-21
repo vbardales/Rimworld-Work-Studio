@@ -1,0 +1,22 @@
+# The coexistence case, and the set scenario 2 was written for.
+#
+# Better Work Tab replaces the Work tab's window through its MainButtonDef. That is the shape of
+# defect this mod already met twice: 1.0.1's fix was a tab replacer declaring its own window and
+# overriding DoWindowContents without calling base, which made the patched method never run. A
+# minimal set cannot see that class of failure at all, because there is nothing to replace the tab.
+#
+# What this set is really asking: scenarios 2, 3, 7, 7b and 8, which draw or click that window.
+# Scenario 6 is the one to read against the minimal report afterwards - its own header says the
+# type order may not reach execution once a column has been dragged in a mod like this one, and
+# that sentence has never been measured.
+#
+# TESTING.md scenario 11 documents what Better Work Tab owns and what this mod keeps, and
+# Tests/OffGame proves the ordering rule against its real assembly. This set is the part neither
+# of those can do: the window, drawn, clicked.
+#
+# packageId is read from the installed copy's own About.xml, 2026-09-21, not from its Workshop
+# title. The staging activates it before Work Studio, which is the order that matters: the button
+# patch resolves the Work tab's window class at startup.
+#
+# packageId                       workshopId   what it is
+Coolnether123.BetterWorkTab       3626737803   Better Work Tab, by Coolnether123

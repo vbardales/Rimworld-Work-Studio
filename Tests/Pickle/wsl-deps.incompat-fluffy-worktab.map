@@ -1,0 +1,21 @@
+# Is the declared incompatibility with Work Tab still real?
+#
+# About.xml names Fluffy.WorkTab in <incompatibleWith>, and this set exists to go and look rather
+# than to trust a declaration that nobody has replayed. The reading is inverted here: the expected
+# red is the measurement, and a GREEN is the alarm - it would mean the conflict may be gone, and a
+# person has to confirm it by hand before the declaration is dropped. Scenarios 2, 3, 7, 7b and 8
+# are the ones that touch the Work tab window; the rest are noise in this set.
+#
+# Replayed when WORK TAB moves, not when Work Studio is published: it is their update that stales
+# the verdict, not ours.
+#
+# packageId is what that mod's own About.xml carries, read on 2026-09-21 from the installed copy -
+# not inferred from its Workshop title, which reads "Fluffy's Work Tab (yet another fork)" while
+# the mod itself is named "Work Tab" and keeps the original packageId. That is exactly why this
+# had to be read rather than guessed.
+#
+# The staging activates these before Work Studio, which is the order that matters: the button patch
+# resolves the Work tab's window class at startup, so the replacement has to be in place first.
+#
+# packageId      workshopId   what it is
+Fluffy.WorkTab   3552152340   Work Tab, the declared incompatibility
