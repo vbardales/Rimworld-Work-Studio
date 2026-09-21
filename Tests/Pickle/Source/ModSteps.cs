@@ -185,6 +185,10 @@ namespace WorkStudio.PickleSteps
         [When("I click the Work types button")]
         public async Task ClickOpenEditor(PickleContext ctx)
         {
+            // Before the hover, not after: the probe only sees what is drawn while it is on, and
+            // WarnIfCovered gives the game a couple of frames before it asks anything.
+            ImageButtonProbe.EnsureInstalled();
+
             await WarnIfCovered(ctx, EditorButtonTag(), typeof(MainTabWindow));
             await ctx.Click(EditorButtonTag());
 
@@ -207,7 +211,9 @@ namespace WorkStudio.PickleSteps
                           "controls in the order they are drawn, and this button is drawn last, from a postfix. " +
                           "With Work Tab loaded that control is one of its three 30x30 toggles, which share the " +
                           "top-right corner of the very rectangle this button is placed against.") +
-                    $"\nPointer at {pointer}. Window stack, top first:\n" + DescribeStack(pointer));
+                    $"\nPointer at {pointer}. Image buttons on that point, in draw order (Pickle does not tag these):\n" +
+                    ImageButtonProbe.Describe(pointer) +
+                    "\nWindow stack, top first:\n" + DescribeStack(pointer));
             }
         }
 
