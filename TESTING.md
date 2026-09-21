@@ -425,3 +425,11 @@ What is established: with Work Tab loaded, the rectangle Pickle stored for the t
 left of where the button is drawn (centre 1831.5, confirmed by the screenshot), so the click went to
 an empty spot. The button is not shown to be broken; the scenario failed on where it was aimed. Why
 the stored rectangle is off is not known.
+
+**The raw reports behind these results no longer exist.** The shared launcher keeps only the fifteen
+newest report folders, and with this many sessions queued that is a few hours; the folders for the
+runs above had already gone by the evening of 2026-09-21. What survives is what was copied into
+this file and into `BACKLOG.md`: notably Pickle's own log line for the Work Tab click, `pointer at
+(1058.50, 773.00): the OS reports x:1058 y:773 ... the game reads (1058.00, 774.00)`, and the
+numbers of the Enhanced Work Tab failures. Anything a document cites from a report should be copied
+into the repository at the time, or its folder given a `keep.txt`, which the launcher never removes.
