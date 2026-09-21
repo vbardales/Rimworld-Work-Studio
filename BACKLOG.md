@@ -726,3 +726,40 @@ only.
 3. The column cache is the one to fix whatever the choice: clearing `completeWorkColumns` by
    reflection after Work Studio rebuilds the columns would let GrimWorks capture them afresh.
 4. Check the lot in play: create a type mid-game with GrimWorks installed, then drag a header.
+
+---
+
+## Pickle: say why a click was lost to a control that is not a text button
+
+Validated by Virginie on 2026-09-21 as a real need, to be taken up on Wednesday 2026-09-23. Not
+Work Studio code: the work is upstream, in RimWorks/Rimworld-Pickle. It sits here because the case
+that showed it was this mod's suite, and a click step that explains itself is what that suite
+needs. Move it if a Pickle backlog ever exists.
+
+**The case.** "Work types..." with Fluffy's Work Tab loaded. Pickle clicked the centre of the
+button (1831, 773) and `Dialog_WorkTypes` never opened; the only message was the list of open
+windows. The window stack was clean (measured, commit b913297: two vanilla ImmediateWindows, nothing
+absorbing input). What took the click was one of Work Tab's three 30x30 `Widgets.ButtonImage`
+toggles, drawn before ours in the same corner, the first at x 1812-1842.
+
+**What Pickle can and cannot say today**, read in the installed Workshop copy by the Work Studio
+session: `WidgetCapture.AfterButtonText` is the only recorder and writes `btn:` + label;
+`HarmonyBackend` patches `Widgets.ButtonText` and nothing else, no hook on `ButtonImage`,
+`ButtonInvisible` or `Checkbox`; `TagStore` is a dictionary keyed by tag, cleared each frame. The
+store does keep the rects (`TagInteractor.TryResolve` returns one), so the plain "list the tags
+whose rect contains the click" would work, but it would not have found this case: the toggles are
+not tagged.
+
+**What has to be settled before code.**
+
+1. Record unnamed controls with their rect and widget kind. That means new hooks, at least on
+   `Widgets.ButtonImage`: a design choice for upstream, so an issue first, not a PR.
+2. "Drawn first receives it" holds for controls that consume the event; one that reacts without
+   `Event.Use()` shadows nothing. The message must not claim more than it knows.
+3. Whether the window-stack dump (per window: layer, rect, `absorbInputAroundWindow`,
+   `WindowStack.GetsInput`, owner of an ImmediateWindow) goes in as well. It answers "a window
+   swallowed it", which is plausible but has never been seen.
+
+**Meanwhile**, a local measure in our own click step: a postfix on `Widgets.ButtonImage` keeping
+this frame's rects, so our failure message can name the overlapping image button. Offered to
+Virginie, not started, not asked for.
