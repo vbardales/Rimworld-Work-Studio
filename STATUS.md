@@ -674,3 +674,34 @@ stage recorded here — the workflow being audited stops at `tested`, well short
 The fields below were the previous automatic read-off, kept for history: `dependencies: declared`,
 `showcase: complete`, `remaining: unverified: never seen running`. Confirmed still accurate by
 this audit rather than replaced.
+
+## done -> tested, criterion by criterion (2026-09-21, late evening)
+
+`stage` stays `done`. This is what each line of AUDIT.md's `done -> tested` has behind it, and what does not.
+
+| Criterion | State |
+| --- | --- |
+| Scenarios run in game and passed | Minimal set: 47 of 47 in English and in French, but **before the last changes to the mod** (the two-line rows of 09-21 10:19 for the English pass, the click steps, the type-name counter of `ed41491`). Has to be replayed on the final build. Coexistence sets: Better Work Tab 47/47, Compact Work Tab 47/47 (says nothing about the conflict), Work Tab and Enhanced Work Tab **45/47 each**, both failures explained below |
+| Pickle suites green, `@review` captures opened | Captures of both languages opened and read (2026-09-21); to redo on the final build |
+| Logs checked | Scenario 1 asserts the log holds nothing from the mod since startup; the passes above were read for errors. To redo with the final build |
+| FR and EN interface | Both passes done, captures read; the right-hand column was reworked because of what the French one showed |
+| Options, persistence, MainButtons shortcut | Scenarios 13 and 13b (settings through the shortcut and through Mod options, write to disk and read back); RIMMSQOL listing the button stays another mod's UI and is not claimed |
+| New game and existing save | **Existing save only** (`test-colony`). No scenario starts a new game; not covered, not claimed |
+| Fixes followed by their regression tests | See the two open findings below: both have a fix or a wait that is committed and **not yet replayed** |
+
+**Open, in the order they gate `tested`:**
+
+1. **Scenario 5 under Enhanced Work Tab** (`GetPriority` read 2 for a type absent from the save; the raw list held 0).
+   Cause read from that mod's code, not measured: it keeps each colonist's priority by `defName` in the save and
+   never prunes it, and the editor reused a deleted type's `defName` for the next one created. Fix committed
+   (`ed41491`, names only go up). **The scenario has to pass with Enhanced Work Tab loaded** before the cause is
+   called established; queued.
+2. **Scenario 2 under Work Tab**: the button moves for about ten frames after the tab opens; the steps now wait
+   until it has stood still (`PickleTools/ClickDiagnostics`). Not replayed since; queued.
+3. **The save-load exception under Work Tab** (an apparel read as a pawn): not explained, and not written up as
+   anything but exploration.
+4. The two `incompat-` sets have no scenario asserting the documented symptom yet; their runs are exploration.
+5. Decisions that are Virginie's, not settled here: icons ON by default; the long renamed header spilling into its
+   neighbours in capture 07b; whether the rule that one pass validates nothing applies to a stage already reached.
+
+Then, when 1 and 2 have come back: one full English and one full French pass of the minimal set on the final build.
