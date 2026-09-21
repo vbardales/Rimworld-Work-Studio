@@ -746,9 +746,25 @@ first toggle at x 1812-1842. That was a calculation, not a measurement, and the 
 contradicts it: the pointer read after the click was at **(1058, 774)**, and the image-button probe
 (acee15d) found no image button containing that point. The button is drawn at x 1754-1909, so the
 pointer was not on it. Pickle clicks the centre of the rectangle it stored for the tag, so either
-that rectangle is not where the button is drawn, or something moved the pointer afterwards. Which
-one is not known. The toggle theory is unproven and may be wrong, and the need below still stands
-regardless: a lost click gives no reason, whichever of these it turns out to be.
+that rectangle is not where the button is drawn, or something moved the pointer afterwards.
+
+**SETTLED the same evening, second correction.** Pickle's own log line in that run reads
+`pointer at (1058.50, 773.00): the OS reports x:1058 y:773 ... the game reads (1058.00, 774.00)`.
+Pickle AIMED at (1058.5, 773), and the OS and the game both confirm the pointer got there and
+stayed. Nothing moved it afterwards. The probe recorded the same button with a centre of (1831.5,
+773), which the screenshot confirms. So with Work Tab loaded, **the rectangle Pickle stored for
+`btn:Work types...` is off by 773 px in x from where the button is drawn**, and the click went to
+an empty spot in the table header. The Work Studio button is not shown to be broken with Work Tab at
+all; the scenario failed on where it was aimed. The 773 is also, to the pixel, the centre's y
+coordinate (1831.5 - 773 = 1058.5). I do not know whether that is a coincidence or the signature of
+a transform, for example a rotated GUI matrix left behind by header drawing, being applied to the
+recorded rectangle. Not investigated further.
+
+That makes this a better upstream case than the one it replaced: not "a lost click gives no reason"
+in general, but a specific, logged, reproducible wrong click target. It is reproducible only with
+Fluffy's Work Tab in the set; with Enhanced Work Tab the same probe and the same step aimed at the
+exact centre of the drawn button (a real overlap by an earlier text button was found there
+instead), and with Better Work Tab and no tab mod the scenario passes.
 
 **What Pickle can and cannot say today**, read in the installed Workshop copy by the Work Studio
 session: `WidgetCapture.AfterButtonText` is the only recorder and writes `btn:` + label;
