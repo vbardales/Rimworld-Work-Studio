@@ -1,9 +1,15 @@
 # Is the declared incompatibility with Compact Work Tab still real?
 #
 # About.xml names Mlie.CompactWorkTab in <incompatibleWith>. Like the Work Tab set beside it, this
-# one is built to go and look rather than to trust a declaration nobody has replayed: the expected
-# red is the measurement, and a GREEN is the alarm - it would mean the conflict may be gone, and a
-# person confirms it by hand before the declaration is dropped.
+# one is built to go and look rather than to trust a declaration nobody has replayed.
+#
+# Read green-is-good, like every other set: the scenarios assert the DOCUMENTED SYMPTOM, with
+# @allow-errors so the expected error does not fail them by itself. Green means the
+# incompatibility is still what About.xml claims; red means something moved. An expected red and
+# an accidental red are the same colour, which is why the suite is not simply let go red.
+#
+# Those scenarios are NOT written yet; the first run of this set plays the ordinary suite, which
+# is exploration rather than validation.
 #
 # Replayed when COMPACT WORK TAB moves, not when Work Studio is published.
 #

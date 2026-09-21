@@ -1,10 +1,18 @@
 # Is the declared incompatibility with Work Tab still real?
 #
 # About.xml names Fluffy.WorkTab in <incompatibleWith>, and this set exists to go and look rather
-# than to trust a declaration that nobody has replayed. The reading is inverted here: the expected
-# red is the measurement, and a GREEN is the alarm - it would mean the conflict may be gone, and a
-# person has to confirm it by hand before the declaration is dropped. Scenarios 2, 3, 7, 7b and 8
-# are the ones that touch the Work tab window; the rest are noise in this set.
+# than to trust a declaration that nobody has replayed.
+#
+# Read green-is-good, like every other set. The scenarios for this one assert the DOCUMENTED
+# SYMPTOM - the window that opens is not this mod's, or the error the conflict produces is
+# logged - carrying @allow-errors so the expected error does not fail them by itself. Green means
+# the incompatibility is still what About.xml claims; red means something moved. Letting the
+# ordinary suite go red instead was the first design here, and it fails for one reason: an
+# expected red and an accidental red are the same colour.
+#
+# Those scenarios are NOT written yet. The first run of this set plays the ordinary suite, which
+# is exploration - it says which scenarios break and how, and that is what the assertions get
+# written from.
 #
 # Replayed when WORK TAB moves, not when Work Studio is published: it is their update that stales
 # the verdict, not ours.

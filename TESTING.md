@@ -334,13 +334,32 @@ without `-DepsMap` is recorded as `sans-facultatifs`.
 | `sans-facultatifs` | That the mod stands up alone: Core, the DLCs, Harmony, RimLogging, Pickle and this mod. It is also the only set whose screenshots are clean enough to publish |
 | `avec-better-work-tab` | Scenario 2, and with it 3, 7, 7b and 8. The **Work types…** button failed twice in this mod's history, and 1.0.1's fix was about a mod declaring its own window in the `MainButtonDef` and overriding `DoWindowContents` without calling `base`. A set with no tab replacer cannot see that class of defect at all |
 | `avec-enhanced-work-tab` | The third tab mod, and the open question. It intercepted `GetPriority` during an investigation on 2026-09-19, which suggests it patches rather than replaces and would therefore cohabit — but that is an inference, and this set is how it stops being one |
-| `incompat-fluffy-worktab` | Whether `Fluffy.WorkTab`, which `About.xml` declares **incompatible**, still is. Here the reading is inverted: the expected red is the measurement, and a green is what should worry you — it means the conflict may be gone and someone has to look before the declaration is dropped |
+| `incompat-fluffy-worktab` | Whether `Fluffy.WorkTab`, which `About.xml` declares **incompatible**, still is |
 | `incompat-compact-worktab` | The same for `Mlie.CompactWorkTab`, the other declared incompatibility |
+
+**An incompatibility set is still read green-is-good.** The tempting design is to let the suite go
+red and call that the measurement, and it was written that way here for an hour. It does not work:
+an expected red and an accidental red are the same colour, so nobody can tell which one they are
+looking at, and a suite that needs explaining is a suite nobody reads. What these sets assert is
+the **documented symptom** — the window that opens is not this mod's, or the error the conflict
+produces is logged — with `@allow-errors` on the scenario so the expected error does not fail it
+by itself. Green then means the incompatibility is still exactly what `About.xml` claims; red means
+something moved, and that is when someone looks.
+
+That is not hypothetical here. 1.0.1's fix made the button patch target whichever window class is
+actually in use and take the rectangle by position rather than by name. If that turned out general
+enough, one of these two declared conflicts may have quietly stopped being one — and only a
+scenario written to go green can say so with a red that means something.
 
 An `incompatibleWith` ages. The other mod can be fixed, rewritten, or simply stop patching what it
 patched, and an incompatibility never replayed ends up forbidding a coexistence that would work,
 depriving players of both mods for nothing. These two sets are replayed when **the other mod**
 moves, not when this one is published: it is their update that stales the verdict, not ours.
+
+The scenarios that assert those symptoms are **not written yet**. The first runs of these two sets,
+on 2026-09-21, play the ordinary suite instead — which is exploration, not validation: it says
+which scenarios break and how, and that is the material the symptom assertions are written from.
+Until they exist, a red in one of these reports means "something happened here", nothing more.
 
 An earlier version of this section listed Fluffy's Work Tab as a compatibility set, which was
 wrong: this mod declares it incompatible, and a set named `avec-` asserts the opposite of what
