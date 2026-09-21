@@ -56,7 +56,16 @@ namespace WorkStudio.PickleSteps
         [Then("the game log holds nothing from Work Studio since startup")]
         public void LogSilent(PickleContext ctx)
         {
-            var lines = Log.Messages.Where(m => m.text != null && m.text.Contains("[Work Studio]")).ToList();
+            // Two spellings on purpose. "[Work Studio]" is the prefix every deliberate Log call in
+            // this mod carries, and matching only that would prove the mod chose to stay quiet -
+            // not that nothing blew up. An exception thrown out of a patch is logged by the GAME,
+            // with no prefix of ours, and the only thing of ours in it is the namespace in the
+            // stack trace. A check that cannot see the failure it exists for is a permanent green;
+            // Pickle had three of those found today, all showing up the same way.
+            var lines = Log.Messages
+                .Where(m => m.text != null &&
+                            (m.text.Contains("[Work Studio]") || m.text.Contains("WorkStudio.")))
+                .ToList();
             ctx.Assert(lines.Count == 0,
                 "Work Studio logged at startup:\n" + string.Join("\n", lines.Select(m => $"{m.type}: {m.text}")));
         }
