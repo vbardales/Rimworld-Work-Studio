@@ -825,32 +825,48 @@ namespace WorkStudio
 
             var candidates = Candidates();
             var listRect = new Rect(inner.x, y, inner.width, inner.yMax - y);
-            var viewRect = new Rect(0f, 0f, listRect.width - 16f, candidates.Count * RowHeight);
-
-            Widgets.BeginScrollView(listRect, ref addScroll, viewRect);
+            var contentWidth = listRect.width - 16f;
 
             // Measured once for the whole column, not per row: a ragged grey edge would be harder
             // to read than the few pixels it would win back.
-            var typeWidth = GreyTypeWidth(candidates, viewRect.width);
-            var labelWidth = viewRect.width - typeWidth - 6f;
-            var ambiguous = AmbiguousRendered(candidates, labelWidth);
+            var typeWidth = GreyTypeWidth(candidates, contentWidth);
+            var labelWidth = contentWidth - typeWidth - 6f;
+
+            // Laid out before the scroll view opens, because the total height is the sum of rows
+            // that are not all the same height any more. This column has no drag reordering - only
+            // the middle one does - so nothing else depends on a row being where a fixed pitch
+            // would have put it.
+            var rendered = new string[candidates.Count];
+            var heights = new float[candidates.Count];
+            var total = 0f;
+            for (var i = 0; i < candidates.Count; i++)
+            {
+                rendered[i] = LayOutGiverLabel(GiverLabel(candidates[i]), labelWidth, out heights[i]);
+                total += heights[i];
+            }
+
+            var viewRect = new Rect(0f, 0f, contentWidth, total);
+            var ambiguous = Duplicates(rendered);
+
+            Widgets.BeginScrollView(listRect, ref addScroll, viewRect);
 
             var rowY = 0f;
-            foreach (var giver in candidates)
+            for (var i = 0; i < candidates.Count; i++)
             {
-                var row = new Rect(0f, rowY, viewRect.width, RowHeight);
-                rowY += RowHeight;
+                var row = new Rect(0f, rowY, viewRect.width, heights[i]);
+                rowY += heights[i];
 
                 if (Mouse.IsOver(row))
                 {
                     Widgets.DrawHighlight(row);
                 }
 
-                DrawGiverLabel(row, giver, showOrigin: false, showCurrent: true, ambiguous, typeWidth);
+                DrawGiverLabel(row, candidates[i], showOrigin: false, showCurrent: true, ambiguous,
+                    typeWidth, rendered[i]);
 
                 if (Widgets.ButtonInvisible(row))
                 {
-                    MoveTask(giver, selectedType);
+                    MoveTask(candidates[i], selectedType);
                 }
             }
 
@@ -883,18 +899,14 @@ namespace WorkStudio
         }
 
         /// <summary>
-        /// The same question asked of what is actually <b>drawn</b> rather than of the full labels.
-        /// A French run on 2026-09-21 put four rows reading "Apporter les ressources ..." in the
-        /// right-hand column, two of them also sharing their grey type: distinct labels made equal
-        /// by truncation. Comparing full labels cannot see that, so the rendered strings are what
-        /// is compared here.
+        /// The strings a sequence holds more than once. Pure, and the part worth testing.
+        /// <para>
+        /// The right-hand column asks this of what it is about to <b>draw</b>, not of the full
+        /// labels. A French run on 2026-09-21 put four rows reading "Apporter les ressources ..."
+        /// there, two of them also sharing their grey type: distinct labels made equal by the cut.
+        /// Comparing the originals cannot see a collision the drawing created.
+        /// </para>
         /// </summary>
-        private static HashSet<string> AmbiguousRendered(List<WorkGiverDef> givers, float width)
-        {
-            return Duplicates(givers.Select(giver => TruncateMiddle(GiverLabel(giver), width)));
-        }
-
-        /// <summary>The strings a sequence holds more than once. Pure, and the part worth testing.</summary>
         internal static HashSet<string> Duplicates(IEnumerable<string> rendered)
         {
             return new HashSet<string>(rendered
@@ -941,6 +953,83 @@ namespace WorkStudio
             return result;
         }
 
+        /// <summary>
+        /// How a row of the right-hand column reads, and how tall it has to be to read that way.
+        /// <para>
+        /// One line while the label fits, two when it does not, and only then is anything cut -
+        /// out of the middle, as everywhere else here. Two lines are the ceiling: this column lists
+        /// up to <see cref="MaxAddResults"/> tasks and is scrolled, so letting a row grow without
+        /// limit would push the rest off the screen to spell out one name.
+        /// </para>
+        /// </summary>
+        private static string LayOutGiverLabel(string label, float width, out float height)
+        {
+            height = RowHeight;
+            if (label.NullOrEmpty() || width <= 0f)
+            {
+                return label;
+            }
+
+            var key = label + " " + width.ToString("0.#");
+            if (laidOut.TryGetValue(key, out var cached))
+            {
+                height = cached.Height;
+                return cached.Text;
+            }
+
+            var result = LayOut(label, width);
+            laidOut[key] = result;
+            height = result.Height;
+            return result.Text;
+        }
+
+        private struct LaidOut
+        {
+            public string Text;
+            public float Height;
+        }
+
+        private static readonly Dictionary<string, LaidOut> laidOut = new Dictionary<string, LaidOut>();
+
+        private static LaidOut LayOut(string label, float width)
+        {
+            if (Text.CalcSize(label).x <= width)
+            {
+                return new LaidOut { Text = label, Height = RowHeight };
+            }
+
+            // The height two wrapped lines need, asked of the font rather than assumed: a label of
+            // exactly two lines must not be cut, and a taller one must be.
+            var twoLines = Text.CalcHeight("A\nA", width);
+
+            if (Text.CalcHeight(label, width) <= twoLines)
+            {
+                return new LaidOut { Text = label, Height = twoLines + RowPadding };
+            }
+
+            for (var kept = label.Length - 1; kept > 0; kept--)
+            {
+                var candidate = Elide(label, kept);
+                if (Text.CalcHeight(candidate, width) <= twoLines)
+                {
+                    return new LaidOut { Text = candidate, Height = twoLines + RowPadding };
+                }
+            }
+
+            return new LaidOut { Text = Ellipsis, Height = twoLines + RowPadding };
+        }
+
+        private const string Ellipsis = "…";
+        private const float RowPadding = 6f;
+
+        /// <summary>The label reduced to <paramref name="kept"/> characters, the tail keeping the larger half.</summary>
+        private static string Elide(string label, int kept)
+        {
+            var tail = Mathf.CeilToInt(kept * 0.6f);
+            var head = kept - tail;
+            return label.Substring(0, head) + Ellipsis + label.Substring(label.Length - tail);
+        }
+
         private static string Shorten(string label, float width, Func<string, float> measure)
         {
             if (measure(label) <= width)
@@ -948,7 +1037,6 @@ namespace WorkStudio
                 return label;
             }
 
-            const string Ellipsis = "…";
             if (measure(Ellipsis) > width)
             {
                 return string.Empty;
@@ -958,10 +1046,7 @@ namespace WorkStudio
             // that is where these labels differ.
             for (var kept = label.Length - 1; kept > 0; kept--)
             {
-                var tail = Mathf.CeilToInt(kept * 0.6f);
-                var head = kept - tail;
-                var candidate = label.Substring(0, head) + Ellipsis +
-                                label.Substring(label.Length - tail);
+                var candidate = Elide(label, kept);
                 if (measure(candidate) <= width)
                 {
                     return candidate;
@@ -995,7 +1080,8 @@ namespace WorkStudio
         }
 
         private static void DrawGiverLabel(Rect rect, WorkGiverDef giver, bool showOrigin,
-            bool showCurrent = false, HashSet<string> ambiguous = null, float typeWidth = -1f)
+            bool showCurrent = false, HashSet<string> ambiguous = null, float typeWidth = -1f,
+            string rendered = null)
         {
             var anchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -1018,7 +1104,7 @@ namespace WorkStudio
             }
 
             var label = GiverLabel(giver);
-            var drawn = TruncateMiddle(label, labelRect.width);
+            var drawn = rendered ?? TruncateMiddle(label, labelRect.width);
             Widgets.Label(labelRect, drawn);
 
             // Only when the label alone would not say which row this is: the defName is developer
