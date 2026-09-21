@@ -183,12 +183,47 @@ namespace WorkStudio.PickleSteps
             return lines.Count == 0 ? "  (no window at all)" : string.Join("\n", lines);
         }
 
+        /// <summary>
+        /// Waits until the button has been drawn at the same place for a dozen frames in a row.
+        /// <para>
+        /// With Work Tab loaded the tab window is drawn narrow for about ten frames after it opens and
+        /// then widens to the full screen, and this button is anchored to the window's right edge, so
+        /// it MOVES. A run on 2026-09-21 traced it: raw x 975 for frames 216-225, then 1748 from frame
+        /// 226. Pickle resolved the tag at 975, moved the pointer there and pressed the button, the
+        /// window widened before the release, and IMGUI counts a click only when press and release
+        /// land on the same control - so nothing opened. Pickle's own rectangle was right at every
+        /// instant; the layout was not standing still. A real player does not click within a fifth of
+        /// a second of opening the tab, and a test has to wait as long as she would.
+        /// </para>
+        /// </summary>
+        private static async Task WaitForButtonToSettle(PickleContext ctx, string label)
+        {
+            const int Needed = 12;
+            Rect? last = null;
+            var stable = 0;
+
+            for (var frame = 0; frame < 180 && stable < Needed; frame++)
+            {
+                await ctx.WaitFrames(1);
+                var now = ImageButtonProbe.LatestRect(label);
+                stable = now.HasValue && last.HasValue && now.Value == last.Value ? stable + 1 : 0;
+                last = now;
+            }
+
+            // A button that never appears is not this method's to report: the click that follows says
+            // it in Pickle's own words. One that keeps moving is.
+            ctx.Assert(!(last.HasValue && stable < Needed),
+                $"the Work types button never stood still for {Needed} frames in a row; last seen at {last}. " +
+                "Clicking a control that is still moving loses the click between press and release.");
+        }
+
         [When("I click the Work types button")]
         public async Task ClickOpenEditor(PickleContext ctx)
         {
             // Before the hover, not after: the probe only sees what is drawn while it is on, and
             // WarnIfCovered gives the game a couple of frames before it asks anything.
             ImageButtonProbe.EnsureInstalled();
+            await WaitForButtonToSettle(ctx, "WorkStudio.OpenEditorShort".Translate().ToString());
 
             await WarnIfCovered(ctx, EditorButtonTag(), typeof(MainTabWindow));
 

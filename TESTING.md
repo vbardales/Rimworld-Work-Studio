@@ -398,7 +398,7 @@ crossing the two axes everywhere would buy nothing but machine time, and this ma
 | `sans-facultatifs`, French | 47 of 47 | Same, in French, with the language named in the report; captures read, and the right-hand column was reworked because of what they showed |
 | `avec-better-work-tab` | 47 of 47 | Coexistence with Better Work Tab, including scenario 2, the one written for tab replacers |
 | `avec-enhanced-work-tab` | **45 of 47** | Two failures, below |
-| `incompat-fluffy-worktab` | **45 of 47** | Exploration only: the symptom scenarios do not exist yet. The button scenario failed because Pickle aimed 773 px left of the drawn button (its own log says so), which says nothing against the button; the other failure is a save-load exception whose cause is not established |
+| `incompat-fluffy-worktab` | **45 of 47** | Exploration only: the symptom scenarios do not exist yet. The button scenario failed on a race: with Work Tab the tab window widens about ten frames after opening and the button moves with it, so press and release landed on different controls. The step now waits for the button to stand still. The other failure is a save-load exception whose cause is not established |
 | `incompat-compact-worktab` | 47 of 47 | Says nothing about the declared conflict: these 47 scenarios never meet it |
 
 **With Enhanced Work Tab loaded, two things fail, and they are different in kind.**
@@ -417,14 +417,20 @@ replace it. Pickle clicked at exactly the centre of the drawn button, (1389, 707
 drawn before ours (#64 against #103) also contains that point. Its label was not printed, so which
 control it is is not established; a text button drawn earlier is offered the click first.
 
-**An earlier explanation of the Work Tab failure was wrong and is withdrawn, twice.** First it said
-the click was taken by one of that mod's image toggles, worked out from the layout; the measured
-pointer was at (1058, 774), nowhere near the button. Then it said something moved the pointer after
-the click; Pickle's own log shows it AIMED at (1058.5, 773) and the OS and game agree it got there.
-What is established: with Work Tab loaded, the rectangle Pickle stored for the tag is 773 px to the
-left of where the button is drawn (centre 1831.5, confirmed by the screenshot), so the click went to
-an empty spot. The button is not shown to be broken; the scenario failed on where it was aimed. Why
-the stored rectangle is off is not known.
+**The Work Tab button failure is explained, after three wrong explanations.** A Pickle build that
+traces its own tag recording, run beside this suite's probe in the same game, gave identical raw and
+converted rectangles on both sides for every frame, with an identity GUI matrix: Pickle's conversion
+is correct. The button itself moved. With Work Tab the tab window is drawn narrow for about ten
+frames after it opens and then widens to the full screen, and the button is anchored to its right
+edge: raw x 975 for frames 216-225, raw x 1748 from frame 226. Pickle resolved the tag at 975, moved
+the pointer there and pressed; the window widened before the release; IMGUI counts a click only when
+press and release land on the same control. Nothing is wrong with the button for a person, who does
+not click within a fifth of a second of opening the tab. The click step now waits until the button
+has stood still for twelve frames.
+
+The three earlier explanations - a Work Tab toggle took the click, something moved the pointer, and
+Pickle stored a rectangle 773 px off - are withdrawn; each was stated more firmly than its evidence
+carried. `BACKLOG.md` keeps them in order, because the sequence is the useful part.
 
 **The raw reports behind these results no longer exist.** The shared launcher keeps only the fifteen
 newest report folders, and with this many sessions queued that is a few hours; the folders for the

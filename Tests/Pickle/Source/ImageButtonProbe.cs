@@ -151,6 +151,28 @@ namespace WorkStudio.PickleSteps
                         $"unclipped={GUIUtility.GUIToScreenPoint(Vector2.zero)}");
         }
 
+        /// <summary>The last rectangle a text button with this label was drawn at, or null if none was seen.</summary>
+        internal static Rect? LatestRect(string label)
+        {
+            for (var i = current.Count - 1; i >= 0; i--)
+            {
+                if (current[i].Widget == "ButtonText" && current[i].Label == label)
+                {
+                    return current[i].Screen;
+                }
+            }
+
+            for (var i = previous.Count - 1; i >= 0; i--)
+            {
+                if (previous[i].Widget == "ButtonText" && previous[i].Label == label)
+                {
+                    return previous[i].Screen;
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Where a text button with this label was drawn, in the space Pickle records its tags in.
         /// The click lands at the centre of the rectangle Pickle stored, so when the pointer is

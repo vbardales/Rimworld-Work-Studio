@@ -729,61 +729,54 @@ only.
 
 ---
 
-## Pickle: say why a click was lost to a control that is not a text button
+## Pickle: a click that lands on a control while the layout is still moving
 
-Validated by Virginie on 2026-09-21 as a real need, to be taken up on Wednesday 2026-09-23. Not
-Work Studio code: the work is upstream, in RimWorks/Rimworld-Pickle. It sits here because the case
-that showed it was this mod's suite, and a click step that explains itself is what that suite
-needs. Move it if a Pickle backlog ever exists.
+Raised 2026-09-21 as "say why a click was lost to a control that is not a text button", and
+validated by Virginie as a real need on the strength of an explanation that turned out to be wrong
+three times over. Rewritten the same evening once a trace settled it; the history is kept below
+because the reasoning is the useful part. Not Work Studio code: any work is upstream, in
+RimWorks/Rimworld-Pickle, and would go through Virginie first. To be taken up on Wednesday
+2026-09-23. Move it if a Pickle backlog ever exists.
 
-**The case.** "Work types..." with Fluffy's Work Tab loaded. Pickle clicked and `Dialog_WorkTypes`
-never opened; the only message was the list of open windows. The window stack was clean (measured,
-commit b913297: two vanilla ImmediateWindows, nothing absorbing input).
+**What actually happened, measured.** "Work types..." with Fluffy's Work Tab loaded: Pickle clicked
+and `Dialog_WorkTypes` never opened. A Pickle build that traces its own `TagStore.Record`, run beside
+this suite's own probe in the same game, gave identical numbers on both sides for every frame: raw
+rectangle, converted rectangle, identity GUI matrix, origin (6, 756). Pickle's conversion is correct.
+What moved is the button. For frames 216-225 it was drawn at raw x 975 (centre 1058.5), and from frame
+226 at raw x 1748 (centre 1831.5): with Work Tab the tab window is drawn narrow for about ten frames
+after it opens and then widens to the full screen, and the button is anchored to its right edge.
+Pickle resolved the tag at 975, moved the pointer there (its log: `pointer at (1058.50, 773.00)`,
+OS and game agreeing) and pressed; the window widened before the release; IMGUI counts a click only
+when press and release land on the same control. Nothing is wrong with the button for a person, who
+does not click within a fifth of a second of opening a tab, and nothing is wrong with Pickle's
+rectangle at any instant.
 
-**CORRECTED 2026-09-21, same evening.** This entry first said the click was taken by one of Work
-Tab's three 30x30 `Widgets.ButtonImage` toggles, computed from the layout as (1831, 773) inside the
-first toggle at x 1812-1842. That was a calculation, not a measurement, and the measurement
-contradicts it: the pointer read after the click was at **(1058, 774)**, and the image-button probe
-(acee15d) found no image button containing that point. The button is drawn at x 1754-1909, so the
-pointer was not on it. Pickle clicks the centre of the rectangle it stored for the tag, so either
-that rectangle is not where the button is drawn, or something moved the pointer afterwards.
+**What survives as a possible upstream idea, and how weak it is.** Pickle resolves a tag once, moves
+the pointer, and clicks the rectangle it resolved. A control that is still moving loses the click
+silently, and the report says only that the window did not open. A "wait until this tag has stood
+still for N frames" step, or a guard that re-reads the rectangle at the click, would turn that into a
+clear message. That is a convenience for suites, not a defect; this suite now does it itself
+(`WaitForButtonToSettle` in `ModSteps.cs`), which is the cheaper answer.
 
-**SETTLED the same evening, second correction.** Pickle's own log line in that run reads
-`pointer at (1058.50, 773.00): the OS reports x:1058 y:773 ... the game reads (1058.00, 774.00)`.
-Pickle AIMED at (1058.5, 773), and the OS and the game both confirm the pointer got there and
-stayed. Nothing moved it afterwards. The probe recorded the same button with a centre of (1831.5,
-773), which the screenshot confirms. So with Work Tab loaded, **the rectangle Pickle stored for
-`btn:Work types...` is off by 773 px in x from where the button is drawn**, and the click went to
-an empty spot in the table header. The Work Studio button is not shown to be broken with Work Tab at
-all; the scenario failed on where it was aimed. The 773 is also, to the pixel, the centre's y
-coordinate (1831.5 - 773 = 1058.5). I do not know whether that is a coincidence or the signature of
-a transform, for example a rotated GUI matrix left behind by header drawing, being applied to the
-recorded rectangle. Not investigated further.
+**What is still open from the other diagnostics.** With Enhanced Work Tab the same step aimed at the
+exact centre of the drawn button, and a TEXT button drawn earlier (98x24, drawn #64 against #103)
+also contained that point. Pickle tags text buttons, so its own store could have listed the overlap;
+that is a real, measured case for "list the tags whose rectangle contains the click", and the only
+one. The window-stack dump (per window: layer, rect, `absorbInputAroundWindow`, `WindowStack.GetsInput`,
+owner of an `ImmediateWindow`) answers "a window swallowed it", which has never been seen. Recording
+unnamed controls, `Widgets.ButtonImage` and the rest, would need new hooks and is a design choice
+for upstream, so an issue first and not a PR. None of it has a case that needs it yet.
 
-That makes this a better upstream case than the one it replaced: not "a lost click gives no reason"
-in general, but a specific, logged, reproducible wrong click target. It is reproducible only with
-Fluffy's Work Tab in the set; with Enhanced Work Tab the same probe and the same step aimed at the
-exact centre of the drawn button (a real overlap by an earlier text button was found there
-instead), and with Better Work Tab and no tab mod the scenario passes.
+**The three explanations that were wrong, in order, kept on purpose.**
 
-**What Pickle can and cannot say today**, read in the installed Workshop copy by the Work Studio
-session: `WidgetCapture.AfterButtonText` is the only recorder and writes `btn:` + label;
-`HarmonyBackend` patches `Widgets.ButtonText` and nothing else, no hook on `ButtonImage`,
-`ButtonInvisible` or `Checkbox`; `TagStore` is a dictionary keyed by tag, cleared each frame. The
-store does keep the rects (`TagInteractor.TryResolve` returns one), so the plain "list the tags
-whose rect contains the click" would work, but it would not have found this case: the toggles are
-not tagged.
+1. *One of Work Tab's three 30x30 image toggles took the click.* Computed from the layout, never
+   measured. The pointer was not on the button, and no image button contained it.
+2. *Something moved the pointer after the click.* Pickle's own log showed it aimed at (1058.5, 773)
+   and the OS and game agreed it arrived and stayed.
+3. *Pickle stored a rectangle 773 px to the left of the button, and 773 also equals the centre's
+   y coordinate, which may be a transform.* The trace showed Pickle's rectangle was right at every
+   frame and the 773 was a coincidence: it is simply the distance between the two window widths.
 
-**What has to be settled before code.**
-
-1. Record unnamed controls with their rect and widget kind. That means new hooks, at least on
-   `Widgets.ButtonImage`: a design choice for upstream, so an issue first, not a PR.
-2. "Drawn first receives it" holds for controls that consume the event; one that reacts without
-   `Event.Use()` shadows nothing. The message must not claim more than it knows.
-3. Whether the window-stack dump (per window: layer, rect, `absorbInputAroundWindow`,
-   `WindowStack.GetsInput`, owner of an ImmediateWindow) goes in as well. It answers "a window
-   swallowed it", which is plausible but has never been seen.
-
-**Meanwhile**, a local measure in our own click step: a postfix on `Widgets.ButtonImage` keeping
-this frame's rects, so our failure message can name the overlapping image button. Offered to
-Virginie, not started, not asked for.
+Each was stated with more confidence than its evidence carried, and each was withdrawn the moment a
+measurement disagreed. The lesson for next time is the order: measure at the moment of the click,
+frame by frame, before forming a theory about where it landed.
