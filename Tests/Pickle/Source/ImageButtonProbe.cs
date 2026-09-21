@@ -33,6 +33,7 @@ namespace WorkStudio.PickleSteps
             public Rect Screen;
             public string Widget;
             public string Label;
+            public Rect Raw;
             public int Order;
         }
 
@@ -77,14 +78,16 @@ namespace WorkStudio.PickleSteps
             }
         }
 
-        public static void TextPostfix(object[] __args, MethodBase __originalMethod)
+        public static void TextPostfix(Rect __0, object[] __args, MethodBase __originalMethod)
         {
-            if (__args == null || __args.Length < 2 || !(__args[0] is Rect rect))
+            if (__args == null || __args.Length < 2)
             {
                 return;
             }
 
-            Record(rect, "ButtonText", __args[1]?.ToString());
+            // __0, not __args[0]: it is the same slot Pickle's own postfix reads by the name "rect", so the
+            // two numbers are the ones that can be compared when they disagree.
+            Record(__0, "ButtonText", __args[1]?.ToString());
         }
 
         public static void Postfix(Rect __0, MethodBase __originalMethod)
@@ -107,13 +110,45 @@ namespace WorkStudio.PickleSteps
                 order = 0;
             }
 
+            var screen = GUIUtility.GUIToScreenRect(rect);
+            TraceIfOurs(rect, screen, label);
+
             current.Add(new Seen
             {
-                Screen = GUIUtility.GUIToScreenRect(rect),
+                Raw = rect,
+                Screen = screen,
                 Widget = widget,
                 Label = label,
                 Order = order++,
             });
+        }
+
+        private static int traced;
+        private static string ours;
+
+        /// <summary>
+        /// One log line per recording of OUR button, the first 30, carrying what a Pickle build that
+        /// traces its own TagStore prints: the raw rectangle, the converted one, and the GUI matrix.
+        /// Same frame numbers on both sides, so the two can be laid next to each other.
+        /// </summary>
+        private static void TraceIfOurs(Rect raw, Rect screen, string label)
+        {
+            if (traced >= 30 || label == null)
+            {
+                return;
+            }
+
+            ours = ours ?? "WorkStudio.OpenEditorShort".Translate().ToString();
+            if (label != ours)
+            {
+                return;
+            }
+
+            traced++;
+            var m = GUI.matrix;
+            Log.Message($"probe-trace frame={Time.frameCount} raw={raw} converted={screen} identity={m.isIdentity} " +
+                        $"matrix=[{m.m00:0.###} {m.m01:0.###} {m.m03:0.###} | {m.m10:0.###} {m.m11:0.###} {m.m13:0.###}] " +
+                        $"unclipped={GUIUtility.GUIToScreenPoint(Vector2.zero)}");
         }
 
         /// <summary>
