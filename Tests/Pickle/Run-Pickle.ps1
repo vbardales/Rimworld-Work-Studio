@@ -44,7 +44,10 @@ param(
     [int]$Port = 27750,
     [int]$TimeoutMinutes = 90,
     [int]$KeepReports = 5,
-    [switch]$Force
+    [switch]$Force,
+    # Declared only so the refusal below can answer it. Without it, CmdletBinding rejects -Launch
+    # with "a parameter cannot be found", which tells whoever typed it nothing about where to go.
+    [switch]$Launch
 )
 
 
