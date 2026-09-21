@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -828,7 +829,11 @@ namespace WorkStudio
 
             Widgets.BeginScrollView(listRect, ref addScroll, viewRect);
 
-            var ambiguous = AmbiguousLabels(candidates);
+            // Measured once for the whole column, not per row: a ragged grey edge would be harder
+            // to read than the few pixels it would win back.
+            var typeWidth = GreyTypeWidth(candidates, viewRect.width);
+            var labelWidth = viewRect.width - typeWidth - 6f;
+            var ambiguous = AmbiguousRendered(candidates, labelWidth);
 
             var rowY = 0f;
             foreach (var giver in candidates)
@@ -841,7 +846,7 @@ namespace WorkStudio
                     Widgets.DrawHighlight(row);
                 }
 
-                DrawGiverLabel(row, giver, showOrigin: false, showCurrent: true, ambiguous);
+                DrawGiverLabel(row, giver, showOrigin: false, showCurrent: true, ambiguous, typeWidth);
 
                 if (Widgets.ButtonInvisible(row))
                 {
@@ -874,14 +879,123 @@ namespace WorkStudio
         /// </summary>
         private static HashSet<string> AmbiguousLabels(List<WorkGiverDef> givers)
         {
-            return new HashSet<string>(givers
-                .GroupBy(GiverLabel)
+            return Duplicates(givers.Select(GiverLabel));
+        }
+
+        /// <summary>
+        /// The same question asked of what is actually <b>drawn</b> rather than of the full labels.
+        /// A French run on 2026-09-21 put four rows reading "Apporter les ressources ..." in the
+        /// right-hand column, two of them also sharing their grey type: distinct labels made equal
+        /// by truncation. Comparing full labels cannot see that, so the rendered strings are what
+        /// is compared here.
+        /// </summary>
+        private static HashSet<string> AmbiguousRendered(List<WorkGiverDef> givers, float width)
+        {
+            return Duplicates(givers.Select(giver => TruncateMiddle(GiverLabel(giver), width)));
+        }
+
+        /// <summary>The strings a sequence holds more than once. Pure, and the part worth testing.</summary>
+        internal static HashSet<string> Duplicates(IEnumerable<string> rendered)
+        {
+            return new HashSet<string>(rendered
+                .GroupBy(text => text)
                 .Where(group => group.Count() > 1)
                 .Select(group => group.Key));
         }
 
+        private static readonly Dictionary<string, string> truncatedMiddle =
+            new Dictionary<string, string>();
+
+        /// <summary>
+        /// Cuts out of the <b>middle</b> of a label rather than off its end.
+        /// <para>
+        /// These labels differ by their tail, never by their head: vanilla ships "deliver resources
+        /// to blueprints" and "deliver resources to frames", and French stretches both past the
+        /// column. Cutting the end throws away the only part that says which row this is, which is
+        /// exactly what the screenshots of 2026-09-21 showed. The tail is given the larger share of
+        /// what is left for the same reason.
+        /// </para>
+        /// </summary>
+        internal static string TruncateMiddle(string label, float width, Func<string, float> measure = null)
+        {
+            if (label.NullOrEmpty())
+            {
+                return label;
+            }
+
+            // A caller that brings its own measure is a test, and its answers must not be cached
+            // under the same key as the game's own font - nor read from it.
+            if (measure != null)
+            {
+                return Shorten(label, width, measure);
+            }
+
+            var key = label + " " + width.ToString("0.#");
+            if (truncatedMiddle.TryGetValue(key, out var cached))
+            {
+                return cached;
+            }
+
+            var result = Shorten(label, width, text => Text.CalcSize(text).x);
+            truncatedMiddle[key] = result;
+            return result;
+        }
+
+        private static string Shorten(string label, float width, Func<string, float> measure)
+        {
+            if (measure(label) <= width)
+            {
+                return label;
+            }
+
+            const string Ellipsis = "…";
+            if (measure(Ellipsis) > width)
+            {
+                return string.Empty;
+            }
+
+            // Down from the whole label one character at a time, the tail keeping the larger half:
+            // that is where these labels differ.
+            for (var kept = label.Length - 1; kept > 0; kept--)
+            {
+                var tail = Mathf.CeilToInt(kept * 0.6f);
+                var head = kept - tail;
+                var candidate = label.Substring(0, head) + Ellipsis +
+                                label.Substring(label.Length - tail);
+                if (measure(candidate) <= width)
+                {
+                    return candidate;
+                }
+            }
+
+            return Ellipsis;
+        }
+
+        /// <summary>
+        /// What the grey type column actually needs, rather than a fixed share of the row.
+        /// <para>
+        /// It used to take 42% of the width whatever it held. On a French client that left the task
+        /// label about 186 px where it needed 230, truncating rows that the freed 40 px would have
+        /// kept distinct. The old share stays as the ceiling: a mod list with very long work type
+        /// names cannot eat the column.
+        /// </para>
+        /// </summary>
+        private static float GreyTypeWidth(List<WorkGiverDef> givers, float rowWidth)
+        {
+            var widest = 0f;
+            foreach (var giver in givers)
+            {
+                if (giver.workType != null)
+                {
+                    widest = Mathf.Max(widest, Text.CalcSize(TypeLabel(giver.workType)).x);
+                }
+            }
+
+            return Mathf.Min(widest + 4f, rowWidth * 0.42f);
+        }
+
         private static void DrawGiverLabel(Rect rect, WorkGiverDef giver, bool showOrigin,
-            bool showCurrent = false, HashSet<string> ambiguous = null)
+            bool showCurrent = false, HashSet<string> ambiguous = null, float typeWidth = -1f)
         {
             var anchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -891,8 +1005,8 @@ namespace WorkStudio
             var labelRect = rect;
             if (showCurrent && giver.workType != null)
             {
-                var typeRect = new Rect(rect.xMax - rect.width * 0.42f, rect.y, rect.width * 0.42f,
-                    rect.height);
+                var grey = typeWidth >= 0f ? typeWidth : rect.width * 0.42f;
+                var typeRect = new Rect(rect.xMax - grey, rect.y, grey, rect.height);
                 labelRect = new Rect(rect.x, rect.y, typeRect.x - rect.x - 6f, rect.height);
 
                 var color = GUI.color;
@@ -904,13 +1018,16 @@ namespace WorkStudio
             }
 
             var label = GiverLabel(giver);
-            Widgets.Label(labelRect, label.Truncate(labelRect.width));
+            var drawn = TruncateMiddle(label, labelRect.width);
+            Widgets.Label(labelRect, drawn);
 
             // Only when the label alone would not say which row this is: the defName is developer
             // text, and putting it on every row would make the column harder to read, not easier.
-            if (ambiguous != null && ambiguous.Contains(label))
+            // Matched on what is drawn, not on the full label: truncation is what makes two rows
+            // read the same, so the full labels would look distinct while the screen does not.
+            if (ambiguous != null && (ambiguous.Contains(label) || ambiguous.Contains(drawn)))
             {
-                var used = Mathf.Min(Text.CalcSize(label).x, labelRect.width);
+                var used = Mathf.Min(Text.CalcSize(drawn).x, labelRect.width);
                 var defNameRect = new Rect(labelRect.x + used + 6f, labelRect.y,
                     labelRect.width - used - 6f, labelRect.height);
 

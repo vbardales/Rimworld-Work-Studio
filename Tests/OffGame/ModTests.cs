@@ -80,6 +80,7 @@ internal static class Program
         TheBetterWorkTabColumnOrder();
         TheHideColumnRegression();
         TheAmbiguousTaskLabels();
+        TheMiddleTruncation();
         TheIconPatchTargets();
         TheIconNames();
         ThePickleStepTable();
@@ -949,6 +950,71 @@ internal static class Program
         var alone = (HashSet<string>)ambiguousLabels.Invoke(null,
             new object[] { new List<WorkGiverDef> { shared[2] } });
         Check("a list with no duplicate at all reports none", alone.Count == 0);
+    }
+
+    // --- middle truncation, and the collisions it can create ------------------------------------
+
+    // The French run of 2026-09-21 put four rows reading "Apporter les ressources ..." in the
+    // right-hand column, two of them sharing their grey type as well: labels that differ only in
+    // their tail, cut at the end. The editor now cuts out of the middle instead, and looks for
+    // duplicates among the strings it DRAWS rather than among the full labels - the old check
+    // compared full labels and therefore could not see a collision that truncation had created.
+    //
+    // Measuring text needs a font, which needs Unity, so the truncation takes its measure as an
+    // argument. Here that is a fake one - every character the same width - which is enough to test
+    // the algorithm: what it keeps, what it drops, and that it stops rather than loops.
+    private static void TheMiddleTruncation()
+    {
+        Console.WriteLine();
+        Console.WriteLine("the editor's middle truncation, and the duplicates it must still catch:");
+
+        Type dialogType = ModType("WorkStudio.Dialog_WorkTypes", true);
+        MethodInfo truncate = dialogType == null ? null : AccessTools.Method(dialogType, "TruncateMiddle");
+        MethodInfo duplicates = dialogType == null ? null : AccessTools.Method(dialogType, "Duplicates");
+        if (truncate == null || duplicates == null)
+        {
+            Skip("Dialog_WorkTypes.TruncateMiddle/Duplicates: not found");
+            return;
+        }
+
+        Func<string, float> perChar = text => text.Length * 10f;
+        Func<string, float, string> cut = (text, width) =>
+            (string)truncate.Invoke(null, new object[] { text, width, perChar });
+
+        Check("a label that fits is left exactly as it is",
+            cut("deliver resources", 500f) == "deliver resources");
+
+        string blueprints = cut("deliver resources to blueprints", 200f);
+        string frames = cut("deliver resources to frames", 200f);
+
+        Check("a label too long for its column is shortened to fit",
+            perChar(blueprints) <= 200f && blueprints.Length < "deliver resources to blueprints".Length);
+        Check("the cut is in the middle, so the row still starts with the words it started with",
+            blueprints.StartsWith("deliver"));
+        Check("the tail survives, which is the whole point - it is what tells two rows apart",
+            blueprints.EndsWith("blueprints") && frames.EndsWith("frames"));
+        Check("two labels differing only in their tail stay different once shortened",
+            blueprints != frames);
+
+        // The end-cut this replaced, reproduced: both would have read "deliver resources t...".
+        Check("cutting the end instead would have made them equal - the defect this replaces",
+            "deliver resources to blueprints".Substring(0, 17) == "deliver resources to frames".Substring(0, 17));
+
+        Check("a column too narrow for anything gives up instead of looping",
+            cut("deliver resources", 5f) == "" || cut("deliver resources", 5f) == "…");
+
+        var found = (HashSet<string>)duplicates.Invoke(null, new object[]
+        {
+            new List<string> { "Apporter les res…plans", "Apporter les res…plans", "Apporter les res…frames" }
+        });
+        Check("two rows that DRAW the same string are reported, whatever their full labels were",
+            found.Count == 1 && found.Contains("Apporter les res…plans"));
+
+        var distinct = (HashSet<string>)duplicates.Invoke(null, new object[]
+        {
+            new List<string> { "a", "b", "c" }
+        });
+        Check("rows that draw differently are left alone", distinct.Count == 0);
     }
 
     // --- the icon patch targets, and the drawings themselves -----------------------------------
