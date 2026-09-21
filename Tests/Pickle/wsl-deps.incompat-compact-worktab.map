@@ -1,0 +1,20 @@
+# Is the declared incompatibility with Compact Work Tab still real?
+#
+# About.xml names Mlie.CompactWorkTab in <incompatibleWith>. Like the Work Tab set beside it, this
+# one is built to go and look rather than to trust a declaration nobody has replayed: the expected
+# red is the measurement, and a GREEN is the alarm - it would mean the conflict may be gone, and a
+# person confirms it by hand before the declaration is dropped.
+#
+# Replayed when COMPACT WORK TAB moves, not when Work Studio is published.
+#
+# packageId read from the installed copy's own About.xml, 2026-09-21.
+#
+# Not covered by this set, and not covered by About.xml either: captainarbitrary.compactworktab
+# (Workshop 3027381000), the original this one continues. It carries a DIFFERENT packageId, so
+# <incompatibleWith> stays silent for anyone who still has it installed from before the handover.
+# Whether that deserves a line in About.xml is a judgement about who still runs it, not about
+# whether it is abandoned - and it needs its own set either way, since the two cannot be staged
+# together any more than the other pairs can.
+#
+# packageId             workshopId   what it is
+Mlie.CompactWorkTab     3250322299   Compact Work Tab (Continued), the declared incompatibility
