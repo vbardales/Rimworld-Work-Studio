@@ -195,9 +195,19 @@ namespace WorkStudio.PickleSteps
             await ctx.WaitFrames(3);
             if (!Find.WindowStack.Windows.Any(window => window is Dialog_WorkTypes))
             {
+                var pointer = UI.MousePositionOnUIInverted;
+                var absorber = Find.WindowStack.Windows.Any(window => window.absorbInputAroundWindow);
+
                 ctx.Assert(false,
-                    "the click reached the button and the editor did not open. Window stack, top first:\n" +
-                    DescribeStack(UI.MousePositionOnUIInverted));
+                    "the click reached the button and the editor did not open. " +
+                    (absorber
+                        ? "A window on the stack absorbs input around itself - see below."
+                        : "No window on the stack absorbs input, so nothing sits ABOVE the button. What is left " +
+                          "is a control in the same window that took the click first: IMGUI hands an event to " +
+                          "controls in the order they are drawn, and this button is drawn last, from a postfix. " +
+                          "With Work Tab loaded that control is one of its three 30x30 toggles, which share the " +
+                          "top-right corner of the very rectangle this button is placed against.") +
+                    $"\nPointer at {pointer}. Window stack, top first:\n" + DescribeStack(pointer));
             }
         }
 
