@@ -736,11 +736,19 @@ Work Studio code: the work is upstream, in RimWorks/Rimworld-Pickle. It sits her
 that showed it was this mod's suite, and a click step that explains itself is what that suite
 needs. Move it if a Pickle backlog ever exists.
 
-**The case.** "Work types..." with Fluffy's Work Tab loaded. Pickle clicked the centre of the
-button (1831, 773) and `Dialog_WorkTypes` never opened; the only message was the list of open
-windows. The window stack was clean (measured, commit b913297: two vanilla ImmediateWindows, nothing
-absorbing input). What took the click was one of Work Tab's three 30x30 `Widgets.ButtonImage`
-toggles, drawn before ours in the same corner, the first at x 1812-1842.
+**The case.** "Work types..." with Fluffy's Work Tab loaded. Pickle clicked and `Dialog_WorkTypes`
+never opened; the only message was the list of open windows. The window stack was clean (measured,
+commit b913297: two vanilla ImmediateWindows, nothing absorbing input).
+
+**CORRECTED 2026-09-21, same evening.** This entry first said the click was taken by one of Work
+Tab's three 30x30 `Widgets.ButtonImage` toggles, computed from the layout as (1831, 773) inside the
+first toggle at x 1812-1842. That was a calculation, not a measurement, and the measurement
+contradicts it: the pointer read after the click was at **(1058, 774)**, and the image-button probe
+(acee15d) found no image button containing that point. The button is drawn at x 1754-1909, so the
+pointer was not on it. Pickle clicks the centre of the rectangle it stored for the tag, so either
+that rectangle is not where the button is drawn, or something moved the pointer afterwards. Which
+one is not known. The toggle theory is unproven and may be wrong, and the need below still stands
+regardless: a lost click gives no reason, whichever of these it turns out to be.
 
 **What Pickle can and cannot say today**, read in the installed Workshop copy by the Work Studio
 session: `WidgetCapture.AfterButtonText` is the only recorder and writes `btn:` + label;

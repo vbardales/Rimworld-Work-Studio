@@ -29,6 +29,7 @@ namespace WorkStudio.PickleSteps
         {
             public Rect Screen;
             public string Widget;
+            public string Label;
             public int Order;
         }
 
@@ -60,9 +61,35 @@ namespace WorkStudio.PickleSteps
             {
                 harmony.Patch(method, postfix: postfix);
             }
+
+            // ButtonText too, with its label: Pickle tags these, but does not say WHERE it recorded
+            // them, and a click that lands somewhere other than the drawn button needs that number.
+            // Arguments are read as an array because the overloads do not agree on the label's type.
+            var textPostfix = new HarmonyMethod(typeof(ImageButtonProbe), nameof(TextPostfix));
+            foreach (var method in typeof(Widgets)
+                         .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                         .Where(m => m.Name == "ButtonText"))
+            {
+                harmony.Patch(method, postfix: textPostfix);
+            }
+        }
+
+        public static void TextPostfix(object[] __args, MethodBase __originalMethod)
+        {
+            if (__args == null || __args.Length < 2 || !(__args[0] is Rect rect))
+            {
+                return;
+            }
+
+            Record(rect, "ButtonText", __args[1]?.ToString());
         }
 
         public static void Postfix(Rect __0, MethodBase __originalMethod)
+        {
+            Record(__0, __originalMethod.Name, null);
+        }
+
+        private static void Record(Rect rect, string widget, string label)
         {
             if (Event.current == null || Event.current.type != EventType.Repaint)
             {
@@ -79,10 +106,34 @@ namespace WorkStudio.PickleSteps
 
             current.Add(new Seen
             {
-                Screen = GUIUtility.GUIToScreenRect(__0),
-                Widget = __originalMethod.Name,
+                Screen = GUIUtility.GUIToScreenRect(rect),
+                Widget = widget,
+                Label = label,
                 Order = order++,
             });
+        }
+
+        /// <summary>
+        /// Where a text button with this label was drawn, in the space Pickle records its tags in.
+        /// The click lands at the centre of the rectangle Pickle stored, so when the pointer is
+        /// nowhere near the button on the screenshot, this is the number that says whether the
+        /// rectangle or the pointer is the one that is wrong.
+        /// </summary>
+        internal static string DescribeText(string label)
+        {
+            var matches = previous.Concat(current)
+                .Where(seen => seen.Widget == "ButtonText" && seen.Label == label)
+                .GroupBy(seen => seen.Screen)
+                .Select(group => group.First())
+                .ToList();
+
+            if (matches.Count == 0)
+            {
+                return $"  no Widgets.ButtonText labelled '{label}' was seen in the last two frames";
+            }
+
+            return string.Join("\n", matches.Select(s =>
+                $"  Widgets.ButtonText '{label}' drawn at {s.Screen}, centre {s.Screen.center}"));
         }
 
         /// <summary>

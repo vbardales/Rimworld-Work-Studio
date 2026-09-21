@@ -114,9 +114,10 @@ namespace WorkStudio.PickleSteps
 
             // GetWindowAt only asks which rectangle holds the point. It cannot see a window that
             // does not hold it but absorbs input around itself - WindowStack.GetsInput walks down
-            // from the top and answers false to everything below the first such window. That is the
-            // invisible thing sitting on the button, and it was a blind spot here until 2026-09-21,
-            // when a run with Work Tab loaded drew the button, clicked it, and opened nothing.
+            // from the top and answers false to everything below the first such window. That is a
+            // blind spot this check had until 2026-09-21, when a run with Work Tab loaded drew the
+            // button, clicked it, and opened nothing. It turned out NOT to be the cause of that
+            // failure - the stack was clean - but the blind spot was real and stays closed.
             if (!Find.WindowStack.GetsInput(under))
             {
                 ctx.Assert(false,
@@ -190,6 +191,12 @@ namespace WorkStudio.PickleSteps
             ImageButtonProbe.EnsureInstalled();
 
             await WarnIfCovered(ctx, EditorButtonTag(), typeof(MainTabWindow));
+
+            // The pointer is read on both sides of the click. Pickle moves it to the centre of the
+            // rectangle it stored for the tag, so the two readings should agree and sit on the drawn
+            // button; a disagreement says something moved it, and a shared wrong place says the stored
+            // rectangle is not where the button is drawn.
+            var beforeClick = UI.MousePositionOnUIInverted;
             await ctx.Click(EditorButtonTag());
 
             // A click that lands and opens nothing is the failure this scenario exists for, and
@@ -206,12 +213,14 @@ namespace WorkStudio.PickleSteps
                     "the click reached the button and the editor did not open. " +
                     (absorber
                         ? "A window on the stack absorbs input around itself - see below."
-                        : "No window on the stack absorbs input, so nothing sits ABOVE the button. What is left " +
-                          "is a control in the same window that took the click first: IMGUI hands an event to " +
-                          "controls in the order they are drawn, and this button is drawn last, from a postfix. " +
-                          "With Work Tab loaded that control is one of its three 30x30 toggles, which share the " +
-                          "top-right corner of the very rectangle this button is placed against.") +
-                    $"\nPointer at {pointer}. Image buttons on that point, in draw order (Pickle does not tag these):\n" +
+                        : "No window on the stack absorbs input, so nothing sits above the button. The cause is " +
+                          "NOT established by this message: compare where the button was drawn with where the " +
+                          "pointer was, both printed below. (An earlier version of this text named one of Work " +
+                          "Tab's toggles as the culprit; the pointer reading contradicted it.)") +
+                    $"\nPointer before the click {beforeClick}, after it {pointer}." +
+                    "\nWhere the button was drawn, as Pickle records it (the click goes to the centre):\n" +
+                    ImageButtonProbe.DescribeText("WorkStudio.OpenEditorShort".Translate()) +
+                    "\nImage buttons on the pointer, in draw order (Pickle does not tag these):\n" +
                     ImageButtonProbe.Describe(pointer) +
                     "\nWindow stack, top first:\n" + DescribeStack(pointer));
             }
