@@ -320,3 +320,33 @@ feature itself, and the priority safety that is the mod's reason to exist.
 3, 6, 7, 8, 9, 10 and 13 are behaviour worth getting right, but a defect there is a patch note
 rather than a blocker. 11 and 12 confirm documented behaviour; if they disagree with the
 documentation, the documentation is what needs fixing.
+
+## How many passes, and which
+
+**One pass validates nothing here, whatever colour it comes back.** A run proves the mod behaves
+that way *in the mod set it ran in*, and this mod's whole subject — the Work tab and its columns —
+is territory other mods take over. Three sets are the minimum, and a report must say which one it
+is; `Run-PickleWsl.ps1 -DepsMap wsl-deps.<set>.map` writes the name into the report, and a run
+without `-DepsMap` is recorded as `sans-facultatifs`.
+
+| Set | What only this set can show |
+| --- | --- |
+| `sans-facultatifs` | That the mod stands up alone: Core, the DLCs, Harmony, RimLogging, Pickle and this mod. It is also the only set whose screenshots are clean enough to publish |
+| `avec-better-work-tab` | Scenario 2, and with it 3, 7, 7b and 8. The **Work types…** button failed twice in this mod's history, and 1.0.1's fix was about a mod declaring its own window in the `MainButtonDef` and overriding `DoWindowContents` without calling `base`. A set with no tab replacer cannot see that class of defect at all |
+| `avec-fluffy-work-tab` | The same scenarios against the other claimant. Better Work Tab and Fluffy's Work Tab both take the Work tab's window through the `MainButtonDef`, so only one of them can own it: they cannot be covered in one set, and each incompatibility has to be played at least once |
+
+Scenario 6 is the one to watch when those reports are put side by side. Its own header already
+says that with Fluffy's Work Tab or Better Work Tab the type order may not reach execution once a
+column has been dragged there. That sentence has never been measured — it is a caveat someone
+wrote, not a result. Two of these sets turn it into one.
+
+**Enhanced Work Tab is deliberately not listed.** It intercepted `GetPriority` during an
+investigation on 2026-09-19, which suggests it patches rather than replaces and would therefore
+cohabit — but that is an inference, and a dependency map is an assertion of compatibility. It goes
+in once someone has actually loaded it beside one of the others and looked.
+
+**The language axis is separate, and does not multiply this one.** Tab replacers decide scenarios
+2, 3, 7, 7b and 8; the language decides what the `@review` captures read. Three sets times two
+languages is six runs, of which the useful ones are the minimal set in each language, plus each
+tab replacer once. Crossing the two axes everywhere would buy nothing but machine time, and this
+machine is shared.
