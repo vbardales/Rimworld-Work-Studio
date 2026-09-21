@@ -408,18 +408,49 @@ namespace WorkStudio
             Find.WindowStack.Add(new Dialog_EditWorkType(entry, Commit));
         }
 
+        private const string TypeIdPrefix = "WorkStudio_Type";
+
+        /// <summary>
+        /// A defName no type of this installation has ever carried, not merely one that is free now.
+        /// <para>
+        /// The first free index used to be taken, so deleting a type and creating another gave the new
+        /// one the deleted one's name. Anything that keys its own data by defName - a save's named
+        /// priorities, another mod's per-colonist store - then handed the new type the old one's
+        /// values. Enhanced Work Tab keeps its own priority per colonist, by defName, in the save and
+        /// never prunes it: the scenario "a save written with one type, loaded with two" read 2 for a
+        /// type that was not in the save, while the raw priority list held 0.
+        /// </para>
+        /// </summary>
         private static string NewTypeId()
         {
-            var index = 1;
-            string id;
-            do
+            var settings = WorkStudioMod.Settings;
+            var index = NextTypeIndex(settings.lastTypeIndex, settings.customTypes.Select(entry => entry.id));
+            while (DefDatabase<WorkTypeDef>.GetNamedSilentFail(TypeIdPrefix + index) != null)
             {
-                id = "WorkStudio_Type" + index;
                 index++;
             }
-            while (DefDatabase<WorkTypeDef>.GetNamedSilentFail(id) != null);
 
-            return id;
+            settings.lastTypeIndex = index;
+            return TypeIdPrefix + index;
+        }
+
+        /// <summary>
+        /// One past the highest index ever issued. The counter alone is not enough for a setup made
+        /// before it existed, so the highest index among the types that exist counts as well.
+        /// </summary>
+        internal static int NextTypeIndex(int lastIssued, IEnumerable<string> existingIds)
+        {
+            var highest = lastIssued;
+            foreach (var id in existingIds)
+            {
+                if (id != null && id.StartsWith(TypeIdPrefix, StringComparison.Ordinal)
+                    && int.TryParse(id.Substring(TypeIdPrefix.Length), out var number) && number > highest)
+                {
+                    highest = number;
+                }
+            }
+
+            return highest + 1;
         }
 
         private void DeleteType(WorkTypeDef type)

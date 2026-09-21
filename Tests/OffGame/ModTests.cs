@@ -81,6 +81,7 @@ internal static class Program
         TheHideColumnRegression();
         TheAmbiguousTaskLabels();
         TheMiddleTruncation();
+        TheTypeIdsAreNeverReused();
         TheIconPatchTargets();
         TheIconNames();
         ThePickleStepTable();
@@ -1017,6 +1018,40 @@ internal static class Program
         Check("rows that draw differently are left alone", distinct.Count == 0);
     }
 
+    // A created type's defName is "WorkStudio_Type<n>". Taking the first free n gave a new type the
+    // name of one just deleted, and whatever else keys its data by defName - Enhanced Work Tab's
+    // per-colonist priorities, which live in the save and are never pruned - handed the new type the
+    // old one's value. The counter must only ever go up.
+    private static void TheTypeIdsAreNeverReused()
+    {
+        Console.WriteLine();
+        Console.WriteLine("a created type never takes the name of a deleted one:");
+
+        Type dialogType = ModType("WorkStudio.Dialog_WorkTypes", true);
+        MethodInfo next = dialogType == null ? null : AccessTools.Method(dialogType, "NextTypeIndex");
+        if (next == null)
+        {
+            Skip("Dialog_WorkTypes.NextTypeIndex: not found");
+            return;
+        }
+
+        Func<int, string[], int> nextIndex = (last, ids) => (int)next.Invoke(null, new object[] { last, ids });
+
+        Check("with nothing yet, the first is 1", nextIndex(0, new string[0]) == 1);
+        Check("after 1 and 2 were issued, the next is 3",
+            nextIndex(2, new[] { "WorkStudio_Type1", "WorkStudio_Type2" }) == 3);
+        Check("after 1 was deleted, the next is still 3 and not 1 - the defect this replaces",
+            nextIndex(2, new[] { "WorkStudio_Type2" }) == 3);
+        Check("after the LAST one was deleted, the counter keeps the number: the next is 3, not 2",
+            nextIndex(2, new[] { "WorkStudio_Type1" }) == 3);
+        Check("a setup made before the counter existed starts above its highest type",
+            nextIndex(0, new[] { "WorkStudio_Type1", "WorkStudio_Type5" }) == 6);
+        Check("the counter wins over the types that exist when it is higher",
+            nextIndex(9, new[] { "WorkStudio_Type2" }) == 10);
+        Check("names that are not ours, or carry no number, are ignored",
+            nextIndex(0, new[] { "Doctor", "WorkStudio_TypeX", null, "WorkStudio_Type" }) == 1);
+    }
+
     // --- the icon patch targets, and the drawings themselves -----------------------------------
 
     // Both targets are resolved by reflection at startup, one of them with a fall-back, so a
@@ -1158,8 +1193,31 @@ internal static class Program
               + "another mod's suite" + (bare.Length > 0 ? ": " + string.Join(" / ", bare) : ""),
             bare.Length == 0);
 
-        Regex[] known = declared.Concat(PickleBuiltIns).Select(StepPattern).ToArray();
+        // Steps of the shared tool this suite stages (PickleTools/ClickDiagnostics), read from its own
+        // source so that a renamed step there turns a scenario red here, not in a live run. The
+        // repository is a sibling of this one; without it those lines cannot be checked, and are
+        // left out with a skip that says so rather than counted as typos.
+        const string ToolPrefix = "Nelim's Pickle Tools: ";
+        var shared = new List<string>();
+        string toolSource = Path.GetFullPath(Path.Combine(root, "..", "PickleTools", "ClickDiagnostics", "Source"));
+        if (Directory.Exists(toolSource))
+        {
+            foreach (string file in Directory.GetFiles(toolSource, "*.cs"))
+            {
+                foreach (Match m in Regex.Matches(File.ReadAllText(file),
+                             "\\[(?:When|Then|Given)\\(\"([^\"]*)\""))
+                {
+                    shared.Add(m.Groups[1].Value);
+                }
+            }
+
+            Console.WriteLine("    " + shared.Count + " step(s) read from PickleTools/ClickDiagnostics");
+            Check("the shared tool declares steps at all", shared.Count > 0);
+        }
+
+        Regex[] known = declared.Concat(PickleBuiltIns).Concat(shared).Select(StepPattern).ToArray();
         var unknown = new SortedSet<string>();
+        int notChecked = 0;
 
         foreach (string file in Directory.GetFiles(featureFolder, "*.feature"))
         {
@@ -1170,11 +1228,22 @@ internal static class Program
                 if (!keyword.Success) continue;
 
                 string step = keyword.Groups[2].Value;
+                if (shared.Count == 0 && step.StartsWith(ToolPrefix, StringComparison.Ordinal))
+                {
+                    notChecked++;
+                    continue;
+                }
+
                 if (!known.Any(pattern => pattern.IsMatch(step)))
                 {
                     unknown.Add(Path.GetFileName(file) + ": " + step);
                 }
             }
+        }
+
+        if (notChecked > 0)
+        {
+            Skip(notChecked + " step line(s) of the shared tool: PickleTools/ClickDiagnostics not found beside this repository");
         }
 
         Check("every step a feature file uses is declared here or is a known Pickle built-in"

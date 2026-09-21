@@ -59,10 +59,19 @@ namespace WorkStudio
         /// <summary>One of <see cref="WorkTypeIcons"/>'s three header constants.</summary>
         public int workTabHeaderMode = WorkTypeIcons.HeaderIconAndLabel;
 
+        /// <summary>
+        /// The highest index a created type's defName has ever carried on this installation, so a
+        /// deleted type's name is never given to a new one. Local to the installation, like
+        /// <see cref="knownWorkTypes"/>: it stays out of <see cref="ExposeConfig"/>, since an import
+        /// must not wind another machine's counter back.
+        /// </summary>
+        public int lastTypeIndex;
+
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref schemaVersion, "schemaVersion", 1);
+            Scribe_Values.Look(ref lastTypeIndex, "lastTypeIndex", 0);
 
             ExposeConfig();
 
