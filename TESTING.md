@@ -327,7 +327,7 @@ documentation, the documentation is what needs fixing.
 that way *in the mod set it ran in*, and this mod's whole subject — the Work tab and its columns —
 is territory other mods take over. Three sets are the minimum, and a report must say which one it
 is; `Run-PickleWsl.ps1 -DepsMap wsl-deps.<set>.map` writes the name into the report, and a run
-without `-DepsMap` is recorded as `sans-facultatifs`.
+without `-DepsMap` is recorded as `sans-facultatifs`. Every map of this suite, the minimal one included (`wsl-deps.sans-facultatifs.map`), stages one more companion, `PickleTools/ClickDiagnostics`: it holds the Pickle steps scenario 2 clicks with and no Defs, so it changes nothing the game loads. With no map at all, scenario 2 cannot be played.
 
 | Set | What only this set can show |
 | --- | --- |

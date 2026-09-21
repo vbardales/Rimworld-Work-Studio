@@ -29,15 +29,24 @@ every `I click button` fails with "no tags recorded this frame". Disable Concord
 Pickle tags a button by the text it actually draws. On a non-English client, `I click button
 "Work types…"` would silently never find anything, since the drawn label is whatever
 `WorkStudio.OpenEditorShort` resolves to in that language (found the same night in Architect
-Studio's own suite, on a French client). Scenario 02 uses this mod's own `I click the Work types
-button` / `the Work Studio button is not drawn` steps instead (`ModSteps.cs`), which resolve the
-same key the button itself draws before building the tag.
+Studio's own suite, on a French client). Scenario 02 names the button by the key instead, with the
+three `Nelim's Pickle Tools` steps of `PickleTools/ClickDiagnostics` (a repository of its own,
+beside this one, development only): wait until the button has stood still, check that the tab
+window holds and receives the pointer, click and wait for `Dialog_WorkTypes`, and on a lost click
+print the pointer, the buttons under it and the window stack. Those steps were written in this
+suite, from the failure described in `BACKLOG.md`, and moved out on 2026-09-21.
+`the Work Studio button is not drawn` and `I click the Work Studio button keyed {string}` stay in
+`ModSteps.cs`.
 
-Pickle itself later gained a generic equivalent, `I click button keyed {string}` (upstream
-[RimWorks/Rimworld-Pickle#19](https://github.com/RimWorks/Rimworld-Pickle/pull/19), 2026-09-17
-night, not yet on a released Pickle version at the time this suite was written). Kept the
-mod-owned steps above rather than switching: they depend only on `PickleContext.Click`/`.Hover`,
-which every Pickle version this suite has ever run against already has, not on a specific build.
+The companion is staged by every pass map of this suite, `wsl-deps.sans-facultatifs.map` included:
+`nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod`. In a game you run by
+hand, link that folder into `Mods` and enable it after Pickle.
+
+Pickle itself later gained a generic equivalent of the keyed click, `I click button keyed {string}`
+(upstream [RimWorks/Rimworld-Pickle#19](https://github.com/RimWorks/Rimworld-Pickle/pull/19),
+2026-09-17 night, not yet on a released Pickle version). `ModSteps.cs`'s own keyed click depends
+only on `PickleContext.Click`/`.Hover`, which every Pickle version this suite has ever run against
+already has, not on a specific build.
 
 ## Build
 

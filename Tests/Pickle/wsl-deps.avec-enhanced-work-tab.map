@@ -19,3 +19,6 @@
 #
 # packageId              workshopId   what it is
 natee.EnhancedWorkTab    3715873875   Enhanced Work Tab, by natee
+#
+# The steps scenario 2 clicks with, staged in every pass so the scenarios do not change between them.
+nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod

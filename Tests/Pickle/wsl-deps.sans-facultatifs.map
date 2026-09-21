@@ -1,0 +1,8 @@
+# The minimal pass, still reported as sans-facultatifs: Work Studio and what its own suite needs, nothing else.
+#
+# It stages one companion mod, PickleTools/ClickDiagnostics, which holds Pickle steps and no Defs. It
+# changes nothing the game loads, and it is the reason this file exists: a pass with no map stages no
+# companion at all, and scenario 2 needs its steps. Every other pass map carries the same line.
+#
+# Run with -DepMap wsl-deps.sans-facultatifs.map (with no map at all scenario 2 cannot be played).
+nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod

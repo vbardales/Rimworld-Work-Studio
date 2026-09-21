@@ -756,7 +756,7 @@ the pointer, and clicks the rectangle it resolved. A control that is still movin
 silently, and the report says only that the window did not open. A "wait until this tag has stood
 still for N frames" step, or a guard that re-reads the rectangle at the click, would turn that into a
 clear message. That is a convenience for suites, not a defect; this suite now does it itself
-(`WaitForButtonToSettle` in `ModSteps.cs`), which is the cheaper answer.
+(the step `the button keyed {string} has stood still` of `PickleTools/ClickDiagnostics`, moved there from `ModSteps.cs` on 2026-09-21), which is the cheaper answer. Virginie then asked for a pull request to Pickle for it and for the lost-click report; both are in `PickleTools/Upstream/PENDING.md` and a chip session prepares them.
 
 **What is still open from the other diagnostics.** With Enhanced Work Tab the same step aimed at the
 exact centre of the drawn button, and a TEXT button drawn earlier (98x24, drawn #64 against #103)
