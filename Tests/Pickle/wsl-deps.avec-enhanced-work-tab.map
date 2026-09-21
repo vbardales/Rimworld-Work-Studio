@@ -1,0 +1,21 @@
+# The open question: does Enhanced Work Tab cohabit with Work Studio?
+#
+# It intercepted Pawn_WorkSettings.GetPriority during an investigation on 2026-09-19, which
+# suggests it patches rather than replaces the Work tab and would therefore cohabit. That is an
+# inference from one investigation, and this set is how it stops being one: the map names what to
+# stage, and the run is what answers.
+#
+# A coexistence set, read green-is-good like the others. Green means Work Studio and Enhanced Work
+# Tab live together; red means something moved and a person looks. Nothing declares this pair
+# either way - neither About.xml carries an incompatibility with the other - so a red here is the
+# reason to consider adding one, not a confirmation of one.
+#
+# Scenarios 2, 3, 7, 7b and 8 draw or click the Work tab window and are the ones that can tell.
+# Scenarios 5 and 12 read priorities back, which is exactly what it intercepts, so a divergence
+# there would be about the ownership of GetPriority rather than about layout.
+#
+# packageId read from the installed copy's own About.xml, 2026-09-21. Its only hard dependency is
+# Harmony, which the staging always includes, so this file needs the one line.
+#
+# packageId              workshopId   what it is
+natee.EnhancedWorkTab    3715873875   Enhanced Work Tab, by natee

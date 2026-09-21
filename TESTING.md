@@ -377,6 +377,14 @@ to stage, and the run is what answers whether they cohabit. Refusing to measure 
 knowing the result is how an inference survives — the set is listed above and the question gets
 settled by running it.
 
+**The originals are not sets, because they do not load in 1.6.** Compact Work Tab's original
+(`CaptainArbitrary.CompactWorkTab`) lists `supportedVersions` 1.4 only and ships a `1.4/` folder;
+the original Work Tab predates 1.6 as well. `About.xml`'s `incompatibleWith` names the maintained
+continuations, which are the ones a 1.6 player can actually have active, so the fact that it does
+not name the originals is not a gap. An earlier note here and in one map file said the opposite on
+the strength of a different `packageId` alone, before anyone had opened the original's own
+`About.xml`.
+
 **The language axis is separate, and does not multiply this one.** Tab replacers decide scenarios
 2, 3, 7, 7b and 8; the language decides what the `@review` captures read. The useful runs are the
 minimal set in each language, plus each of the other three sets once, in whichever language —

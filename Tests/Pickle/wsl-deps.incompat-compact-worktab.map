@@ -15,12 +15,12 @@
 #
 # packageId read from the installed copy's own About.xml, 2026-09-21.
 #
-# Not covered by this set, and not covered by About.xml either: captainarbitrary.compactworktab
-# (Workshop 3027381000), the original this one continues. It carries a DIFFERENT packageId, so
-# <incompatibleWith> stays silent for anyone who still has it installed from before the handover.
-# Whether that deserves a line in About.xml is a judgement about who still runs it, not about
-# whether it is abandoned - and it needs its own set either way, since the two cannot be staged
-# together any more than the other pairs can.
+# Not in this set, and not a gap in About.xml either: CaptainArbitrary.CompactWorkTab (Workshop
+# 3027381000), the original this one continues. It carries a DIFFERENT packageId, so
+# <incompatibleWith> does not name it - but its own About.xml lists supportedVersions 1.4 only and
+# ships a 1.4/ folder, so it does not run in 1.6. Read from the installed copy, 2026-09-21. This
+# file said the opposite for a few hours, on the strength of the packageId alone; nobody running
+# 1.6 has it active, and no set is worth a run to prove a mod that never loads.
 #
 # packageId             workshopId   what it is
 Mlie.CompactWorkTab     3250322299   Compact Work Tab (Continued), the declared incompatibility
