@@ -333,7 +333,18 @@ without `-DepsMap` is recorded as `sans-facultatifs`.
 | --- | --- |
 | `sans-facultatifs` | That the mod stands up alone: Core, the DLCs, Harmony, RimLogging, Pickle and this mod. It is also the only set whose screenshots are clean enough to publish |
 | `avec-better-work-tab` | Scenario 2, and with it 3, 7, 7b and 8. The **Work types…** button failed twice in this mod's history, and 1.0.1's fix was about a mod declaring its own window in the `MainButtonDef` and overriding `DoWindowContents` without calling `base`. A set with no tab replacer cannot see that class of defect at all |
-| `avec-fluffy-work-tab` | The same scenarios against the other claimant. Better Work Tab and Fluffy's Work Tab both take the Work tab's window through the `MainButtonDef`, so only one of them can own it: they cannot be covered in one set, and each incompatibility has to be played at least once |
+| `incompat-fluffy-worktab` | Whether `Fluffy.WorkTab`, which `About.xml` declares **incompatible**, still is. Here the reading is inverted: the expected red is the measurement, and a green is what should worry you — it means the conflict may be gone and someone has to look before the declaration is dropped |
+| `incompat-compact-worktab` | The same for `Mlie.CompactWorkTab`, the other declared incompatibility |
+
+An `incompatibleWith` ages. The other mod can be fixed, rewritten, or simply stop patching what it
+patched, and an incompatibility never replayed ends up forbidding a coexistence that would work,
+depriving players of both mods for nothing. These two sets are replayed when **the other mod**
+moves, not when this one is published: it is their update that stales the verdict, not ours.
+
+An earlier version of this section listed Fluffy's Work Tab as a compatibility set, which was
+wrong: this mod declares it incompatible, and a set named `avec-` asserts the opposite of what
+`About.xml` says. Better Work Tab is the genuine coexistence case — scenario 11 documents what it
+owns and what this mod keeps.
 
 Scenario 6 is the one to watch when those reports are put side by side. Its own header already
 says that with Fluffy's Work Tab or Better Work Tab the type order may not reach execution once a
@@ -346,7 +357,6 @@ cohabit — but that is an inference, and a dependency map is an assertion of co
 in once someone has actually loaded it beside one of the others and looked.
 
 **The language axis is separate, and does not multiply this one.** Tab replacers decide scenarios
-2, 3, 7, 7b and 8; the language decides what the `@review` captures read. Three sets times two
-languages is six runs, of which the useful ones are the minimal set in each language, plus each
-tab replacer once. Crossing the two axes everywhere would buy nothing but machine time, and this
-machine is shared.
+2, 3, 7, 7b and 8; the language decides what the `@review` captures read. The useful runs are the
+minimal set in each language, plus each of the other three sets once, in whichever language —
+crossing the two axes everywhere would buy nothing but machine time, and this machine is shared.
