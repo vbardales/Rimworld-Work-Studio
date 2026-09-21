@@ -333,6 +333,7 @@ without `-DepsMap` is recorded as `sans-facultatifs`.
 | --- | --- |
 | `sans-facultatifs` | That the mod stands up alone: Core, the DLCs, Harmony, RimLogging, Pickle and this mod. It is also the only set whose screenshots are clean enough to publish |
 | `avec-better-work-tab` | Scenario 2, and with it 3, 7, 7b and 8. The **Work types…** button failed twice in this mod's history, and 1.0.1's fix was about a mod declaring its own window in the `MainButtonDef` and overriding `DoWindowContents` without calling `base`. A set with no tab replacer cannot see that class of defect at all |
+| `avec-enhanced-work-tab` | The third tab mod, and the open question. It intercepted `GetPriority` during an investigation on 2026-09-19, which suggests it patches rather than replaces and would therefore cohabit — but that is an inference, and this set is how it stops being one |
 | `incompat-fluffy-worktab` | Whether `Fluffy.WorkTab`, which `About.xml` declares **incompatible**, still is. Here the reading is inverted: the expected red is the measurement, and a green is what should worry you — it means the conflict may be gone and someone has to look before the declaration is dropped |
 | `incompat-compact-worktab` | The same for `Mlie.CompactWorkTab`, the other declared incompatibility |
 
@@ -351,10 +352,11 @@ says that with Fluffy's Work Tab or Better Work Tab the type order may not reach
 column has been dragged there. That sentence has never been measured — it is a caveat someone
 wrote, not a result. Two of these sets turn it into one.
 
-**Enhanced Work Tab is deliberately not listed.** It intercepted `GetPriority` during an
-investigation on 2026-09-19, which suggests it patches rather than replaces and would therefore
-cohabit — but that is an inference, and a dependency map is an assertion of compatibility. It goes
-in once someone has actually loaded it beside one of the others and looked.
+Enhanced Work Tab was left out of an earlier version of this plan on the grounds that a dependency
+map asserts compatibility and nobody had verified that one. That was backwards: a map names what
+to stage, and the run is what answers whether they cohabit. Refusing to measure for want of
+knowing the result is how an inference survives — the set is listed above and the question gets
+settled by running it.
 
 **The language axis is separate, and does not multiply this one.** Tab replacers decide scenarios
 2, 3, 7, 7b and 8; the language decides what the `@review` captures read. The useful runs are the
