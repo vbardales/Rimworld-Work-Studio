@@ -389,3 +389,35 @@ the strength of a different `packageId` alone, before anyone had opened the orig
 2, 3, 7, 7b and 8; the language decides what the `@review` captures read. The useful runs are the
 minimal set in each language, plus each of the other three sets once, in whichever language —
 crossing the two axes everywhere would buy nothing but machine time, and this machine is shared.
+
+### What the passes said, 2026-09-21
+
+| Set | Result | What it does and does not establish |
+| --- | --- | --- |
+| `sans-facultatifs`, English | 47 of 47 | The mod stands up alone. The five `@review` scenarios asserted nothing; the captures were read by a person and found clean |
+| `sans-facultatifs`, French | 47 of 47 | Same, in French, with the language named in the report; captures read, and the right-hand column was reworked because of what they showed |
+| `avec-better-work-tab` | 47 of 47 | Coexistence with Better Work Tab, including scenario 2, the one written for tab replacers |
+| `avec-enhanced-work-tab` | **45 of 47** | Two failures, below |
+| `incompat-fluffy-worktab` | **45 of 47** | Exploration only: the symptom scenarios do not exist yet. The button scenario failed, and one save-load exception; cause of neither is established |
+| `incompat-compact-worktab` | 47 of 47 | Says nothing about the declared conflict: these 47 scenarios never meet it |
+
+**With Enhanced Work Tab loaded, two things fail, and they are different in kind.**
+
+*The save scenario is a finding about the mod's purpose.* "A save written with one type, loaded with
+two" asserts that a type absent from the save reads priority 0, and it read **2**, while the raw
+`DefMap` value was **0** — Work Studio's own restore did its job, and something else answered
+`GetPriority`. That matches what was seen on 2026-09-19, when this mod was found to intercept
+`GetPriority`. What is not yet known is where its answer comes from, and therefore whether Work
+Studio's protection can reach it; scenario 5 gates publishing, so this is the one to settle first.
+
+*The button scenario is a measured overlap, and the cause is not yet known to be Enhanced Work Tab's.*
+The tab window is vanilla `MainTabWindow_Work` here, so this mod **patches** the tab and does not
+replace it. Pickle clicked at exactly the centre of the drawn button, (1389, 707) for a centre of
+(1389.5, 706), so the rectangle was right. A second `Widgets.ButtonText`, 98x24 at (1362, 697),
+drawn before ours (#64 against #103) also contains that point. Its label was not printed, so which
+control it is is not established; a text button drawn earlier is offered the click first.
+
+**An earlier explanation of the Work Tab failure was wrong and is withdrawn.** It said the click was
+taken by one of that mod's three image toggles, worked out from the layout. The measured pointer
+after the click was at (1058, 774), nowhere near the button, and no image button contained it. The
+cause with Work Tab loaded is not known.

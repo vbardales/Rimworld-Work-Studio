@@ -11,11 +11,14 @@ namespace WorkStudio.PickleSteps
     /// Remembers the rectangles of the image buttons drawn during the last two frames, so a click
     /// that reached a button and opened nothing can say which control sat on the point.
     /// <para>
-    /// Pickle records only <c>Widgets.ButtonText</c>, under a <c>btn:</c> tag. A button with no label -
-    /// Work Tab's three 30x30 toggles are <c>Widgets.ButtonImage</c> - is invisible to it, which is
-    /// exactly why a click taken by one of them left a report with no reason in it. This is the
-    /// local measure for that hole; it changes nothing in Pickle, and it only exists while the
-    /// tests run.
+    /// Pickle records only <c>Widgets.ButtonText</c>, under a <c>btn:</c> tag, and does not say where
+    /// it recorded it. A button with no label - <c>Widgets.ButtonImage</c> - is invisible to it. A
+    /// click that reaches our button and opens nothing therefore gave a report with no reason in it.
+    /// This is the local measure for that; it changes nothing in Pickle, and it only exists while
+    /// the tests run. Written on the theory that Work Tab's toggles were the cause; the run
+    /// contradicted the theory, and a run with Enhanced Work Tab then showed a TEXT button drawn
+    /// before ours instead. The probe is useful either way, which is not the same as being right
+    /// about why it was written.
     /// </para>
     /// <para>
     /// Rectangles are converted the way Pickle converts its own (<c>GUIUtility.GUIToScreenRect</c>,
@@ -159,11 +162,11 @@ namespace WorkStudio.PickleSteps
             var seen = At(uiPoint);
             if (seen.Count == 0)
             {
-                return "  no image button contains the pointer (Widgets.ButtonImage and its variants)";
+                return "  no drawn button contains the pointer";
             }
 
             return string.Join("\n", seen.Select(s =>
-                $"  Widgets.{s.Widget} at {s.Screen}, drawn #{s.Order} this frame"));
+                $"  Widgets.{s.Widget}{(s.Label == null ? string.Empty : " '" + s.Label + "'")} at {s.Screen}, drawn #{s.Order} this frame"));
         }
     }
 }
