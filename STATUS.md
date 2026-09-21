@@ -7,13 +7,13 @@ packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
 visibility:   public
 detached:     yes
-stage:        showcase
+stage:        done
 licence:      open
 licence_at:   this mod's own code is MIT and nothing of Achtung! is redistributed, but the technique came from it and it is a named debt, so the source's licence decides: MIT, LICENSE-achtung.txt
-settings_audit: partial
+settings_audit: complete
 dependencies: declared
 showcase:     complete
-tested_on:    2026-09-20
+tested_on:    2026-09-21
 workshop:     3792836684
 remaining:
   - fixed: TESTING.md scenarios 5, 8 and 12 were failing because the SUITE tested work its colonist may not do - settled and repaired 2026-09-20, never a defect in the mod. The fixture generates "Keeper" with random backstories; that run drew Rancher43, a rancher, whose workDisables is ManualDumb - which vanilla's own Cleaning, Hauling, HaulingUrgent and KAU_UrgentHaul all carry, checked in Core's own XML, with Cleaning's workTags untouched by this mod. So vanilla zeroing those priorities was correct, and PriorityMemory.Restore calling Notify_DisabledWorkTypesChanged is right. The guard meant to catch it passed because Pawn.GetDisabledWorkTypes answers from a cache nothing had invalidated until WorkTypeRuntime.Apply cleared the backstory caches. Two repairs: that guard now drops the pawn's two caches and every backstory's before asking, and names the disabling backstory when it refuses; and the three Backgrounds now give Keeper backstories and traits that forbid no work at all, so the scenarios can go on naming Cleaning and mean it. Confirmed by the 2026-09-20 20:48 run: 8 ("hide a column") passed, and 5's two remaining failures are the known ReflectionOnly UnityEngine.InputLegacyModule framework error caught by Pickle's Log.Error guard, not this mod's assertions. The fixture premise was the whole of that defect, and the 23:00 run in the WSL game settles it: 5, 8 and 12 all green, 46 of 47 scenarios passing. The one failure left was the same premise in the one place it had not been repaired - scenario 4's custom type inherits CleanFilth's ManualDumb tag, and the fixture's Keeper could not do it. Both scenarios of 04 now give their colonist harmless backstories; the Porter one passed on luck, not on anything the test guaranteed. Re-run at 23:49 in the WSL game: 47 of 47 green, 248.5s, no failure anywhere in the suite. Note what that green does NOT cover: the five @review scenarios assert nothing, so their screenshots still need a person to read them
@@ -30,7 +30,7 @@ remaining:
   - unverified: the run believed on the evening of 2026-09-20 to have confirmed the fixture repair was not this suite's. PickleReports holds one report for the whole machine, and the summary.md written at 20:00:16 that evening belongs to Architect Studio - 58 scenarios, all of them categories, groups and the Architect window. Established from the runner's own state at http://localhost:27750/state, which names the mod each scenario belongs to: every "Work Studio - Pickle tests" scenario reads Pending, meaning the running game has never played them. The game started at 19:15 and the step assembly was built at 14:40, so that game does carry the repair; nothing has asked it to run. Tests/Pickle/Run-Pickle.ps1 was added the same evening, taking the machine-wide lock AUDIT.md prescribes and reading the outcome back per mod rather than from the shared report folder. A run of this suite did follow at 20:32-20:48, started in error by this session against the standing rule that it never launches RimWorld; its report is this suite's and is the one read above. 16 features, 4 failures: one Log.Error from VEF.Plants.WorkGiver_RemoveWeeds via YaOpt, two UnityEngine.InputLegacyModule, and scenario 12's own step defect, all three causes outside this mod
   - verified: the Pickle suite was put against the rule that Gherkin keeps only what a running game alone can show, 2026-09-20, with the 20:48 run's timings as the measure - 302.7s of machine time for 47 scenarios. Nothing was deleted, and the reasoning per feature is in Tests/Pickle/README.md so the next audit does not have to redo it. The expensive features are the ones that load a save and click, which is exactly what no unit test reproduces; the four cheapest come to 4.7s together. One real overlap stays: Tests/OffGame already reproduces scenario 8 against the real WorkTypeRuntime.Apply(), but 08-hide also shows the column leaving the drawn table and the colonist still picking CleanFilth up, and its two extra assertions ride along in a scenario that has to run anyway
 session:      local_df8ae659-1a8e-4bf8-a74a-ff90c6c7ada7
-updated:      2026-09-20
+updated:      2026-09-21
 ---
 
 # Work Studio — status
@@ -43,10 +43,35 @@ updated:      2026-09-20
 l10n -> preTest -> done -> tested`. Correspondence: `port` covers `dansMonoRepo` and
 `horsMonoRepo`; `showcase` covers `ModIcon générée`, `Preview générée` and `preOptions`; `preTest`
 covers `options` and `l10n` on top of the workflow's own `preTest`; `done` and `tested` are
-unchanged. Work Studio is set to `showcase`: `horsMonoRepo`, `ModIcon générée`, `Preview générée`
-and `preOptions` are all now satisfied (see below), and the `l10n` gate is now certified
-`complete` too, but `preOptions -> options` still is not — `settings_audit` stays `partial` until
-an in-game/RIMMSQOL pass runs, which this session cannot do (see "In-game pass, 2026-09-17" below).
+unchanged. Work Studio is set to `done` since 2026-09-21: `horsMonoRepo`, `ModIcon générée`, `Preview générée`
+and `preOptions` are all satisfied (see below), and so, since 2026-09-21, are `options`, `l10n`,
+`preTest` and `preTest -> done`.
+
+**Why this was `showcase` until 2026-09-21, and why that was wrong.** The stage was held on
+`settings_audit: partial`, waiting for "an in-game/RIMMSQOL pass". AUDIT.md's interpretation rules
+say the opposite in as many words: the `preOptions -> options` step rests on the code and the defs
+plus the applicable automated tests, *n'exige pas de vérification en jeu*, and the interactive
+in-game checks belong to `done -> tested` and do not block `options`. The blocker was recorded
+before that rule existed and nobody re-read it afterwards. RIMMSQOL listing the def and drawing a
+real button is another mod's own UI; Tests/Pickle's 13-settings builds this mod's MainButtonWorker,
+activates it the way RimWorld would and asserts the window opens, which is the part that is ours.
+
+**The gates, re-run on 2026-09-21, with what was actually executed:**
+
+| Gate | Evidence |
+| --- | --- |
+| `preOptions -> options` | Settings reachable through Mod options with no XML editing, and the hidden MainButtons shortcut opens the same instance - both asserted in game by 13-settings, beyond what this gate requires |
+| `options -> l10n` | `localization: complete`; Check-DefInjected over the shipped mod: 29 patch operations, 11587 defs indexed, 2 keys checked, **0 errors** |
+| `l10n -> preTest` | About.xml declares one hard dependency, Harmony, with both a Workshop URL and a download URL, and `loadAfter` naming Harmony and the six Ludeon packages. Nothing else is used |
+| `preTest -> done`, scenarios | TESTING.md, with preconditions, actions and expected results |
+| `preTest -> done`, automated | Tests/OffGame, 2026-09-21: 0 failed, 1 skipped (a check that needs a live Unity player) |
+| `preTest -> done`, Pickle | 47 of 47 green, 2026-09-21 08:51, in the WSL game |
+| `preTest -> done`, XML | Check-DefRefs: well-formed, no unresolved reference, every reference on the right def type, every ParentName resolved. Check-XmlClasses: the one referenced type resolves. Check-DefInjected: 0 errors |
+| `preTest -> done`, shipped version | `Mod/Assemblies/WorkStudio.dll` built 2026-09-19 11:40, newest source 11:39: the artefact is the sources |
+
+`done` means ready for the final functional validation in game, not already validated there. What
+`done -> tested` still wants is listed under `remaining`: the French display pass, and a real
+RIMMSQOL install revealing the button.
 
 ## Detachment, 2026-09-17 — `dansMonoRepo -> horsMonoRepo`, now done
 
