@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using RimWorld;
 using RimWorks.Pickle;
+using UnityEngine;
 using Verse;
 
 namespace WorkStudio.PickleSteps
@@ -104,10 +105,24 @@ namespace WorkStudio.PickleSteps
 
             await ctx.WaitFrames(2);
 
-            var under = Find.WindowStack.GetWindowAt(UI.MousePositionOnUIInverted);
+            var pointer = UI.MousePositionOnUIInverted;
+            var under = Find.WindowStack.GetWindowAt(pointer);
             if (under == null)
             {
                 return;
+            }
+
+            // GetWindowAt only asks which rectangle holds the point. It cannot see a window that
+            // does not hold it but absorbs input around itself - WindowStack.GetsInput walks down
+            // from the top and answers false to everything below the first such window. That is the
+            // invisible thing sitting on the button, and it was a blind spot here until 2026-09-21,
+            // when a run with Work Tab loaded drew the button, clicked it, and opened nothing.
+            if (!Find.WindowStack.GetsInput(under))
+            {
+                ctx.Assert(false,
+                    $"'{tag}' is drawn in {under.GetType().Name}, but that window is not receiving input: " +
+                    "a window above it absorbs everything around itself. The click would be swallowed. " +
+                    "Window stack, top first:\n" + DescribeStack(pointer));
             }
 
             // With a type in hand, ask for that type. Without one - the keyed click reaches
@@ -129,11 +144,61 @@ namespace WorkStudio.PickleSteps
                 + ". The click would go to that window, and Pickle would report the tag as missing.");
         }
 
+        /// <summary>
+        /// Every window on the stack, top first, with what decides whether a click reaches it.
+        /// <para>
+        /// An <see cref="ImmediateWindow"/> carries no identity of its own - its type name is all a
+        /// report would say, and two of them look identical. What names it is the method that draws
+        /// it, so the owner is read from <c>doWindowFunc</c>: the declaring type and its assembly say
+        /// which mod put it there, which is the one thing a failed click needs to be attributed.
+        /// </para>
+        /// </summary>
+        private static string DescribeStack(Vector2 pointer)
+        {
+            var stack = Find.WindowStack;
+            var windows = stack.Windows;
+            var lines = new List<string>();
+
+            for (var i = windows.Count - 1; i >= 0; i--)
+            {
+                var window = windows[i];
+                var drawnBy = string.Empty;
+
+                if (window is ImmediateWindow immediate && immediate.doWindowFunc != null)
+                {
+                    var method = immediate.doWindowFunc.Method;
+                    drawnBy = $"  drawn by {method.DeclaringType?.FullName}.{method.Name} " +
+                              $"[{method.DeclaringType?.Assembly.GetName().Name}]";
+                }
+
+                lines.Add(
+                    $"  #{i}{(i == windows.Count - 1 ? " top" : string.Empty)}  {window.GetType().Name} " +
+                    $"[{window.GetType().Assembly.GetName().Name}]  layer={window.layer}  " +
+                    $"rect={window.windowRect}  absorbsInput={window.absorbInputAroundWindow}  " +
+                    $"getsInput={stack.GetsInput(window)}  holdsPointer={window.windowRect.Contains(pointer)}" +
+                    drawnBy);
+            }
+
+            return lines.Count == 0 ? "  (no window at all)" : string.Join("\n", lines);
+        }
+
         [When("I click the Work types button")]
         public async Task ClickOpenEditor(PickleContext ctx)
         {
             await WarnIfCovered(ctx, EditorButtonTag(), typeof(MainTabWindow));
             await ctx.Click(EditorButtonTag());
+
+            // A click that lands and opens nothing is the failure this scenario exists for, and
+            // the report used to say only "window should be open; open windows: ImmediateWindow,
+            // ImmediateWindow, MainTabWindow_WorkTab" - two names that identify nothing. Read the
+            // stack while it is still as the click left it.
+            await ctx.WaitFrames(3);
+            if (!Find.WindowStack.Windows.Any(window => window is Dialog_WorkTypes))
+            {
+                ctx.Assert(false,
+                    "the click reached the button and the editor did not open. Window stack, top first:\n" +
+                    DescribeStack(UI.MousePositionOnUIInverted));
+            }
         }
 
         [Then("the Work Studio button is not drawn")]
