@@ -76,10 +76,14 @@ would be worse than importing nothing.
 - **A mixed type is more restrictive than its parts.** A type fed from both Doctor and Handling
   is disabled for a colonist incapable of one *or* the other. That is the only choice that never
   lets a colonist do work the game had ruled out for them.
-- **Other Work tab replacements are not supported.** `Fluffy.WorkTab` and `Mlie.CompactWorkTab`
-  rebuild the Work tab columns as well, so the two would fight over them. Both are declared in
-  `incompatibleWith`, so the game warns on its own. Achtung! works around the problem through
-  reflection on `WorkTab.Controller`; that was not reused here for lack of a way to test it.
+- **Fluffy's Work Tab is not supported.** It captures its own column list before this mod creates
+  types at runtime, then restores that snapshot whenever its tab rebuilds. A type created here is
+  absent from that list. It is declared in `incompatibleWith`, so the game warns on its own.
+  Achtung! works around the problem through reflection on `WorkTab.Controller`; that was not
+  reused here for lack of a way to test it.
+- **Compact Work Tab is compatible.** It patches the vanilla work-priority column workers in
+  place and recalculates their header layout from the current table. It neither owns nor restores
+  a separate column list, so types created, hidden or reordered here remain the table it draws.
 - **Hidden types stay active.** Hiding removes the column, not the job. To stop a job, set its
   priority to zero as usual.
 

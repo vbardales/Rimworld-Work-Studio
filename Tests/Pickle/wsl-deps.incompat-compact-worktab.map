@@ -1,17 +1,10 @@
-# Is the declared incompatibility with Compact Work Tab still real?
+# Compatibility pass for Compact Work Tab.
 #
-# About.xml names Mlie.CompactWorkTab in <incompatibleWith>. Like the Work Tab set beside it, this
-# one is built to go and look rather than to trust a declaration nobody has replayed.
-#
-# Read green-is-good, like every other set: the scenarios assert the DOCUMENTED SYMPTOM, with
-# @allow-errors so the expected error does not fail them by itself. Green means the
-# incompatibility is still what About.xml claims; red means something moved. An expected red and
-# an accidental red are the same colour, which is why the suite is not simply let go red.
-#
-# Those scenarios are NOT written yet; the first run of this set plays the ordinary suite, which
-# is exploration rather than validation.
-#
-# Replayed when COMPACT WORK TAB moves, not when Work Studio is published.
+# Direct inspection of its 1.6 assembly settled the earlier question: it patches the existing
+# PawnColumnWorker_WorkPriority headers/cells and recalculates its layout from table.Columns.
+# It does not own or restore a competing column list, and its own README explicitly supports mods
+# that add work types. About.xml therefore no longer declares it incompatible. Keep this map as
+# the optional coexistence pass and replay it when Compact Work Tab changes.
 #
 # packageId read from the installed copy's own About.xml, 2026-09-21.
 #
@@ -23,7 +16,7 @@
 # 1.6 has it active, and no set is worth a run to prove a mod that never loads.
 #
 # packageId             workshopId   what it is
-Mlie.CompactWorkTab     3250322299   Compact Work Tab (Continued), the declared incompatibility
+Mlie.CompactWorkTab     3250322299   Compact Work Tab (Continued), optional coexistence target
 #
 # The steps scenario 2 clicks with, staged in every pass so the scenarios do not change between them.
 nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod

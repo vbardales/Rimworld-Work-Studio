@@ -1,4 +1,5 @@
-# Images for the Workshop page, not a test: nothing here is asserted. Separate from the @review
+# Images for the Workshop page. The state being photographed is asserted before every capture;
+# composition and readability remain a visual review. Separate from the other @review
 # features on purpose, because the two want opposite things — a @review shot should show the state
 # a scenario built, warts and all, while a page image has to be presentable.
 #
@@ -28,6 +29,8 @@ Feature: images for the Workshop page
     And I move the task "HaulGeneral" into "Hauling and tidying"
     And I move the task "CleanFilth" into "Hauling and tidying"
     And I select the work type "Hauling and tidying"
+    Then the task "HaulGeneral" belongs to "Hauling and tidying"
+    And the task "CleanFilth" belongs to "Hauling and tidying"
     And I hide the interface around Work Studio's windows
     And I take a screenshot "Workshop page, the editor"
     And I bring the interface back around Work Studio's windows
@@ -39,6 +42,7 @@ Feature: images for the Workshop page
     And I move the task "HaulGeneral" into "Hauling and tidying"
     And I close the work type editor
     And I open the "Work" tab
+    Then the Work tab has a column for "Hauling and tidying"
     And I hide the interface around Work Studio's windows
     And I take a screenshot "Workshop page, the new column"
     And I bring the interface back around Work Studio's windows
@@ -48,6 +52,8 @@ Feature: images for the Workshop page
     When I create the work type "Hauling and tidying"
     And I close the work type editor
     And I open Work Studio's settings through Mod options
+    Then window "Dialog_ModSettings" is open
+    And the Mod options window is drawing Work Studio's own settings
     And I hide the interface around Work Studio's windows
     And I take a screenshot "Workshop page, the settings"
     And I bring the interface back around Work Studio's windows

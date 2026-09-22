@@ -24,7 +24,7 @@ GOOD TO KNOW
 
 • This mod does not create new tasks: it redistributes the ones that already exist.
 • A type fed from several sources inherits the disabling rules of each. A work mixing medicine and hauling will be disabled for a colonist incapable of either.
-• Incompatible with Work Tab and Compact Work Tab, which also rebuild the Work tab columns.
+• Incompatible with Work Tab, which keeps its own startup-time column list and restores it when the tab opens.
 • Removing this mod gives moved tasks their original types back.
 • A hidden MainButtons shortcut is available for RIMMSQOL and similar customization mods to reveal, opening the exact same settings.
 
@@ -81,12 +81,12 @@ What is reused and how it differs is detailed in ATTRIBUTION.md. This mod is MIT
     <li>Ludeon.RimWorld.Odyssey</li>
   </loadAfter>
   <!--
-    These two mods also rebuild the Work tab's columns: running them together means each one
-    keeps reclaiming them from the other on every apply. Unlike the description, this field is
-    re-read at every startup, so it also affects players who already have the mod installed.
+    Work Tab keeps its own startup-time column list and restores it when the tab opens. A type
+    created here afterwards is absent from that list, so the two models cannot coexist safely.
+    Unlike the description, this field is re-read at every startup, so it also affects players
+    who already have the mod installed.
   -->
   <incompatibleWith>
     <li>Fluffy.WorkTab</li>
-    <li>Mlie.CompactWorkTab</li>
   </incompatibleWith>
 </ModMetaData>

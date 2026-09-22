@@ -232,12 +232,11 @@ function Show-Outcome($startedAt) {
         }
     }
 
-    # A @review scenario asserts nothing. Green means the trip happened, not that the picture is
-    # right, so it is named rather than left to swell a count that reads like verification.
+    # A @review scenario asserts its subject state, but code does not judge the attached pixels.
     $review = @($passed | Where-Object { $_.tags -contains 'review' -or $_.tags -contains '@review' })
     if ($review.Count -gt 0) {
         Write-Host ""
-        Write-Host "$($review.Count) of those passes assert nothing - they attach screenshots for a person to read:"
+        Write-Host "$($review.Count) of those passes attach screenshots whose pixels still need a person to read:"
         foreach ($scenario in $review) { Write-Host "  $($scenario.name)" }
     }
 

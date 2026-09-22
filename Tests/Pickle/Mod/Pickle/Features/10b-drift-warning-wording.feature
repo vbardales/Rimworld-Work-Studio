@@ -1,7 +1,8 @@
 # TESTING.md scenario 10, the wording half. 10 asserts that the dialog opens once and not twice;
 # what it cannot judge is whether the text inside it reads correctly. This dialog is the most
 # text-heavy thing the mod ever shows, it is built from four separate keys and fills a {0}
-# placeholder in each, so a translation defect shows here before anywhere else. Nothing is asserted.
+# placeholder in each, so a translation defect shows here before anywhere else. The dialog count is
+# asserted before capture; wording and layout remain the human review.
 #
 # What to look for, in whichever language the game is running:
 #   - no raw key: a literal "WorkStudio.Drift.Intro" or similar means the key is missing there;
@@ -21,5 +22,6 @@ Feature: the drift warning's wording
     Given the last startup saw a work type "PickleVanishedWork" that is gone now
     When I close the work type editor
     And Work Studio runs its startup check
+    Then Work Studio opens 1 warning dialog
     And I let the Work Studio interface draw
     And I take a screenshot "drift warning dialog"

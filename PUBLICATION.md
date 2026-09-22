@@ -15,6 +15,9 @@ gaps is the owner's call, recorded here rather than hidden.
 
 **Before the actual Steam upload, still to do:**
 
+- Edit the existing Workshop description manually to remove the old Compact Work Tab
+  incompatibility sentence and retain only the documented Fluffy Work Tab conflict. RimWorld does
+  not resend `About.xml`'s description on an update.
 - Replay `02-work-tab-button.feature` against `wsl-deps.incompat-fluffy-worktab.map`, and the full
   `wsl-deps.avec-enhanced-work-tab.map` set. Both are one command away
   (`scripts/Run-PickleWsl.ps1 -Mod WorkStudio -DepMap <map> ...`); neither has run since the fixes
@@ -72,8 +75,8 @@ Unchanged since 1.0.0, verified against the source, not the intention:
   `modDependencies` entry.
 - **DLC**: none required. `loadAfter` lists every DLC so this mod's patches apply after them when
   present, but nothing in `modDependencies` names one, and no code path assumes a DLC is active.
-- **Incompatibilities**: `Fluffy.WorkTab` and `Mlie.CompactWorkTab`, declared in `<incompatibleWith>`
-  and in the description. `natee.EnhancedWorkTab` and `Coolnether123.BetterWorkTab` are neither
+- **Incompatibility**: `Fluffy.WorkTab`, declared in `<incompatibleWith>` and in the description.
+  `Mlie.CompactWorkTab`, `natee.EnhancedWorkTab` and `Coolnether123.BetterWorkTab` are neither
   incompatible nor a dependency — coexistence, tested (see STATUS.md) — and are not listed here.
 
 ## Adult content

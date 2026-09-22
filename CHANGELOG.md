@@ -5,6 +5,13 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ## [Unreleased]
 
+### Fixed
+
+- Removed the incorrect incompatibility declaration for Compact Work Tab. Its 1.6 code patches
+  the current vanilla work-priority columns in place and explicitly supports mods that add work
+  types; it does not keep a competing column list. Fluffy's Work Tab remains incompatible because
+  it restores a startup-time column snapshot that cannot contain types created later by Work Studio.
+
 ## [1.1.0] — 2026-09-22
 
 ### Added
@@ -60,5 +67,5 @@ First version. RimWorld 1.6.
 
 - This mod does not create new tasks, it redistributes the ones that exist.
 - A type fed from several sources inherits the incapabilities of each.
-- Incompatible with Work Tab (`Fluffy.WorkTab`) and Compact Work Tab (`Mlie.CompactWorkTab`), which also rebuild the Work tab's columns. The incompatibility is declared in `About.xml`, so the game warns you itself.
+- At release time, Work Tab (`Fluffy.WorkTab`) and Compact Work Tab (`Mlie.CompactWorkTab`) were both declared incompatible. The Compact Work Tab declaration was removed later after its 1.6 implementation was inspected directly; see Unreleased.
 - Removing the mod returns moved tasks to their original types.

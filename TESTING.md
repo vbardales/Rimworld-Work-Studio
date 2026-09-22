@@ -158,8 +158,9 @@ Rename a vanilla type — *Hauling* to *Portage*, say.
 
   The cache-clearing itself is proven off-game, against the real third-party assembly, by
   `Tests/OffGame`'s `TheWorkTypeTagCompat` check (skips cleanly if that Workshop item is not
-  installed on the machine running the suite). What still needs the game: seeing the label actually
-  redraw in front of a moving colonist.
+  installed on the machine running the suite). The dedicated Pickle pass `avec-work-type-tag`
+  creates a current job attributed to `HaulGeneral`, asserts that its real job report contains the
+  renamed label, selects the colonist and captures the result. A person only judges the screenshot.
 
 ## 8 — Hide a column
 
@@ -265,8 +266,10 @@ Then the parts a machine can check on its own:
 `Tests/Pickle`'s `13-settings.feature` holds those, and `13b-settings-visual.feature` photographs
 the window through each door for a person to read.
 
-**What stays manual is RIMMSQOL itself**: that it lists this def, that revealing it puts a real
-button on the bar, and that the button then opens the same window. No test can reach that.
+The dedicated Pickle pass `avec-rimmsqol` uses PickleTools' RIMMSQOL driver to assert that the mod's
+own list offers this def, reveal it, verify the persisted choice and real main-bar button, activate
+that button, then hide and forget the choice. It repeats activation at 150% interface scale. The
+attached screenshots leave only the visual result for a person to judge.
 
 ## Automated off game
 
@@ -300,14 +303,14 @@ Concord conflict above or to a Pickle-framework issue, others not yet explained.
 ### Screenshots, for what only a person can judge
 
 Added 2026-09-18, following the same pattern as Architect Studio's own suite: the features tagged
-`@review` (`03-three-columns`, `07b-rename-visual`, `10b-drift-warning-wording`, `13-settings-window`)
-**assert nothing**. They walk the game to the state a manual scenario describes and attach a
-screenshot to the report; a person looks at it and decides. The trip is automated and reproducible,
-the judgement stays human.
+Every `@review` feature asserts the state it intends to photograph, then attaches a screenshot to
+the report. A person only judges the pixels: layout, clipping, readability and composition. The
+trip and its functional preconditions are automated and reproducible; no manual gesture remains.
 
 That covers what no assertion can reach: whether three columns read as three columns, whether a
 renamed column is wide enough for its new name, whether a translated dialog clips or shows a raw
-key. Each file's header lists what to look for in its screenshots.
+key, whether a completed drag looks right, and whether the optional RIMMSQOL and Work Type Tag
+interfaces show the asserted state. Each file's header lists what to look for.
 
 **Run the suite once per language** and the same screenshots double as the English and French
 display pass that `TRANSLATIONS.md` records separately from the static localization gate.
@@ -335,41 +338,28 @@ without `-DepsMap` is recorded as `sans-facultatifs`. Every map of this suite, t
 | `avec-better-work-tab` | Scenario 2, and with it 3, 7, 7b and 8. The **Work types…** button failed twice in this mod's history, and 1.0.1's fix was about a mod declaring its own window in the `MainButtonDef` and overriding `DoWindowContents` without calling `base`. A set with no tab replacer cannot see that class of defect at all |
 | `avec-enhanced-work-tab` | The third tab mod, and the open question. It intercepted `GetPriority` during an investigation on 2026-09-19, which suggests it patches rather than replaces and would therefore cohabit — but that is an inference, and this set is how it stops being one |
 | `incompat-fluffy-worktab` | Whether `Fluffy.WorkTab`, which `About.xml` declares **incompatible**, still is |
-| `incompat-compact-worktab` | The same for `Mlie.CompactWorkTab`, the other declared incompatibility |
+| `incompat-compact-worktab` | Coexistence with Compact Work Tab. The filename is historical: direct inspection of its 1.6 assembly showed that it patches the current vanilla columns in place and does not own a competing list, so the incorrect `incompatibleWith` entry was removed on 2026-09-22 |
 
-**An incompatibility set is still read green-is-good.** The tempting design is to let the suite go
-red and call that the measurement, and it was written that way here for an hour. It does not work:
-an expected red and an accidental red are the same colour, so nobody can tell which one they are
-looking at, and a suite that needs explaining is a suite nobody reads. What these sets assert is
-the **documented symptom** — the window that opens is not this mod's, or the error the conflict
-produces is logged — with `@allow-errors` on the scenario so the expected error does not fail it
-by itself. Green then means the incompatibility is still exactly what `About.xml` claims; red means
-something moved, and that is when someone looks.
+**The incompatibility set is read green-is-good.** Feature 15 asserts the stable mechanism rather
+than expecting an ordinary scenario to fail: after Work Studio creates a runtime type, that type
+exists in the live Work table but is absent from `WorkTab.Controller.allColumns`, the startup-time
+snapshot Work Tab restores when its window rebuilds. It is tagged `@requires:Fluffy.WorkTab`, so it
+is skipped outside that pass. Green means the declaration still describes the installed Work Tab;
+red means its implementation changed and `About.xml` must be reviewed.
 
-That is not hypothetical here. 1.0.1's fix made the button patch target whichever window class is
-actually in use and take the rectangle by position rather than by name. If that turned out general
-enough, one of these two declared conflicts may have quietly stopped being one — and only a
-scenario written to go green can say so with a red that means something.
-
-An `incompatibleWith` ages. The other mod can be fixed, rewritten, or simply stop patching what it
-patched, and an incompatibility never replayed ends up forbidding a coexistence that would work,
-depriving players of both mods for nothing. These two sets are replayed when **the other mod**
-moves, not when this one is published: it is their update that stales the verdict, not ours.
-
-The scenarios that assert those symptoms are **not written yet**. The first runs of these two sets,
-on 2026-09-21, play the ordinary suite instead — which is exploration, not validation: it says
-which scenarios break and how, and that is the material the symptom assertions are written from.
-Until they exist, a red in one of these reports means "something happened here", nothing more.
+An `incompatibleWith` ages. This review caught exactly that with Compact Work Tab: its current
+1.6 assembly patches `PawnColumnWorker_WorkPriority` in place and recalculates layout from the
+current table, while its own documentation explicitly supports mods that add work types. The
+declaration was removed instead of inventing a failing symptom. Keep its historical map as a
+coexistence pass and replay both sets when the respective other mod moves.
 
 An earlier version of this section listed Fluffy's Work Tab as a compatibility set, which was
 wrong: this mod declares it incompatible, and a set named `avec-` asserts the opposite of what
 `About.xml` says. Better Work Tab is the genuine coexistence case — scenario 11 documents what it
 owns and what this mod keeps.
 
-Scenario 6 is the one to watch when those reports are put side by side. Its own header already
-says that with Fluffy's Work Tab or Better Work Tab the type order may not reach execution once a
-column has been dragged there. That sentence has never been measured — it is a caveat someone
-wrote, not a result. Two of these sets turn it into one.
+Scenario 6 remains relevant beside tab modifiers, but it is not the evidence for the Work Tab
+declaration. Feature 15 names the column-snapshot conflict directly.
 
 Enhanced Work Tab was left out of an earlier version of this plan on the grounds that a dependency
 map asserts compatibility and nobody had verified that one. That was backwards: a map names what
@@ -398,8 +388,8 @@ crossing the two axes everywhere would buy nothing but machine time, and this ma
 | `sans-facultatifs`, French | 47 of 47 | Same, in French, with the language named in the report; captures read, and the right-hand column was reworked because of what they showed |
 | `avec-better-work-tab` | 47 of 47 | Coexistence with Better Work Tab, including scenario 2, the one written for tab replacers |
 | `avec-enhanced-work-tab` | 45 of 47 on 2026-09-21; scenario 5 alone **3 of 3 on 2026-09-22** after the fix | The save-load failure is fixed (below); the full 47-scenario set has not been replayed since, and the button overlap, below, is untouched by this fix |
-| `incompat-fluffy-worktab` | **45 of 47** | Exploration only: the symptom scenarios do not exist yet. The button scenario failed on a race: with Work Tab the tab window widens about ten frames after opening and the button moves with it, so press and release landed on different controls. The step now waits for the button to stand still. The other failure is a save-load exception whose cause is not established |
-| `incompat-compact-worktab` | 47 of 47 | Says nothing about the declared conflict: these 47 scenarios never meet it |
+| `incompat-fluffy-worktab` | **45 of 47** | Historical exploration: the button race and save-load exception do not establish incompatibility. Feature 15 was added later from direct inspection and is written but not yet run |
+| `incompat-compact-worktab` | 47 of 47 | Historical coexistence result, consistent with the later code inspection; the incorrect incompatibility declaration was removed on 2026-09-22 |
 
 **With Enhanced Work Tab loaded, two things failed on 2026-09-21, and they were different in kind.**
 

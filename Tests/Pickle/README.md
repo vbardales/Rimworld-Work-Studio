@@ -135,7 +135,7 @@ against that rule on 2026-09-20, with the timings of the 20:48 run as the measur
 | `02` the Work tab button | 55.0 s | Real OS clicks, which go to whichever window owns the point — the failure other mods cause and no unit test reproduces |
 | `13` the settings window, both doors | 52.9 s | Vanilla's own `Dialog_ModSettings`, its `PreClose` writing the file, and a configuration re-read from disk |
 | `05` priorities across a save | 40.3 s | What survives a save and a reload, with the def database rebuilt in between |
-| `03`, `07b`, `10b`, `13b`, `14` | 89.4 s | Screenshots a person reads. They assert nothing by design |
+| `03`, `06b`, `07b`, `10b`, `13b`, `14`, `16`, `17` | not re-timed | Functional state is asserted first; screenshots leave layout and readability to a person |
 | `04` create and fill | 18.5 s | A def created at runtime, the column rebuilt, and a colonist actually picking the task up |
 | `08` hide a column | 17.1 s | The column leaving the drawn table, and the colonist still picking `CleanFilth` up |
 | `10` the drift warning | 16.2 s | A dialog opening on a real window stack, once and not twice |
@@ -154,27 +154,29 @@ scenario that has to run anyway and cost no machine time of their own.
 The four cheapest features together come to 4.7 seconds. Deleting them would buy nothing and lose
 the frame-cache and load-order checks, so nothing was deleted.
 
-## What stays manual
+## What a person still reviews
 
 | TESTING.md | Why |
 | --- | --- |
 | 3, the column titles | `03` walks the editor there and screenshots it, tagged `@review`; a person reads |
-| 6, the pointer starting a drag | Only the drop is replayed |
+| 6, the pointer starting a drag | `06` replays and asserts the registered drag callback; `06b` captures the resulting editor state. Only the image is reviewed |
 | 7, the header width after a rename | `07b` screenshots the Work tab, tagged `@review`; a person looks |
-| 7, Work Type Tag's current-job label | Not written |
+| 7, Work Type Tag's current-job label | `17` starts an attributed current job, asserts its report contains the renamed label and captures the selected colonist UI in the optional pass |
 | 10, a real mod list change and restart | The startup check is run on a recorded list instead |
 | 10, the dialog's wording | `10b` screenshots it, tagged `@review`; a person reads |
 | 11, what Better Work Tab owns | Documented behaviour of another mod |
-| 13, RIMMSQOL revealing the button | Another mod's own UI; `13` covers the worker and the window it opens |
+| 13, RIMMSQOL revealing the button | `16` drives RIMMSQOL through PickleTools, asserts list/reveal/file/bar/open/hide/forget and captures its UI |
 
 ## The `@review` features: automated trip, human verdict
 
-`03-three-columns`, `07b-rename-visual`, `10b-drift-warning-wording` and the second scenario of
-`13-settings-window` **assert nothing**. They drive the game to the state a manual scenario
-describes and call Pickle's own `I take a screenshot` step; the image goes into the report and a
-person decides. The pattern is Architect Studio's (`04b-arrows-at-150-percent`), and it buys the
-half of a manual test that a machine can do reliably — the trip — without pretending to judge what
-only eyes can.
+Every `@review` scenario asserts the state it intends to photograph before calling Pickle's own
+`I take a screenshot` step. The report image is only for the judgement code cannot make: layout,
+clipping, readability and composition. No Work Studio scenario asks a person to reproduce a gesture
+or navigate to a state by hand. There is no audio behavior in this mod.
+
+Optional integrations have dedicated dependency maps: `wsl-deps.avec-rimmsqol.map` for feature 16
+and `wsl-deps.avec-work-type-tag.map` for feature 17. Their `@requires` tags skip them outside the
+intended pass rather than creating a false failure or a false validation.
 
 Each of those files opens with the list of what to look for in its screenshots. **Run the suite
 once per language** and the same images serve as the English and French display pass.

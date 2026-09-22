@@ -1,6 +1,6 @@
 # TESTING.md scenario 13, the visual half. 13 asserts that both doors lead to the same settings and
-# that the reset asks first; what no assertion covers is whether that window reads correctly.
-# Nothing here is asserted.
+# that the reset asks first; each route is asserted before its screenshot, while readability remains
+# the human verdict.
 #
 # What to look for:
 #   - the intro line, "Open the work type editor", "Import / export a setup" and the save note all
@@ -19,8 +19,11 @@ Feature: what the settings window looks like
 
   Scenario: through the MainButtons shortcut
     When I open Work Studio's settings through the MainButtons shortcut
+    Then window "Dialog_WorkStudioSettings" is open
     And I take a screenshot "settings window, opened by the MainButtons shortcut"
 
   Scenario: through Mod options
     When I open Work Studio's settings through Mod options
+    Then window "Dialog_ModSettings" is open
+    And the Mod options window is drawing Work Studio's own settings
     And I take a screenshot "settings window, opened through Mod options"

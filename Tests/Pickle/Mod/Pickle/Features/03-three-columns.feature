@@ -1,5 +1,6 @@
 # TESTING.md scenario 3, which is visual through and through: it is about what a person can read,
-# so nothing here is asserted. The scenarios only walk the editor to the right state; the report
+# so the layout itself is reviewed from a screenshot. Each scenario asserts the data state first;
+# the report then carries the pixels a person judges.
 # carries the screenshots and a person decides. Run the suite once per language and these double as
 # the FR/EN display check TRANSLATIONS.md asks for.
 #
@@ -20,12 +21,14 @@ Feature: the three columns say what they are
   Scenario: the editor with a work type selected
     When I open the work type editor
     And I select the work type "Handling"
+    Then the task "Tame" belongs to "Handling"
     And I take a screenshot "editor, Handling selected"
 
   Scenario: the right column, searched
     When I open the work type editor
     And I select the work type "Handling"
     And I search the other tasks for "clean"
+    Then the task "CleanFilth" belongs to "Cleaning"
     And I take a screenshot "editor, other tasks searched for clean"
 
   # The help line under the search box carries the selected type's own label, and a player can
@@ -36,4 +39,5 @@ Feature: the three columns say what they are
     When I rename the work type "Handling" to "Soins et dressage des animaux de la colonie"
     And I open the work type editor
     And I select the work type "Handling"
+    Then a work type labelled "Soins et dressage des animaux de la colonie" exists
     And I take a screenshot "editor, help line under a long type name"

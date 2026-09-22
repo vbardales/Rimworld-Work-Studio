@@ -1,0 +1,5 @@
+# Dedicated visual pass for TESTING.md scenario 7. The functional cache invalidation is asserted
+# off-game against the real DLL; feature 07b supplies the in-game renamed header and current-job
+# label capture. ClickDiagnostics remains staged for the rest of the suite.
+baku.worktypetag                     3779138895
+nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod

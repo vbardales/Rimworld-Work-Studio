@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using RimWorld;
 using RimWorks.Pickle;
@@ -69,6 +70,27 @@ namespace WorkStudio.PickleSteps
             var def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(entry.id);
             ctx.Assert(def != null, $"the type '{entry.id}' is in the settings but no WorkTypeDef was created");
             Driver.Call(ctx, dialog, "Rename", def, label);
+        }
+
+        [Then("Fluffy's Work Tab startup snapshot omits the Work Studio type {string}")]
+        public void WorkTabSnapshotOmitsRuntimeType(PickleContext ctx, string type)
+        {
+            var controller = System.Type.GetType("WorkTab.Controller, WorkTab", throwOnError: false);
+            ctx.Require(controller != null, "Fluffy.WorkTab is required for this incompatibility scenario");
+
+            var field = controller.GetField("allColumns", BindingFlags.Public | BindingFlags.Static);
+            ctx.Require(field != null, "WorkTab.Controller.allColumns no longer exists: review the incompatibility");
+
+            var columns = field.GetValue(null) as List<PawnColumnDef>;
+            ctx.Require(columns != null, "WorkTab.Controller.allColumns is null: review its initialization order");
+
+            var created = Driver.WorkType(ctx, type);
+            var live = PawnTableDefOf.Work.columns.Any(c => c.workType == created);
+            var cached = columns.Any(c => c.workType == created);
+
+            ctx.Assert(live, $"Work Studio did not add '{created.defName}' to the live Work table");
+            ctx.Assert(!cached,
+                $"Work Tab's startup snapshot already contains '{created.defName}'; the documented incompatibility may be gone");
         }
 
         [When("I move the task {string} into {string}")]

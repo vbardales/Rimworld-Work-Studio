@@ -16,6 +16,193 @@ showcase:     complete
 tested_on:    2026-09-21
 workshop:     3792836684
 remaining:
+  - "verified: distributed attribution synchronized on 2026-09-22 after owner approval; first-gate documentation defect closed. See the follow-up below."
+  - "defect: the cited 2026-09-22-scenario5-enhanced evidence contains one PickleTools interface-scale test, not three Work Studio tests. The claimed runtime regression pass is unverified."
+  - "verified: preTest -> done scenario gap closed on 2026-09-22. Feature 15 asserts Fluffy Work Tab's stale startup column snapshot; Compact Work Tab's false incompatibility declaration was removed after direct 1.6 assembly inspection. Pickle coverage now also automates the RIMMSQOL and Work Type Tag paths and asserts every review capture's subject state. Written, compiled and statically checked; runtime execution remains done -> tested."
+  - "unverified: final-build runtime regressions, EN/FR layout and logs, applicable optional sets, new-game coverage, icon-setting effects and shortcut integration. Historical passes are retained, not certified against this build."
+  - "unverified after setting tested aside: prepublished remains blocked by stale Workshop editor screenshots, the v1.1.0 tag pointing behind the current code, release publication not verified, the existing Steam description needing a manual compatibility edit, and thank-you messages lacking final URLs/status. No Steam update was performed."
+session:      01a0c844-1b24-7b61-8615-7c2ee4ae1b69
+updated:      2026-09-22
+---
+
+# Work Studio — status
+## Pickle completeness and later-stage audit — 2026-09-22
+
+**Stage stays `done`; `tested` was deliberately set aside.** The scenario suite now leaves no
+purely manual Work Studio check. Feature 06b captures the asserted result of both type and task
+dragging. Feature 16 uses PickleTools' RIMMSQOL and InterfaceScale companions to assert the real
+list/reveal/persistence/main-bar/open/hide/forget path, including a 150% activation. Feature 17
+starts an attributed current job, asserts [baku] Work Type Tag's patched report contains the newly
+renamed work type, selects the colonist and captures it. Dedicated dependency maps stage each
+optional integration. Every existing `@review` scenario now asserts its subject state before the
+capture; a person only has to judge the screenshot. This mod has no audio behavior.
+
+The Pickle step DLL builds with 0 warnings/errors. The off-game suite reports **148 PASS, 0 FAIL,
+1 SKIP** after loading 74 local steps plus ClickDiagnostics, RimmsqolSteps and InterfaceScale;
+every feature step resolves. No RimWorld process was launched or driven, so the new scenarios are
+written and statically validated, not claimed as runtime passes.
+
+Looking beyond `tested` without promoting through it, `tested -> prepublished` is **not ready**:
+the first Workshop editor screenshot still shows the old layout; tag `v1.1.0` points to `bf89753`,
+behind the current code; a matching release is not verified; the existing Steam description must
+be edited manually to remove the obsolete Compact Work Tab conflict; and thank-you-message URLs
+and posting status remain open. The dependency/DLC decision, adult-content answer, patch notes,
+existing `PublishedFileId.txt` (`3792836684`) and the other two screenshot slots are recorded.
+`prepublished -> published` is likewise not satisfied for this update: no Steam upload, subscribed
+self-test, public visibility check or thank-you posting was performed. The historical public item
+does not prove that this update was published.
+
+## Incompatibility audit and scenario completion — 2026-09-22
+
+**Stage: `preTest` -> `done`.** The final written-scenario blocker is closed. This does not claim
+new runtime execution: under AUDIT.md, Pickle execution and capture review belong to
+`done -> tested`.
+
+Direct inspection of the installed 1.6 assemblies established two different outcomes:
+
+- Fluffy's Work Tab captures `WorkTab.Controller.allColumns` during implied-def generation and
+  later restores that snapshot from `MainTabWindow_WorkTab.RebuildTable`. A work type Work Studio
+  creates at runtime is present in the live `PawnTableDefOf.Work.columns` but absent from the
+  snapshot. New feature `15-work-tab-incompatibility.feature`, gated by
+  `@requires:Fluffy.WorkTab`, asserts exactly that stable conflict. It does not treat an unrelated
+  click failure or log error as evidence.
+- Compact Work Tab 1.6 patches the existing `PawnColumnWorker_WorkPriority` header and cell
+  methods and recalculates its cache from the current `table.Columns`. It owns no competing
+  column list, and its documentation explicitly supports mods adding work types. The
+  `Mlie.CompactWorkTab` incompatibility entry and matching description claim were therefore
+  removed; its historical dependency map now documents an optional coexistence pass.
+
+Updated `About.xml`, README, CHANGELOG, TESTING.md, PUBLICATION.md and both pass-map notes.
+Rebuilt the Pickle step assembly: 0 warnings/errors. Rebuilt and ran the off-game suite:
+**146 PASS, 0 FAIL, 1 SKIP**; 72 declared suite steps and every feature step resolved. The suite
+now contains 17 feature files and 48 scenarios. Check-DefRefs remains clean: one mod def, all XML
+well formed, no missing/wrong references or unresolved parents. No RimWorld process was launched,
+stopped or driven.
+
+The next transition remains `done -> tested`: execute the final-build passes and inspect their
+captures/logs. The misattributed Enhanced Work Tab evidence remains unverified. Existing local art
+changes were preserved. No commit, push or publication was performed.
+Because this is an existing Workshop item, PUBLICATION.md now also records the required manual
+description edit: an update does not resend About.xml's description.
+
+## Attribution repair — 2026-09-22
+
+Following the owner's go-ahead, copied root `ATTRIBUTION.md` to `Mod/ATTRIBUTION.md` and
+verified identical SHA256 hashes. The missing SkillIcons provenance is now distributed.
+Only that documentation copy and this status were changed by the follow-up; existing local
+art changes and the earlier audit record are preserved. No commit or push was made.
+
+**Stage: `dansMonoRepo` -> `preTest`.** The first documentation gate now passes. The independent
+build/artifact, showcase, settings, localization and dependency validations from today's audit
+remain applicable: this documentation-only repair invalidates none of them. The shipped DLL
+still has SHA256 `3530BA389FF05A1CF616FC1E68CC4FBF8CE5C2650E70FE117BBCE7E549C389C5`.
+The revision remains `6f2ff47f2ddcee87b3a8d3cc8f4b8bd548dfa173` plus the recorded local edits.
+The exact `preTest` workflow state is used, not the older coarse code covering options/l10n.
+
+**Next gate at the time: `preTest -> done`.** This paragraph is superseded by the
+incompatibility follow-up above: the real Work Tab conflict now has a written scenario and the
+false Compact Work Tab declaration was removed. Runtime execution still belongs to
+`done -> tested`; no game result was invented. The misattributed Enhanced Work Tab report remains
+an evidence defect, independently of the completed packaging repair.
+
+Validation: byte-identical attribution hashes and `git diff --check`. No build/test rerun is
+needed for this documentation-only change; earlier technical results remain recorded below.
+This follow-up supersedes the earlier audit's first-gate blocker and stage conclusion only.
+
+## Current audit — 2026-09-22
+
+This section and the front matter supersede contradictory current-tense statements in the
+historical sections below. Read the parent AUDIT.md, AGENTS.md, PUBLISHING.md,
+STYLE_RIMWORLD.md, MOD_SETTINGS.md and TRANSLATIONS.md. No production fix, art edit,
+publication, commit or push was performed.
+
+**Previous stage: `done`. Retained cumulative stage: `dansMonoRepo`.** The exact AUDIT.md
+vocabulary now replaces the historical coarse `port` code (which covered both `dansMonoRepo`
+and `horsMonoRepo`). This does NOT undo the actual Git detachment: `detached: yes` remains
+verified. Required distributed documentation blocks the first gate; independent later checks
+are retained below.
+
+### Scope and first gate
+
+- Repository: `C:/Users/nelim/Documents/rimworld/WorkStudio`; distribution: `Mod/`.
+  Audited revision: `6f2ff47f2ddcee87b3a8d3cc8f4b8bd548dfa173`.
+- Initial local changes preserved: modified `Art/Review-FR/03a-editeur-trois-colonnes.png`;
+  untracked `Art/Review-FR/zoom-2-apres.png`, `Art/Review-FR/zoom-3-deux-lignes.png`,
+  `Art/Review/zoom-fluffy-coin-haut-droit.png`. No initial production source/DLL changes.
+- Live read-only `git ls-remote origin HEAD refs/heads/main refs/tags/v1.1.0` confirmed remote
+  HEAD/main equal the audited revision; tag v1.1.0 resolves to
+  `10250f02f1425a7297c7d72ee88b22baf48edac7`. `gh repo view --json visibility,url`
+  confirmed PUBLIC and the exact About.xml repository URL.
+- README, CHANGELOG, attribution and MIT notices exist. Naming is coherent. The distributed
+  Achtung notice matches its root copy. Own MIT notices differ only by Nelim/nelim casing.
+- **Defect:** `git diff --no-index -- Mod/ATTRIBUTION.md ATTRIBUTION.md` shows the entire
+  SkillIcons section (35 drawings and two icon prefixes transferred on 2026-09-18) absent
+  from the distributed copy. PUBLISHING.md requires synchronizing this copy after changes;
+  AUDIT.md puts required distributed documentation in `dansMonoRepo -> horsMonoRepo`.
+  This is a documentation/packaging defect, not a finding of missing third-party permission.
+- **Next transition, strictly:** synchronize that copy and verify the contents agree.
+  The audit instruction does not ask to repair the product to obtain a better status.
+
+### Independent checks performed now
+
+| Area | Observed result |
+| --- | --- |
+| Build | `dotnet build Source/WorkStudio.csproj -c Release --no-restore --nologo -p:OutputPath=../.build/audit-2026-09-22/mod/`: 0 warnings/errors, shipped DLL untouched |
+| DLL identity | Shipped and rebuilt SHA256 both `3530BA389FF05A1CF616FC1E68CC4FBF8CE5C2650E70FE117BBCE7E549C389C5` |
+| Off-game | Build Tests/OffGame/WorkStudio.Tests.csproj, Release, no-restore: 0 warnings/errors. Run `.build/offgame/bin/Release/net48/WorkStudio.Tests.exe`: **146 PASS, 0 FAIL, 1 SKIP**. Output: `.build/audit-2026-09-22/offgame.txt` |
+| Skip | Actual Worker.Visible invocation requires the live Unity environment. Hidden def and worker contract checked separately; no runtime success inferred |
+| XML/refs | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../scripts/Check-DefRefs.ps1 -ModPath ./Mod`: one mod def; well formed; no missing def, wrong reference type or unresolved parent |
+| DefInjected | Same shell, `../scripts/Check-DefInjected.ps1 -TransMod ./Mod`: 29 patch operations, 11587 indexed defs, 2 keys, 0 errors |
+| XML class | Check-XmlClasses with ModPath ./Mod, SourceDirs ./Source and temporary TypeLists `.build/audit-2026-09-22/types.txt`: one referenced type resolved from source. Off-game suite independently verifies the worker in the shipped DLL |
+| Settings | Useful editor/import/export/reset and icon preferences; both settings routes delegate to the same renderer/state; buttonVisible=false; defaults and header-mode clamp inspected. Complete retained for the off-game gate only |
+| Localization | 76 EN / 76 FR Keyed entries, no duplicates, empty values or placeholder-parity failures; source WorkStudio key literals covered, dynamic arrow key call sites reviewed; two French DefInjected fields resolve. Static complete retained, not a runtime layout certificate |
+| Dependencies | Harmony used and sole hard dependency; no required DLC or LoadFolders branch; optional reflection integration remains optional; Fluffy.WorkTab is the single declared incompatibility after direct inspection removed the false Compact Work Tab entry |
+| Art | Opened Preview (896x504, 557028 bytes) and ModIcon (128x128, 22983 bytes). Title and orange rule visibly separated; naming passes. Historical outlined/cartoon-style reservation remains advisory |
+| Scenarios | Initially 16 feature files and 47 scenarios; the follow-up above adds feature 15, making 17 files and 48 scenarios, with one incompatibility set and Compact Work Tab retained as a coexistence pass |
+
+Initial sandbox builds could not read Microsoft SDKs; authorized retries succeeded. Windows
+PowerShell checkers initially hit execution policy; explicit per-process Bypass runs above
+completed. The first XML type-list attempt could not load Assembly-CSharp in PowerShell;
+source-aware checking and the shipped-DLL tests resolved that tooling failure. These are not
+production mod defects.
+
+### Runtime evidence and later gates
+
+**The cited Enhanced Work Tab confirmation is not established by its files.** Opened both
+`Tests/Pickle/evidence/2026-09-22-scenario5-enhanced/summary.json` and junit.xml. JSON says
+`total: 1`, `passed: 1`, `exitReason: passed`, `setName: interfacescale`; XML names
+`PickleTools interface scale` and `a button is clickable at another interface scale`.
+This is not the claimed three-scenario Work Studio run. Historical statements below remain
+historical claims, not verified results. No other session's transient reports were used.
+The off-game custom-ID regression checks pass; this evidence mismatch is not a mod failure.
+
+This finding was resolved by the incompatibility follow-up above: the real Work Tab conflict now
+has a targeted written scenario, and Compact Work Tab's unsupported declaration was removed.
+Feature 01's generic loaded/load-order scenario still tests a game responsibility; that remains a
+scope-cleanup recommendation rather than a blocker or demonstrated Work Studio defect.
+
+Historical full passes and visual reviews are preserved, including their acknowledged need
+for regressions after the latest changes. Opened existing French captures
+`Art/Review-FR/13b-reglages-raccourci.png` and `03a-editeur-trois-colonnes.png`: they show French
+settings/editor labels but do not establish a complete final-build EN/FR review. The editor
+image was already locally modified; no build identity follows from its filename. The shortcut
+capture does not visibly show the final save-note paragraph; current layout remains to verify.
+English-looking inherited work-type names alone do not prove a Work Studio translation defect.
+Other runtime captures were not reviewed in this audit.
+
+No RimWorld process was launched, stopped or driven; no game configuration was changed, so no
+teardown is needed. `tested_on: 2026-09-21` remains a historical date, not certification of this
+revision. Final-build runtime regressions/logs and EN/FR visual evidence, relevant optional
+sets, new-game coverage and applicable settings/shortcut interactions remain unverified.
+
+PUBLICATION.md exists but acknowledges a missing current editor screenshot. Clean tree and
+release were not certified. The historical owner publication decision is preserved; an
+existing Workshop item does not upgrade the cumulative audit stage.
+
+### Previous front-matter findings (historical; superseded above)
+
+```yaml
+remaining:
   - fixed: TESTING.md scenarios 5, 8 and 12 were failing because the SUITE tested work its colonist may not do - settled and repaired 2026-09-20, never a defect in the mod. The fixture generates "Keeper" with random backstories; that run drew Rancher43, a rancher, whose workDisables is ManualDumb - which vanilla's own Cleaning, Hauling, HaulingUrgent and KAU_UrgentHaul all carry, checked in Core's own XML, with Cleaning's workTags untouched by this mod. So vanilla zeroing those priorities was correct, and PriorityMemory.Restore calling Notify_DisabledWorkTypesChanged is right. The guard meant to catch it passed because Pawn.GetDisabledWorkTypes answers from a cache nothing had invalidated until WorkTypeRuntime.Apply cleared the backstory caches. Two repairs: that guard now drops the pawn's two caches and every backstory's before asking, and names the disabling backstory when it refuses; and the three Backgrounds now give Keeper backstories and traits that forbid no work at all, so the scenarios can go on naming Cleaning and mean it. Confirmed by the 2026-09-20 20:48 run: 8 ("hide a column") passed, and 5's two remaining failures are the known ReflectionOnly UnityEngine.InputLegacyModule framework error caught by Pickle's Log.Error guard, not this mod's assertions. The fixture premise was the whole of that defect, and the 23:00 run in the WSL game settles it: 5, 8 and 12 all green, 46 of 47 scenarios passing. The one failure left was the same premise in the one place it had not been repaired - scenario 4's custom type inherits CleanFilth's ManualDumb tag, and the fixture's Keeper could not do it. Both scenarios of 04 now give their colonist harmless backstories; the Porter one passed on luck, not on anything the test guaranteed. Re-run at 23:49 in the WSL game: 47 of 47 green, 248.5s, no failure anywhere in the suite. Note what that green does NOT cover: the five @review scenarios assert nothing, so their screenshots still need a person to read them
   - fixed: TESTING.md scenario 12's raw-save check failed for the same reason as 5 and 8 - the positional and named lists disagreed because the game correctly zeroed work the colonist could not do, between vanilla writing one node and this mod writing the other. Repaired by the same change, and the 2026-09-20 20:48 run showed that was not the whole story: 12 failed again, this time on a defect of the step itself. Scribe_Collections writes a Dictionary with LookMode.Value on both sides as two parallel <keys>/<values> lists; the step read the node for <li> pairs, found none, and built an EMPTY dictionary - not null, so the guard meant to catch a patch that never ran let it through - after which every lookup answered "absent", TryGetValue handed back 0, and the first colonist with a non-zero priority read as a disagreement. Checked against a save left by an earlier run: 9 colonists, 27 entries each, positional and named agreeing on all 243 values. The mod and the save were right throughout. Fixed 2026-09-20 in 46982a0, and CONFIRMED the same evening: the 23:00 run in the WSL game plays scenario 12 green
   - fixed: TESTING.md scenario 6 ("the arrows move a type one place") was a test artifact, not a defect - settled 2026-09-18. The editor's row list is a cache DoWindowContents drops at the top of every draw pass, so a real arrow click always acts on a list rebuilt that frame; the step called ShiftType directly with no repaint behind it and acted on a list from before the between-scenario reset, then ApplyTypeOrder rewrote every priority from it. The drag scenarios never had the problem because ReorderableWidget only hands out its callback during a repaint. The four arrow steps now let the window draw first
@@ -29,11 +216,12 @@ remaining:
   - unverified: no in-game pass of English or French display yet (raw keys, clipping, fallback text) - the static localization gate is certified complete, but TRANSLATIONS.md tracks this runtime check separately and it must pass before claiming the translations tested in game. Since 2026-09-18 there is a scripted path for it: the four @review features attach screenshots of the editor, a renamed column, the drift dialog and the settings window, so running the suite once per language produces the evidence a person then reads. The English half is now done: the 2026-09-20 23:44 WSL run produced the six screenshots, collected into Art/Review, and she read them on 2026-09-21 and found nothing wrong - the three editor columns, the renamed column's width, the drift dialog's wording and the settings window all read correctly in English. The French half is still to run, with -Language 'French (Français)'; the staging now forces devMode, so a key missing from French will show as accented gibberish there instead of hiding behind clean English
   - unverified: the run believed on the evening of 2026-09-20 to have confirmed the fixture repair was not this suite's. PickleReports holds one report for the whole machine, and the summary.md written at 20:00:16 that evening belongs to Architect Studio - 58 scenarios, all of them categories, groups and the Architect window. Established from the runner's own state at http://localhost:27750/state, which names the mod each scenario belongs to: every "Work Studio - Pickle tests" scenario reads Pending, meaning the running game has never played them. The game started at 19:15 and the step assembly was built at 14:40, so that game does carry the repair; nothing has asked it to run. Tests/Pickle/Run-Pickle.ps1 was added the same evening, taking the machine-wide lock AUDIT.md prescribes and reading the outcome back per mod rather than from the shared report folder. A run of this suite did follow at 20:32-20:48, started in error by this session against the standing rule that it never launches RimWorld; its report is this suite's and is the one read above. 16 features, 4 failures: one Log.Error from VEF.Plants.WorkGiver_RemoveWeeds via YaOpt, two UnityEngine.InputLegacyModule, and scenario 12's own step defect, all three causes outside this mod
   - verified: the Pickle suite was put against the rule that Gherkin keeps only what a running game alone can show, 2026-09-20, with the 20:48 run's timings as the measure - 302.7s of machine time for 47 scenarios. Nothing was deleted, and the reasoning per feature is in Tests/Pickle/README.md so the next audit does not have to redo it. The expensive features are the ones that load a save and click, which is exactly what no unit test reproduces; the four cheapest come to 4.7s together. One real overlap stays: Tests/OffGame already reproduces scenario 8 against the real WorkTypeRuntime.Apply(), but 08-hide also shows the column leaving the drawn table and the colonist still picking CleanFilth up, and its two extra assertions ride along in a scenario that has to run anyway
-session:      local_df8ae659-1a8e-4bf8-a74a-ff90c6c7ada7
-updated:      2026-09-21
----
+```
 
-# Work Studio — status
+## Historical audit record
+
+The following sections retain their original dates and conclusions. Use the current audit
+above for the present checkout, including where older paragraphs still say stage is done.
 
 ## Stage correspondence
 

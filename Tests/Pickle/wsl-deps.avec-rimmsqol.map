@@ -1,0 +1,7 @@
+# Dedicated pass for feature 16. RIMMSQOL is the optional integration under test; the two
+# PickleTools companions drive its actual settings/main bar and protect the scaled click path.
+# ClickDiagnostics remains staged because the rest of Work Studio's suite uses it.
+MalteSchulze.RIMMSqol                1084452457
+nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
+nelim.pickletools.rimmsqol           path:PickleTools/RimmsqolSteps/Mod
+nelim.pickletools.interfacescale     path:PickleTools/InterfaceScale/Mod

@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using RimWorld;
 using RimWorks.Pickle;
 using Verse;
+using Verse.AI;
 
 namespace WorkStudio.PickleSteps
 {
@@ -286,6 +287,28 @@ namespace WorkStudio.PickleSteps
             }
 
             ctx.Require(pawn.workSettings.GetPriority(def) == 1, $"'{nickname}' cannot do {Driver.Describe(def)}");
+        }
+
+        [When("{string} starts a visible job for the task {string}")]
+        public void StartVisibleJob(PickleContext ctx, string nickname, string taskName)
+        {
+            var pawn = Colonist(ctx, nickname);
+            var task = Driver.Task(ctx, taskName);
+            var job = JobMaker.MakeJob(JobDefOf.Wait);
+            job.workGiverDef = task;
+            pawn.jobs.StartJob(job, JobCondition.InterruptForced);
+            Find.Selector.ClearSelection();
+            Find.Selector.Select(pawn);
+            ctx.Require(pawn.CurJob == job && pawn.CurJob.workGiverDef == task,
+                $"'{nickname}' did not start a visible job attributed to '{taskName}'");
+        }
+
+        [Then("{string}'s current job report contains the work type label {string}")]
+        public void JobReportContains(PickleContext ctx, string nickname, string label)
+        {
+            var report = Colonist(ctx, nickname).GetJobReport();
+            ctx.Assert(report.IndexOf(label, StringComparison.OrdinalIgnoreCase) >= 0,
+                $"current job report did not contain '{label}': {report}");
         }
 
         [Then("{string} would pick up the task {string} while working")]

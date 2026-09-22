@@ -1,6 +1,7 @@
 # TESTING.md scenario 7, the visual half. 07 already asserts that the column header carries the new
 # label and that the column worker was thrown away; what no assertion covers is whether the column
-# ends up as WIDE as the new name needs. Nothing here is asserted - the screenshot is the evidence.
+# ends up as WIDE as the new name needs. The renamed header state is asserted before the screenshot;
+# the pixels remain the evidence for width, clipping and the optional Work Type Tag label.
 #
 # What to look for:
 #   - the Work tab column that was "Hauling" is headed by the new name, not the old one;
@@ -18,6 +19,7 @@ Feature: a renamed work type in the Work tab
 
   Scenario: the column header and width after a rename
     When I rename the work type "Hauling" to "Portage des marchandises"
+    Then the Work tab column of "Hauling" is headed "Portage des marchandises" and measured afresh
     And I close the work type editor
     And I open the "Work" tab
     And I let the Work Studio interface draw

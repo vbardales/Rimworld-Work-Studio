@@ -45,3 +45,17 @@ What deliberately differs:
   pawn in a pod also has priorities to realign.
 - **Derived incapabilities go through `workTags` first**, the union of the source types' tags, which
   makes filtering by backstory and by trait work without patching anything.
+
+## The skill and work type icons — SkillIcons (this author)
+
+The 35 monochrome drawings under `Mod/Textures/WorkStudio/`, and the two Harmony prefixes that
+draw them, come from **SkillIcons**, another mod by the same author, which handed the feature over
+on 2026-09-18 (its commit `80d3446`) and kept only its passion icons. Nothing here is third-party
+work: no licence question arises, and the note exists so the drawings' origin — and the rule that
+comes with them — is not lost.
+
+The rule is theirs and it is not decoration: **this set is monochrome, shape alone**, because in
+SkillIcons colour already means "which passion", and letting it also mean "which skill" would make
+both unreadable. Their source is kept at `Art/icons/gen-icons.js`, along with the way to judge a
+drawing — the silhouette sheet at 20 px, never at 64, where the four failures that mod records all
+look perfectly fine.

@@ -1193,15 +1193,19 @@ internal static class Program
               + "another mod's suite" + (bare.Length > 0 ? ": " + string.Join(" / ", bare) : ""),
             bare.Length == 0);
 
-        // Steps of the shared tool this suite stages (PickleTools/ClickDiagnostics), read from its own
-        // source so that a renamed step there turns a scenario red here, not in a live run. The
+        // Steps of the shared tools this suite stages, read from their own source so that a renamed
+        // step there turns a scenario red here, not in a live run. The
         // repository is a sibling of this one; without it those lines cannot be checked, and are
         // left out with a skip that says so rather than counted as typos.
         const string ToolPrefix = "Nelim's Pickle Tools: ";
         var shared = new List<string>();
-        string toolSource = Path.GetFullPath(Path.Combine(root, "..", "PickleTools", "ClickDiagnostics", "Source"));
-        if (Directory.Exists(toolSource))
+        string toolsRoot = Path.GetFullPath(Path.Combine(root, "..", "PickleTools"));
+        string[] toolNames = { "ClickDiagnostics", "RimmsqolSteps", "InterfaceScale" };
+        foreach (string toolName in toolNames)
         {
+            string toolSource = Path.Combine(toolsRoot, toolName, "Source");
+            if (!Directory.Exists(toolSource)) continue;
+            int before = shared.Count;
             foreach (string file in Directory.GetFiles(toolSource, "*.cs"))
             {
                 foreach (Match m in Regex.Matches(File.ReadAllText(file),
@@ -1211,8 +1215,8 @@ internal static class Program
                 }
             }
 
-            Console.WriteLine("    " + shared.Count + " step(s) read from PickleTools/ClickDiagnostics");
-            Check("the shared tool declares steps at all", shared.Count > 0);
+            Console.WriteLine("    " + (shared.Count - before) + " step(s) read from PickleTools/" + toolName);
+            Check("the shared tool " + toolName + " declares steps", shared.Count > before);
         }
 
         Regex[] known = declared.Concat(PickleBuiltIns).Concat(shared).Select(StepPattern).ToArray();
@@ -1243,7 +1247,7 @@ internal static class Program
 
         if (notChecked > 0)
         {
-            Skip(notChecked + " step line(s) of the shared tool: PickleTools/ClickDiagnostics not found beside this repository");
+            Skip(notChecked + " PickleTools step line(s): no shared tool source found beside this repository");
         }
 
         Check("every step a feature file uses is declared here or is a known Pickle built-in"

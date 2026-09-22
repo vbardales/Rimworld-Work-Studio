@@ -1,7 +1,7 @@
 # TESTING.md scenario 13: the settings window, both doors. These assert; the screenshot half lives
 # in 13b. Written 2026-09-18 to close three of the four things STATUS.md names as holding
 # settings_audit at partial - the Mod options door, a configuration surviving a reload, and the
-# reset confirmation. The fourth, RIMMSQOL revealing the hidden button, no test can reach.
+# reset confirmation. Feature 16 drives RIMMSQOL's side through the shared PickleTools companion.
 Feature: the settings window, both doors
 
   Background:
