@@ -1,0 +1,1 @@
+{"total":1,"passed":1,"failed":0,"skipped":0,"flaky":0,"exitReason":"passed","setName":"interfacescale","scenarios":[{"name":"a button is clickable at another interface scale","outcome":"Passed","durationMs":3935,"attempts":1}]}

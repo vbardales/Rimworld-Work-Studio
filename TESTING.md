@@ -397,18 +397,32 @@ crossing the two axes everywhere would buy nothing but machine time, and this ma
 | `sans-facultatifs`, English | 47 of 47 | The mod stands up alone. The five `@review` scenarios asserted nothing; the captures were read by a person and found clean |
 | `sans-facultatifs`, French | 47 of 47 | Same, in French, with the language named in the report; captures read, and the right-hand column was reworked because of what they showed |
 | `avec-better-work-tab` | 47 of 47 | Coexistence with Better Work Tab, including scenario 2, the one written for tab replacers |
-| `avec-enhanced-work-tab` | **45 of 47** | Two failures, below |
+| `avec-enhanced-work-tab` | 45 of 47 on 2026-09-21; scenario 5 alone **3 of 3 on 2026-09-22** after the fix | The save-load failure is fixed (below); the full 47-scenario set has not been replayed since, and the button overlap, below, is untouched by this fix |
 | `incompat-fluffy-worktab` | **45 of 47** | Exploration only: the symptom scenarios do not exist yet. The button scenario failed on a race: with Work Tab the tab window widens about ten frames after opening and the button moves with it, so press and release landed on different controls. The step now waits for the button to stand still. The other failure is a save-load exception whose cause is not established |
 | `incompat-compact-worktab` | 47 of 47 | Says nothing about the declared conflict: these 47 scenarios never meet it |
 
-**With Enhanced Work Tab loaded, two things fail, and they are different in kind.**
+**With Enhanced Work Tab loaded, two things failed on 2026-09-21, and they were different in kind.**
 
-*The save scenario is a finding about the mod's purpose.* "A save written with one type, loaded with
-two" asserts that a type absent from the save reads priority 0, and it read **2**, while the raw
-`DefMap` value was **0** — Work Studio's own restore did its job, and something else answered
-`GetPriority`. That matches what was seen on 2026-09-19, when this mod was found to intercept
-`GetPriority`. What is not yet known is where its answer comes from, and therefore whether Work
-Studio's protection can reach it; scenario 5 gates publishing, so this is the one to settle first.
+*The save scenario was a finding about the mod's purpose, and it is fixed.* "A save written with one
+type, loaded with two" asserts that a type absent from the save reads priority 0, and it read **2**,
+while the raw `DefMap` value was **0** — Work Studio's own restore did its job, and something else
+answered `GetPriority`. That matched what was seen on 2026-09-19, when this mod was found to
+intercept `GetPriority`.
+
+**The cause: a deleted type's defName was reused.** Enhanced Work Tab keeps each colonist's
+priorities by `defName` in the save, and never prunes an entry whose type is gone. The editor's
+`NewTypeId` took the first free `WorkStudio_Type<n>`, so deleting "Pickle first" and creating another
+type gave it the SAME defName — and Enhanced Work Tab handed it the deleted type's old priority, 2,
+while Work Studio's own list correctly held 0 for a name it had never written a value under. The fix
+(`ed41491`) keeps a counter in the settings that only ever goes up, read from the source of
+`EnhancedWorkTabGameComponent`/`PawnWorkSettings_GetPriority_Patch` decompiled for this diagnosis, not
+guessed. **Confirmed in game, 2026-09-22**: `avec-enhanced-work-tab`, filtered to
+`05-priorities-across-save.feature` alone, 3 of 3 scenarios passed, `exitReason: passed`
+(`Tests/Pickle/evidence/2026-09-22-scenario5-enhanced/`). The full 47-scenario set has not been
+replayed since the fix; that is still owed before this pass counts for `done -> tested`. Reading
+another mod's decompiled source to explain a failure, rather than only measuring the outside, is new
+for this mod's testing; it is the reason the cause could be named before the scenario was replayed
+rather than only after.
 
 *The button scenario is a measured overlap, and the cause is not yet known to be Enhanced Work Tab's.*
 The tab window is vanilla `MainTabWindow_Work` here, so this mod **patches** the tab and does not

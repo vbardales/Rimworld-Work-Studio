@@ -681,27 +681,33 @@ this audit rather than replaced.
 
 | Criterion | State |
 | --- | --- |
-| Scenarios run in game and passed | Minimal set: 47 of 47 in English and in French, but **before the last changes to the mod** (the two-line rows of 09-21 10:19 for the English pass, the click steps, the type-name counter of `ed41491`). Has to be replayed on the final build. Coexistence sets: Better Work Tab 47/47, Compact Work Tab 47/47 (says nothing about the conflict), Work Tab and Enhanced Work Tab **45/47 each**, both failures explained below |
+| Scenarios run in game and passed | Minimal set: 47 of 47 in English and in French, but **before the last changes to the mod** (the two-line rows of 09-21 10:19 for the English pass, the click steps, the type-name counter of `ed41491`). Has to be replayed on the final build. Coexistence sets: Better Work Tab 47/47, Compact Work Tab 47/47 (says nothing about the conflict), Work Tab 45/47 (unreplayed since), **Enhanced Work Tab's scenario 5 alone replayed 2026-09-22 and now 3/3** (below), the rest of that set not replayed since the fix |
 | Pickle suites green, `@review` captures opened | Captures of both languages opened and read (2026-09-21); to redo on the final build |
 | Logs checked | Scenario 1 asserts the log holds nothing from the mod since startup; the passes above were read for errors. To redo with the final build |
 | FR and EN interface | Both passes done, captures read; the right-hand column was reworked because of what the French one showed |
 | Options, persistence, MainButtons shortcut | Scenarios 13 and 13b (settings through the shortcut and through Mod options, write to disk and read back); RIMMSQOL listing the button stays another mod's UI and is not claimed |
 | New game and existing save | **Existing save only** (`test-colony`). No scenario starts a new game; not covered, not claimed |
-| Fixes followed by their regression tests | See the two open findings below: both have a fix or a wait that is committed and **not yet replayed** |
+| Fixes followed by their regression tests | Scenario 5's fix is now confirmed (below). Scenario 2's wait is **not yet replayed** |
 
 **Open, in the order they gate `tested`:**
 
-1. **Scenario 5 under Enhanced Work Tab** (`GetPriority` read 2 for a type absent from the save; the raw list held 0).
-   Cause read from that mod's code, not measured: it keeps each colonist's priority by `defName` in the save and
-   never prunes it, and the editor reused a deleted type's `defName` for the next one created. Fix committed
-   (`ed41491`, names only go up). **The scenario has to pass with Enhanced Work Tab loaded** before the cause is
-   called established; queued.
+1. **Scenario 5 under Enhanced Work Tab — fixed and confirmed, 2026-09-22.** `GetPriority` had read 2 for a type
+   absent from the save while the raw list held 0. Cause, read from Enhanced Work Tab's decompiled source: it
+   keeps each colonist's priority by `defName` in the save and never prunes it, and the editor reused a deleted
+   type's `defName` for the next one created. Fix `ed41491` (names only go up). Replayed alone
+   (`-Filter '05-priorities-across-save.feature'`, `avec-enhanced-work-tab`): **3 of 3 passed**, `exitReason: passed`
+   (`Tests/Pickle/evidence/2026-09-22-scenario5-enhanced/`). **The rest of that 47-scenario set has not been
+   replayed since**, and neither has this fix's effect on the two coexistence sets' own custom-type scenarios.
 2. **Scenario 2 under Work Tab**: the button moves for about ten frames after the tab opens; the steps now wait
-   until it has stood still (`PickleTools/ClickDiagnostics`). Not replayed since; queued.
+   until it has stood still (`PickleTools/ClickDiagnostics`). One replay attempt timed out in an 8-hour queue
+   (2026-09-21 night), a second crashed the game itself before Pickle wrote a report (a native Mono GC segfault
+   during mod startup, `pickle-reports-archive/0922-0822-nosummary/Player.log` — no sign it is caused by this
+   mod's code or by ClickDiagnostics; queued again).
 3. **The save-load exception under Work Tab** (an apparel read as a pawn): not explained, and not written up as
    anything but exploration.
 4. The two `incompat-` sets have no scenario asserting the documented symptom yet; their runs are exploration.
 5. Decisions that are Virginie's, not settled here: icons ON by default; the long renamed header spilling into its
    neighbours in capture 07b; whether the rule that one pass validates nothing applies to a stage already reached.
 
-Then, when 1 and 2 have come back: one full English and one full French pass of the minimal set on the final build.
+Then, when 2 through 4 have come back and the full Enhanced Work Tab set has been replayed: one full English and
+one full French pass of the minimal set on the final build.
