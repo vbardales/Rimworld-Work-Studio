@@ -3,3 +3,4 @@
 # label capture. ClickDiagnostics remains staged for the rest of the suite.
 baku.worktypetag                     3779138895
 nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
+nelim.pickletools.screenshotmode     path:PickleTools/ScreenshotMode/Mod

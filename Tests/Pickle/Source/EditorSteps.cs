@@ -269,8 +269,8 @@ namespace WorkStudio.PickleSteps
         [Then("a work type labelled {string} exists")]
         public void Exists(PickleContext ctx, string label)
         {
-            var def = Driver.WorkType(ctx, label);
-            ctx.Assert(DefDatabase<WorkTypeDef>.AllDefsListForReading.Contains(def), $"'{label}' is not in the def database");
+            var matches = DefDatabase<WorkTypeDef>.AllDefsListForReading.Where(t => t.label == label).ToList();
+            ctx.Assert(matches.Count == 1, $"expected one work type labelled '{label}', found {matches.Count}: {Driver.Names(matches)}");
         }
 
         [Then("no work type labelled {string} exists")]

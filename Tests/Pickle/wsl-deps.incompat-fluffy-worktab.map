@@ -24,3 +24,4 @@ Fluffy.WorkTab   3552152340   Work Tab, the declared incompatibility
 #
 # The steps scenario 2 clicks with, staged in every pass so the scenarios do not change between them.
 nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
+nelim.pickletools.screenshotmode     path:PickleTools/ScreenshotMode/Mod

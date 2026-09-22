@@ -23,3 +23,4 @@ Coolnether123.BetterWorkTab       3626737803   Better Work Tab, by Coolnether123
 #
 # The steps scenario 2 clicks with, staged in every pass so the scenarios do not change between them.
 nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
+nelim.pickletools.screenshotmode     path:PickleTools/ScreenshotMode/Mod

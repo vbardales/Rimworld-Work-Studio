@@ -6,3 +6,4 @@
 #
 # Run with -DepMap wsl-deps.sans-facultatifs.map (with no map at all scenario 2 cannot be played).
 nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
+nelim.pickletools.screenshotmode     path:PickleTools/ScreenshotMode/Mod

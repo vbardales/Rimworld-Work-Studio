@@ -38,9 +38,10 @@ suite, from the failure described in `BACKLOG.md`, and moved out on 2026-09-21.
 `the Work Studio button is not drawn` and `I click the Work Studio button keyed {string}` stay in
 `ModSteps.cs`.
 
-The companion is staged by every pass map of this suite, `wsl-deps.sans-facultatifs.map` included:
-`nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod`. In a game you run by
-hand, link that folder into `Mods` and enable it after Pickle.
+Every pass map stages `PickleTools/ClickDiagnostics`; it also stages
+`PickleTools/ScreenshotMode`, whose shared steps make the three Workshop captures retain the
+reviewed window while hiding the HUD and Pickle panels. Both are development-only companions. In a
+game you run by hand, link their folders into `Mods` and enable them after Pickle.
 
 Pickle itself later gained a generic equivalent of the keyed click, `I click button keyed {string}`
 (upstream [RimWorks/Rimworld-Pickle#19](https://github.com/RimWorks/Rimworld-Pickle/pull/19),
@@ -194,12 +195,11 @@ by default — they change every run, and only a set worth publishing belongs in
 (`git add -f` one when it is).
 
 Pickle's own runner panel used to sit in the corner of every frame, and cropping it by hand was
-weighed and accepted on 2026-09-18. It is not needed any more: `I hide the interface around Work
-Studio's windows` turns on the game's own screenshot mode, which draws only windows that ask for
-it, and clears that flag on Pickle's own — so the tab bar, the alerts, the colonist bar, the dev
-tools and the runner panel all go, leaving the mod's window on the map. The step restores what it
-changed, and an `[AfterScenario]` restores it again in case a scenario dies in between, which would
-otherwise leave the game with no interface at all. Learned from Architect Studio's session,
+weighed and accepted on 2026-09-18. It is not needed any more: the shared
+`PickleTools/ScreenshotMode` companion enables RimWorld's screenshot mode around an already-open
+review window, keeps that non-Pickle window, hides the HUD and Pickle panels, and restores each
+window flag and the prior mode through its `[AfterScenario]` hook. The local duplicate moved there
+on 2026-09-22 under PickleTools' second-consumer rule. Learned from Architect Studio's session,
 2026-09-20.
 
 `14-publication-shots.feature` uses it, and builds its own scene rather than photographing whatever

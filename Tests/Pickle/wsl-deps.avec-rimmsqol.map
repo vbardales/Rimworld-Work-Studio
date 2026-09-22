@@ -3,5 +3,6 @@
 # ClickDiagnostics remains staged because the rest of Work Studio's suite uses it.
 MalteSchulze.RIMMSqol                1084452457
 nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
+nelim.pickletools.screenshotmode     path:PickleTools/ScreenshotMode/Mod
 nelim.pickletools.rimmsqol           path:PickleTools/RimmsqolSteps/Mod
 nelim.pickletools.interfacescale     path:PickleTools/InterfaceScale/Mod

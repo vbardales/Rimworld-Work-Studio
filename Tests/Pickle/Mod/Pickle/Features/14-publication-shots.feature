@@ -16,7 +16,7 @@
 # mod's own labels. The @review features are the ones to run in each language.
 #
 # Collect them afterwards with Art/Update-WorkshopScreenshots.ps1.
-@review
+@review @requires:nelim.pickletools.screenshotmode
 Feature: images for the Workshop page
 
   Background:
@@ -31,9 +31,9 @@ Feature: images for the Workshop page
     And I select the work type "Hauling and tidying"
     Then the task "HaulGeneral" belongs to "Hauling and tidying"
     And the task "CleanFilth" belongs to "Hauling and tidying"
-    And I hide the interface around Work Studio's windows
+    And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "Workshop page, the editor"
-    And I bring the interface back around Work Studio's windows
+    And Nelim's Pickle Tools: screenshot mode is disabled
 
   # The point of the previous shot, seen from the Work tab: the column exists, immediately, without
   # a restart.
@@ -43,9 +43,9 @@ Feature: images for the Workshop page
     And I close the work type editor
     And I open the "Work" tab
     Then the Work tab has a column for "Hauling and tidying"
-    And I hide the interface around Work Studio's windows
+    And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "Workshop page, the new column"
-    And I bring the interface back around Work Studio's windows
+    And Nelim's Pickle Tools: screenshot mode is disabled
     And I close all windows but the main tabs, for Work Studio
 
   Scenario: the settings window
@@ -54,6 +54,6 @@ Feature: images for the Workshop page
     And I open Work Studio's settings through Mod options
     Then window "Dialog_ModSettings" is open
     And the Mod options window is drawing Work Studio's own settings
-    And I hide the interface around Work Studio's windows
+    And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "Workshop page, the settings"
-    And I bring the interface back around Work Studio's windows
+    And Nelim's Pickle Tools: screenshot mode is disabled

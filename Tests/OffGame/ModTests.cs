@@ -1200,7 +1200,7 @@ internal static class Program
         const string ToolPrefix = "Nelim's Pickle Tools: ";
         var shared = new List<string>();
         string toolsRoot = Path.GetFullPath(Path.Combine(root, "..", "PickleTools"));
-        string[] toolNames = { "ClickDiagnostics", "RimmsqolSteps", "InterfaceScale" };
+        string[] toolNames = { "ClickDiagnostics", "RimmsqolSteps", "InterfaceScale", "ScreenshotMode" };
         foreach (string toolName in toolNames)
         {
             string toolSource = Path.Combine(toolsRoot, toolName, "Source");
