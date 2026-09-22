@@ -6,6 +6,7 @@
 *.md   text
 *.props text
 *.yml  text
+Tests/Pickle/*.map text eol=lf
 
 # Binaries: neither normalised nor diffed as text.
 *.png binary
