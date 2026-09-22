@@ -24,3 +24,6 @@ Art/Workshop/*.png
 Thumbs.db
 desktop.ini
 .DS_Store
+
+node_modules/
+.npm/

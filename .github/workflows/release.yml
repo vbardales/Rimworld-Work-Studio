@@ -1,0 +1,35 @@
+name: release (approval gated)
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Dry-run is safe. Publish requires steam-production approval.
+        required: true
+        default: dry-run
+        type: choice
+        options: [dry-run, publish]
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.mode == 'publish' && 'steam-production' || 'release-dry-run' }}
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22.x', cache: npm }
+      - run: npm ci
+      - name: Rebuild the exact Workshop directory
+        run: dotnet build Source/WorkStudio.csproj -c Release --nologo
+      - name: Calculate release only (no tag, GitHub release, or Steam upload)
+        if: inputs.mode == 'dry-run'
+        env: { GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} }
+        run: npx semantic-release --dry-run
+      - name: Publish after protected-environment approval
+        if: inputs.mode == 'publish'
+        env:
+          STEAM_PUBLISH: 'true'
+          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+          STEAM_CONFIG_VDF: ${{ secrets.STEAM_CONFIG_VDF }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
