@@ -26,6 +26,21 @@ updated:      2026-09-22
 ---
 
 # Work Studio — status
+## Preview regeneration and capture handoff — 2026-09-22
+
+`Mod/About/Preview.png` was regenerated with OpenAI's built-in image generation tool and installed
+in the distributed folder. Direct inspection confirms an opaque RGB 896×504, 921,816-byte PNG
+under 1 MB:
+the title and exact explanatory sentence are legible, the scene uses a near-orthographic
+RimWorld-like camera, the drag destination reads at thumbnail scale, and orange action accents are
+visibly distinct from the blue selection accent. The previous thick-outlined cartoon-style
+reservation is closed. Root and distributed attribution now record the generated raster's origin.
+
+The locally prepared review evidence was also inspected and committed: the updated French
+three-column editor capture, two French diagnostic crops showing the truncation and two-line
+layout, and the Fluffy Work Tab button-overlap crop. These are audit evidence, not claims that the
+new Pickle scenarios have run. Stage remains `done`; no runtime or Steam publication claim changes.
+
 ## Pickle completeness and later-stage audit — 2026-09-22
 
 **Stage stays `done`; `tested` was deliberately set aside.** The scenario suite now leaves no

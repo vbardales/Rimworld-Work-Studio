@@ -59,3 +59,10 @@ SkillIcons colour already means "which passion", and letting it also mean "which
 both unreadable. Their source is kept at `Art/icons/gen-icons.js`, along with the way to judge a
 drawing — the silhouette sheet at 20 px, never at 64, where the four failures that mod records all
 look perfectly fine.
+
+## Preview image
+
+`Mod/About/Preview.png` was generated with OpenAI's built-in image generation tool under human
+direction and review, then cropped and downscaled to the required 896×504 Workshop format. The
+2026-09-22 version uses a near-orthographic RimWorld-like colony scene to explain rearranging work
+types, with the title and explanatory text added by the generator as part of the final raster.

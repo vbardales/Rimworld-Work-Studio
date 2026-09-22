@@ -64,8 +64,8 @@ replace this note once 1 is retaken and cropped the same way.
 Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature` (English only — the page
 is English) and collected with `Art/Update-WorkshopScreenshots.ps1`, then cropped by hand.
 
-`Preview.png` and `ModIcon.png` (in `Mod/About/`) ship with the mod and are not re-taken per
-version; STATUS.md's showcase line covers their own history.
+`Preview.png` and `ModIcon.png` (in `Mod/About/`) ship with the mod. The Preview was regenerated and
+visually reviewed on 2026-09-22 at 896×504 and 921,816 bytes; STATUS.md records that handoff.
 
 ## Dependencies and DLC
 

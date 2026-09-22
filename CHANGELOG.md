@@ -5,6 +5,11 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ## [Unreleased]
 
+### Changed
+
+- Regenerated the Workshop preview in a near-orthographic RimWorld-like presentation, preserving
+  the Work Studio title and explanation while making the reordering action clearer at thumbnail size.
+
 ### Fixed
 
 - Removed the incorrect incompatibility declaration for Compact Work Tab. Its 1.6 code patches
