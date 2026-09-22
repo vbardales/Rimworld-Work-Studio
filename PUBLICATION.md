@@ -29,18 +29,31 @@ gaps is the owner's call, recorded here rather than hidden.
 ## Screenshot order
 
 Steam shows the first one large: it should be the most demonstrative, not the prettiest. Order,
-with what each proves:
+with what each proves, and where the file to upload is:
 
-1. **`01-the-editor.png`** — the three-column editor with a work type a player would actually make
-   ("Hauling and tidying", fed from Hauling and Cleaning). This is what the mod IS.
-2. **`02-the-new-column.png`** — the same change, seen from the Work tab: the column exists
-   immediately, no restart.
-3. **`03-the-settings.png`** — the settings window, opened through Mod options, so the page shows
-   there is a configuration surface beyond the editor.
+1. **The three-column editor** with a work type a player would actually make ("Hauling and
+   tidying", fed from Hauling and Cleaning). This is what the mod IS.
+   **`Art/Workshop/01-the-editor.png` — not ready.** It shows the bug 1.1.0 fixes: two "Carry to
+   growth vat" rows in the right-hand column, both truncated and indistinguishable ("Carry..." /
+   "Haul..."). Cropping does not fix that; it needs retaking against the current build (queue
+   `14-publication-shots.feature`, English, then `Art/Update-WorkshopScreenshots.ps1`), and this
+   slot stays empty until then.
+2. **The new column, seen from the Work tab**: it exists immediately, no restart.
+   **`Art/Workshop/ready/02-the-new-column.png`, 1920×890 — ready.** Cropped 2026-09-22 from the
+   original 1920×1080 (`y 190-1080`) to trim the empty sky/solar-panel strip at the top; the
+   priorities panel and the built rooms now fill more of the frame. Nothing in the dialog was cut.
+3. **The settings window**, opened through Mod options, so the page shows there is a configuration
+   surface beyond the editor.
+   **`Art/Workshop/ready/03-the-settings.png`, 1620×1000 — ready.** Cropped 2026-09-22 from
+   1920×1080 (`x 150-1770, y 40-1040`) to trim the wide empty desert on both sides and a sliver top
+   and bottom; the dialog itself (`x 510-1408, y 190-890` in the original) is untouched.
+
+The originals stay in `Art/Workshop/`; the cropped, upload-ready files are in `Art/Workshop/ready/`.
+Slot 1 has no ready file yet — upload 2 and 3 in the meantime only if the page cannot wait, and
+replace this note once 1 is retaken and cropped the same way.
 
 Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature` (English only — the page
-is English) and collected with `Art/Update-WorkshopScreenshots.ps1`. **Needs a rerun for this
-version** (see above): retake, review, then re-run the collection script before uploading.
+is English) and collected with `Art/Update-WorkshopScreenshots.ps1`, then cropped by hand.
 
 `Preview.png` and `ModIcon.png` (in `Mod/About/`) ship with the mod and are not re-taken per
 version; STATUS.md's showcase line covers their own history.
