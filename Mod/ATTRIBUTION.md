@@ -62,7 +62,8 @@ look perfectly fine.
 
 ## Preview image
 
-`Mod/About/Preview.png` was generated with OpenAI's built-in image generation tool under human
-direction and review, then cropped and downscaled to the required 896×504 Workshop format. The
-2026-09-22 version uses a near-orthographic RimWorld-like colony scene to explain rearranging work
-types, with the title and explanatory text added by the generator as part of the final raster.
+The text-free source illustration in `Art/Preview.png` was generated with OpenAI's built-in image
+generation tool under human direction and review. `Art/preview.html` composites the title, summary,
+accent rule and 1.6 badge deterministically at 896×504 from `Art/preview-palette.json`; the rendered
+result is the distributed `Mod/About/Preview.png`. The 2026-09-22 source uses a high-oblique,
+near-orthographic colony scene to explain rearranging work types.

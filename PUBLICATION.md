@@ -65,7 +65,8 @@ Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature` (Eng
 is English) and collected with `Art/Update-WorkshopScreenshots.ps1`, then cropped by hand.
 
 `Preview.png` and `ModIcon.png` (in `Mod/About/`) ship with the mod. The Preview was regenerated and
-visually reviewed on 2026-09-22 at 896×504 and 921,816 bytes; STATUS.md records that handoff.
+visually reviewed on 2026-09-22 at 896×504 and 545,873 bytes. Its text-free source, deterministic
+HTML/CSS composition and palette remain under `Art/`; STATUS.md records the handoff and QA.
 
 ## Dependencies and DLC
 

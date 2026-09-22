@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=896,height=504,initial-scale=1">
+<style>
+  :root { visibility: hidden; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 896px; height: 504px; overflow: hidden; }
+  body {
+    position: relative;
+    background: url("Preview.png") center center / cover no-repeat;
+    font-family: "Segoe UI", system-ui, sans-serif;
+  }
+  .veil {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 0% 0%,
+      rgb(from var(--veil) r g b / .86) 0%, rgb(from var(--veil) r g b / 0) 74%);
+  }
+  .copy {
+    position: absolute;
+    left: 50px;
+    top: 54px;
+    width: 500px;
+    color: var(--ink-primary);
+    text-shadow: 0 3px 10px rgba(0,0,0,.75);
+  }
+  h1 {
+    margin: 0;
+    font-size: 46px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+  .rule {
+    width: 58px;
+    height: 3px;
+    margin-top: 20px;
+    margin-bottom: 16px;
+    background: var(--accent);
+  }
+  p {
+    margin: 0;
+    width: 430px;
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1.45;
+    letter-spacing: 0;
+  }
+  .badge {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+  }
+  .badge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+  }
+  .version {
+    position: absolute;
+    left: 42px;
+    top: 14px;
+    color: var(--badge-ink);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+    transform: rotate(45deg);
+    transform-origin: center;
+  }
+</style>
+</head>
+<body>
+  <div class="veil"></div>
+  <div class="copy">
+    <h1>Work Studio</h1>
+    <div class="rule"></div>
+    <p>Reorganize the Work tab from inside the game.</p>
+  </div>
+  <div class="badge"><div class="version">1.6</div></div>
+<script>
+Promise.all([
+  fetch("preview-palette.json").then(response => response.json()),
+  document.fonts.ready
+]).then(([palette]) => {
+  const root = document.documentElement;
+  for (const [name, value] of Object.entries(palette)) {
+    root.style.setProperty("--" + name.replace(/[A-Z]/g, letter => "-" + letter.toLowerCase()), value);
+  }
+  if (new URLSearchParams(location.search).has("background")) {
+    document.querySelector(".copy").style.display = "none";
+    document.querySelector(".badge").style.display = "none";
+  }
+  root.style.visibility = "visible";
+  document.body.dataset.ready = "true";
+});
+</script>
+</body>
+</html>

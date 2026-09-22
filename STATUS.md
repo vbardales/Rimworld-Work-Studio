@@ -28,13 +28,22 @@ updated:      2026-09-22
 # Work Studio — status
 ## Preview regeneration and capture handoff — 2026-09-22
 
-`Mod/About/Preview.png` was regenerated with OpenAI's built-in image generation tool and installed
-in the distributed folder. Direct inspection confirms an opaque RGB 896×504, 921,816-byte PNG
-under 1 MB:
-the title and exact explanatory sentence are legible, the scene uses a near-orthographic
-RimWorld-like camera, the drag destination reads at thumbnail scale, and orange action accents are
-visibly distinct from the blue selection accent. The previous thick-outlined cartoon-style
-reservation is closed. Root and distributed attribution now record the generated raster's origin.
+The first replacement committed earlier today did not follow `STYLE_RIMWORLD.md`: it let the image
+model rasterize the text, kept no text-free source, palette or deterministic composition, and
+omitted the 1.6 badge. It is superseded here.
+
+The corrected text-free source is `Art/Preview.png` (1672×941). `Art/preview.html` renders it with
+Segoe UI at the required final size and loads its only overlay colours from
+`Art/preview-palette.json`; it adds the 46 px title, 58×3 px accent rule, 21 px summary and 1.6
+corner badge. The delivered `Mod/About/Preview.png` is opaque RGB, 896×504 and 545,873 bytes.
+Full-size and 268 px inspections found the high-oblique near-orthographic camera, tiled ground,
+one warm lamp pool, small faceless settlers, clear three-board reordering action, readable title,
+visible rule and badge, and no crop or overlap. The summary is present at 268 px but intentionally
+too small for grid browsing, as the style guide documents. Palette measurement reports two vivid
+hue families (61.79% vivid in the final, dominant family 94%). The worst sampled title/summary
+contrast is 6.00:1 and badge contrast is 6.97:1, both above 4.5:1. Root and distributed attribution
+record the generated source and deterministic overlay. The previous cartoon-style reservation is
+closed.
 
 The locally prepared review evidence was also inspected and committed: the updated French
 three-column editor capture, two French diagnostic crops showing the truncation and two-line
