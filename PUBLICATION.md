@@ -28,6 +28,11 @@ gaps is the owner's call, recorded here rather than hidden.
 
 ## Screenshot order
 
+**Each upload stays under 2 MB.** Pickle's raw captures are ~2-3 MB PNGs at 1920x1080; cropping the
+empty margin (never resampling — resizing with interpolation blurs flat pixel-art regions and can
+make the file BIGGER despite fewer pixels, as it did on the first attempt for image 2 below) is
+usually enough on its own. Check with `(Get-Item <file>).Length / 1MB` before calling one ready.
+
 Steam shows the first one large: it should be the most demonstrative, not the prettiest. Order,
 with what each proves, and where the file to upload is:
 
@@ -39,12 +44,13 @@ with what each proves, and where the file to upload is:
    `14-publication-shots.feature`, English, then `Art/Update-WorkshopScreenshots.ps1`), and this
    slot stays empty until then.
 2. **The new column, seen from the Work tab**: it exists immediately, no restart.
-   **`Art/Workshop/ready/02-the-new-column.png`, 1920×890 — ready.** Cropped 2026-09-22 from the
-   original 1920×1080 (`y 190-1080`) to trim the empty sky/solar-panel strip at the top; the
-   priorities panel and the built rooms now fill more of the frame. Nothing in the dialog was cut.
+   **`Art/Workshop/ready/02-the-new-column.png`, 1600×890, 1.78 MB — ready.** Cropped 2026-09-22 from
+   the original 1920×1080 (`x 0-1600, y 190-1080`) to trim the empty sky and the mostly-empty desert
+   on the right (solar panels already half cut off there); the priorities panel and the built rooms
+   fill more of the frame. Nothing in the dialog was cut.
 3. **The settings window**, opened through Mod options, so the page shows there is a configuration
    surface beyond the editor.
-   **`Art/Workshop/ready/03-the-settings.png`, 1620×1000 — ready.** Cropped 2026-09-22 from
+   **`Art/Workshop/ready/03-the-settings.png`, 1620×1000, 1.66 MB — ready.** Cropped 2026-09-22 from
    1920×1080 (`x 150-1770, y 40-1040`) to trim the wide empty desert on both sides and a sliver top
    and bottom; the dialog itself (`x 510-1408, y 190-890` in the original) is untouched.
 
