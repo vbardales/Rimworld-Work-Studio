@@ -709,5 +709,14 @@ this audit rather than replaced.
 5. Decisions that are Virginie's, not settled here: icons ON by default; the long renamed header spilling into its
    neighbours in capture 07b; whether the rule that one pass validates nothing applies to a stage already reached.
 
+**2026-09-22, owner decision in chat: publish 1.1.0 now** — "ça me semble stable suffisamment pour
+pousser une version" — without waiting for items 2 and the full Enhanced Work Tab replay. `stage`
+stays `done`: this is a decision to publish over an incomplete `done -> tested`, not a claim that
+`tested` is reached. Version prepared: `CHANGELOG.md` dated to `[1.1.0] — 2026-09-22`, `PUBLICATION.md`
+written (screenshot order, dependencies checked, adult-content answer, draft Steam patch notes),
+tag `v1.1.0` pushed. **Not done, and PUBLICATION.md says so:** the Workshop screenshots in
+`Art/Workshop/` predate the two-line task labels this version ships and need retaking; the actual
+Steam upload is the owner's own action, not this session's, per AUDIT.md.
+
 Then, when 2 through 4 have come back and the full Enhanced Work Tab set has been replayed: one full English and
 one full French pass of the minimal set on the final build.
