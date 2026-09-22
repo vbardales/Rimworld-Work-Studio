@@ -5,6 +5,8 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-09-22
+
 ### Added
 
 - **An icon for each skill and each work type** — in the character tab's skill list, and at the foot of each Work tab column header. Three settings decide what shows: icons in the skill list, icons on the columns, and whether a header carries its icon, its label, or both. "Icon only" gives noticeably narrower columns and keeps the tooltip that says what the column is.
@@ -19,7 +21,7 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ### Fixed
 
-- **A work type you create no longer takes the name of one you deleted.** The editor gave a new type the first free name, so deleting a type and creating another reused its defName - and anything that keeps data by defName then handed the new type the old one's values. Enhanced Work Tab does this: it keeps each colonist's priorities by defName in the save and never prunes them, so the new type could read the priority the deleted one had. Names now only go up, counted per installation; a setup made before this update continues above its highest existing type. Found by the in-game test  save written with one type, loaded with two, which read 2 where the game's own list held 0. The cause was read from Enhanced Work Tab's code and the fix is the change under test: the scenario has to pass with Enhanced Work Tab loaded before this is called confirmed.
+- **A work type you create no longer takes the name of one you deleted.** The editor gave a new type the first free name, so deleting a type and creating another reused its defName — and anything that keeps data by defName then handed the new type the old one's values. Enhanced Work Tab does this: it keeps each colonist's priorities by defName in the save and never prunes them, so the new type could read the priority the deleted one had. Names now only go up, counted per installation; a setup made before this update continues above its highest existing type. Found by the in-game test *a save written with one type, loaded with two*, which read 2 where the game's own list held 0. The cause was read from Enhanced Work Tab's code; the fix was confirmed against a save with Enhanced Work Tab loaded on 2026-09-22.
 
 - The help line under the editor's search box was drawn in a fixed-height box, so it was clipped as soon as it wrapped — which a long work type name is enough to cause, and a player can rename a type to anything. It is measured now.
 - `Source/WorkStudio.csproj` combined the Publicizer with `GenerateAssemblyInfo=false`, which silently dropped the waiver that lets this mod read and write a few private fields of `Pawn_WorkSettings` — the same fields `PriorityMemory.Restore` touches on every startup and every edit. Left alone, this was a `FieldAccessException` waiting to happen on at least one runtime (confirmed on the desktop CLR; never observed in the shipped game itself, whose Mono may not enforce the same check). One line restores the waiver.
