@@ -20,6 +20,10 @@ Source/bin/
 # A set actually worth publishing goes in deliberately: git add -f Art/Workshop/<file>.
 Art/Workshop/*.png
 
+# Full Pickle reports are kept locally before the shared runner releases its lock. Each pass
+# includes hundreds of screenshots (about 1 GB); STATUS.md records the verified summary.
+Tests/Pickle/evidence/
+
 # System
 Thumbs.db
 desktop.ini

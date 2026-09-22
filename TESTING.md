@@ -151,8 +151,9 @@ Rename a vanilla type — *Hauling* to *Portage*, say.
 
 - The **column header** changes. The header draws `labelShort`, not `label`, so a rename that only
   touched `label` would show the old name here.
-- The column **width** follows the new name. The column worker measures the label once and caches
-  it, so a stale width means the worker was not rebuilt.
+- A name too long for the narrow header is represented by its icon and full-name tooltip. It must
+  stay identifiable without spilling into a neighbouring column. The renamed value remains in the
+  work type; the column worker must have been rebuilt for its other cached state.
 - If **[baku] Work Type Tag** is installed, the name in front of a colonist's current job changes
   too, without a restart. That one is a cache this mod clears by reflection.
 

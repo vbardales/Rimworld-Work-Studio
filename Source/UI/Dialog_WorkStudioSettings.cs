@@ -11,11 +11,15 @@ namespace WorkStudio
     /// </summary>
     public class Dialog_WorkStudioSettings : Window
     {
-        public override Vector2 InitialSize => new Vector2(480f, 460f);
+        // The shared settings content wraps its introduction and save note. Give both lines room
+        // at 100% and 150% UI scale; the old 480x460 dialog put the close button on top of the note.
+        public override Vector2 InitialSize => new Vector2(800f, 620f);
 
         public Dialog_WorkStudioSettings()
         {
-            doCloseButton = true;
+            // The X already closes this window. A footer button steals space from the shared
+            // Mod options layout and can cover its final paragraph.
+            doCloseButton = false;
             doCloseX = true;
             forcePause = true;
             absorbInputAroundWindow = true;

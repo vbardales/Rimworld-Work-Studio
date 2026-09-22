@@ -82,7 +82,7 @@
   <WorkStudio.Icons.HeaderMode>What a column header shows</WorkStudio.Icons.HeaderMode>
   <WorkStudio.Icons.HeaderModeUnavailable>Available once icons on Work tab columns are switched on.</WorkStudio.Icons.HeaderModeUnavailable>
   <WorkStudio.Icons.HeaderBoth>Icon and label</WorkStudio.Icons.HeaderBoth>
-  <WorkStudio.Icons.HeaderBothDesc>The usual header, with the icon added at its foot.</WorkStudio.Icons.HeaderBothDesc>
+  <WorkStudio.Icons.HeaderBothDesc>The usual header, with the icon added at its foot. Long labels use the icon and a tooltip instead of covering other columns.</WorkStudio.Icons.HeaderBothDesc>
   <WorkStudio.Icons.HeaderIcon>Icon only</WorkStudio.Icons.HeaderIcon>
   <WorkStudio.Icons.HeaderIconDesc>Narrower columns, since the name is dropped. Hovering a header still says what the column is.</WorkStudio.Icons.HeaderIconDesc>
   <WorkStudio.Icons.HeaderLabel>Label only</WorkStudio.Icons.HeaderLabel>

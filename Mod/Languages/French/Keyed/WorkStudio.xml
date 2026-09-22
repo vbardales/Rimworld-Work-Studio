@@ -82,7 +82,7 @@
   <WorkStudio.Icons.HeaderMode>Ce que montre un en-tête de colonne</WorkStudio.Icons.HeaderMode>
   <WorkStudio.Icons.HeaderModeUnavailable>Disponible une fois les icônes de colonnes activées.</WorkStudio.Icons.HeaderModeUnavailable>
   <WorkStudio.Icons.HeaderBoth>Icône et libellé</WorkStudio.Icons.HeaderBoth>
-  <WorkStudio.Icons.HeaderBothDesc>L'en-tête habituel, avec l'icône ajoutée à son pied.</WorkStudio.Icons.HeaderBothDesc>
+  <WorkStudio.Icons.HeaderBothDesc>L'en-tête habituel, avec l'icône ajoutée à son pied. Les libellés longs utilisent l'icône et une infobulle plutôt que de couvrir les autres colonnes.</WorkStudio.Icons.HeaderBothDesc>
   <WorkStudio.Icons.HeaderIcon>Icône seule</WorkStudio.Icons.HeaderIcon>
   <WorkStudio.Icons.HeaderIconDesc>Colonnes plus étroites, puisque le nom disparaît. Survoler un en-tête dit toujours de quoi il s'agit.</WorkStudio.Icons.HeaderIconDesc>
   <WorkStudio.Icons.HeaderLabel>Libellé seul</WorkStudio.Icons.HeaderLabel>

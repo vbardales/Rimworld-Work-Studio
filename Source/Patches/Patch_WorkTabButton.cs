@@ -87,8 +87,13 @@ namespace WorkStudio
             }
 
             // The vanilla header strip takes the left (checkboxes) and the centre (priority
-            // arrows, drawn at fixed x positions): the right is free.
+            // arrows, drawn at fixed x positions): the right is free. Enhanced Work Tab adds its
+            // "Done editing" button there, so keep our button just left of its Reset control.
             var button = new Rect(rect.xMax - 160f, rect.y + 3f, 155f, 28f);
+            if (ModsConfig.IsActive("natee.enhancedworktab"))
+            {
+                button.x -= 215f;
+            }
 
             var font = Text.Font;
             Text.Font = GameFont.Small;

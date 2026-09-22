@@ -1,12 +1,11 @@
 # TESTING.md scenario 7, the visual half. 07 already asserts that the column header carries the new
 # label and that the column worker was thrown away; what no assertion covers is whether the column
-# ends up as WIDE as the new name needs. The renamed header state is asserted before the screenshot;
-# the pixels remain the evidence for width, clipping and the optional Work Type Tag label.
+# remeasures after the rename. The renamed header state is asserted before the screenshot; the
+# pixels show whether a long label safely folds to its icon instead of covering other columns.
 #
 # What to look for:
-#   - the Work tab column that was "Hauling" is headed by the new name, not the old one;
-#   - the column is wide enough for it: a stale width means the worker was reused, and shows up as a
-#     name cut off or spilling into its neighbour;
+#   - the Work tab column that was "Hauling" is still identifiable by its icon, with no long label
+#     spilling into its neighbours; the full new name remains in the type and its tooltip;
 #   - with [baku] Work Type Tag installed, the name in front of a colonist's current job follows too,
 #     without a restart (Tests/OffGame proves the cache is cleared; this is seeing it).
 # The new name is deliberately long, and deliberately accented: a width bug and an encoding bug both

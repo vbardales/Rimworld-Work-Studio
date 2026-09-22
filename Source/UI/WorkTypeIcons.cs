@@ -133,35 +133,50 @@ namespace WorkStudio
             }
 
             var type = __instance?.def?.workType;
+            if (type == null) return true;
             var icon = For(type);
-            if (icon == null)
+            var label = type.labelShort.NullOrEmpty() ? type.label : type.labelShort;
+            // Vanilla alternates neighbouring headers between two rows. A label wider than two
+            // columns reaches the next label on its row; a long rename or a newly created type
+            // therefore used to print over several neighbours in both languages.
+            var tooWide = !label.NullOrEmpty() && Text.CalcSize(label).x > rect.width * 1.8f;
+            if (icon == null && !tooWide)
             {
                 return true;
             }
 
-            // A header is narrow and tall: the icon sits at its foot, centred, and the game's
-            // vertical label keeps whatever room is left above.
-            var size = Mathf.Min(rect.width - 2f, HeaderIconMaxSize);
-            var square = new Rect(rect.x + (rect.width - size) / 2f, rect.yMax - size - 2f, size, size);
+            if (icon != null)
+            {
+                // A header is narrow and tall: the icon sits at its foot, centred.
+                var size = Mathf.Min(rect.width - 2f, HeaderIconMaxSize);
+                var square = new Rect(rect.x + (rect.width - size) / 2f, rect.yMax - size - 2f, size, size);
+                var previous = GUI.color;
+                GUI.color = Color.white;
+                GUI.DrawTexture(square, icon);
+                GUI.color = previous;
+            }
+            else
+            {
+                // Player-created types have no texture. A short monogram keeps their column
+                // visible when the full name cannot fit, and the tooltip carries that name.
+                var initials = label.Substring(0, Mathf.Min(2, label.Length)).ToUpperInvariant();
+                var previousAnchor = Text.Anchor;
+                var previousFont = Text.Font;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.Font = GameFont.Tiny;
+                Widgets.Label(new Rect(rect.x, rect.yMax - 26f, rect.width, 24f), initials);
+                Text.Font = previousFont;
+                Text.Anchor = previousAnchor;
+            }
 
-            var previous = GUI.color;
-            GUI.color = Color.white;
-            GUI.DrawTexture(square, icon);
-            GUI.color = previous;
-
-            if (settings.workTabHeaderMode != HeaderIconOnly)
+            if (settings.workTabHeaderMode != HeaderIconOnly && !tooWide)
             {
                 return true;
             }
 
-            // The one thing the suppressed label did that the icon cannot: say what the column is.
-            if (type != null)
-            {
-                TooltipHandler.TipRegion(rect,
-                    () => type.gerundLabel.CapitalizeFirst() + "\n\n" + type.description,
-                    type.shortHash);
-            }
-
+            TooltipHandler.TipRegion(rect,
+                () => type.label.CapitalizeFirst() + "\n\n" + type.description,
+                type.shortHash);
             return false;
         }
     }
