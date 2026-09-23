@@ -221,3 +221,10 @@ way — only the trailing, custom-type values would have nowhere to go. What sti
 restart without the mod: confirming the game tolerates the now-unread `<workStudioPriorities>`
 node without complaint, and that moved tasks really do read from their XML-declared `workType`
 once nothing overrides it at runtime.
+
+## Evidence
+
+Reports are gitignored (`Tests/Pickle/evidence/`, and the shared `pickle-reports-archive`) and reach a gigabyte each.
+A run that is cited gets a text record in `docs/runs/` and its report is minified to the verdict files and the
+screenshots that matter; `docs/runs/README.md` says which ones, and what to delete. Read a report (set name, suite and
+scenario names, totals) before citing it: the shared report folder holds one report for the whole machine.

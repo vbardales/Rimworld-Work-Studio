@@ -27,3 +27,26 @@ run; it was dropped for this hand-written daily record.
 | --- | --- |
 | [2026-09-22](2026-09-22.md) | Five full passes by another session; the Enhanced Work Tab regression |
 | [2026-09-23](2026-09-23.md) | Scenario 5 confirmed, scenario 2 under Work Tab failed, three full passes |
+
+## Which evidence to keep when a run is cited
+
+A full Pickle report is up to a gigabyte and the disk is shared, so a run that a document cites is
+**minified** as soon as it has been read, and only its useful part stays on disk (never in git).
+
+Keep, per cited run:
+
+- `summary.json`, `junit.xml`, `summary.md`: the verdict, a few KB. The text record goes in the day file here.
+- The screenshots of this mod's own `@review` scenarios, that is the labels of the `take a screenshot` steps of the
+  features, saved as `manual--<label with every non-alphanumeric turned into a dash>--step0.png`. For a set that
+  changes what a capture shows (Enhanced Work Tab, Better Work Tab, RIMMSQOL, Work Type Tag) keep only the captures
+  that depend on that mod: the Work tab ones, the shortcut ones, the renamed-job one. The reference languages
+  (`sans-facultatifs` in English and in French) keep all of them.
+- The screenshots a failure names (`Attachment: screenshot -> ...` in `junit.xml`) until the failure's cause is
+  written down here.
+
+Delete: `Player.log` (quote the lines that prove something in the day file instead), `messages.ndjson`,
+`report.html`, films, every screenshot of another mod (the shared `pickle-reports` folder keeps the leftovers of
+other runs), and every report of a set once a newer run of the same set on the same revision exists. A report that
+`STATUS.md` or a day file still points to is repointed first, never just deleted.
+
+Sizes seen on 2026-09-23: a full report 0.9-1.2 GB; kept as above, 8-32 MB.
