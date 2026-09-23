@@ -1,0 +1,11 @@
+# The showcase pass: the Workshop images, taken on the owner's photographic colony.
+#
+# ScreenshotStudio supplies the fixture "nelim-zen-meadow-studio" (paused, Core and the five DLC,
+# staged through PickleTools). Only 14-publication-shots.feature asks for it, and it is skipped in
+# every other pass, so this map is only for that feature:
+#   Run-PickleWsl.ps1 -Mod WorkStudio -DepMap wsl-deps.studio.map -Filter 14-publication-shots.feature
+# Run it in English: the Workshop page is English.
+nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
+nelim.pickletools.screenshotmode     path:PickleTools/ScreenshotMode/Mod
+nelim.pickletools.screenshotstudio   path:PickleTools/ScreenshotStudio/Mod
+nelim.pickletools.clearscreen        path:PickleTools/ClearScreen/Mod

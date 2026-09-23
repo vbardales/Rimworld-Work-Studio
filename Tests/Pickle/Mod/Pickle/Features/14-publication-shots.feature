@@ -12,15 +12,21 @@
 #      2026-09-20 every capture carried Pickle's runner panel in the corner and had to be cropped by
 #      hand; it does not any more.
 #
-# THE SCENE IS THE OWNER'S SHOWCASE COLONY, Nelim-Zen-Meadow-Studio, not the test fixture: a Workshop image\n# with the fixture's plain desert behind it is not the one she publishes with. (Chosen 2026-09-23.)\n#\n# RUN THESE WITH THE GAME IN ENGLISH. The Workshop page is English, and these images carry the
+# THE SCENE IS THE OWNER'S SHOWCASE COLONY, not the test fixture: a Workshop image with the fixture's
+# plain desert behind it is not the one she publishes with. It is the fixture
+# "nelim-zen-meadow-studio" of PickleTools/ScreenshotStudio, which only exists in a pass that stages
+# that companion (wsl-deps.studio.map); every other pass skips this feature. (Chosen 2026-09-23.)
+#
+# RUN THESE WITH THE GAME IN ENGLISH. The Workshop page is English, and these images carry the
 # mod's own labels. The @review features are the ones to run in each language.
 #
 # Collect them afterwards with Art/Update-WorkshopScreenshots.ps1.
-@review @requires:nelim.pickletools.screenshotmode
+@review @requires:nelim.pickletools.screenshotmode @requires:nelim.pickletools.screenshotstudio
 Feature: images for the Workshop page
 
   Background:
-    Given the save "Nelim-Zen-Meadow-Studio" is loaded
+    Given the save "nelim-zen-meadow-studio" is loaded
+    And game speed is paused
 
   # The editor is what the mod IS: three columns, a type the player made, and the tasks moved into
   # it. An empty middle column would sell nothing.
