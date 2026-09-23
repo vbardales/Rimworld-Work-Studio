@@ -12,7 +12,7 @@
 #      2026-09-20 every capture carried Pickle's runner panel in the corner and had to be cropped by
 #      hand; it does not any more.
 #
-# RUN THESE WITH THE GAME IN ENGLISH. The Workshop page is English, and these images carry the
+# THE SCENE IS THE OWNER'S SHOWCASE COLONY, Nelim-Zen-Meadow-Studio, not the test fixture: a Workshop image\n# with the fixture's plain desert behind it is not the one she publishes with. (Chosen 2026-09-23.)\n#\n# RUN THESE WITH THE GAME IN ENGLISH. The Workshop page is English, and these images carry the
 # mod's own labels. The @review features are the ones to run in each language.
 #
 # Collect them afterwards with Art/Update-WorkshopScreenshots.ps1.
@@ -20,7 +20,7 @@
 Feature: images for the Workshop page
 
   Background:
-    Given the save "test-colony" is loaded
+    Given the save "Nelim-Zen-Meadow-Studio" is loaded
 
   # The editor is what the mod IS: three columns, a type the player made, and the tasks moved into
   # it. An empty middle column would sell nothing.
