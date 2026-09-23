@@ -878,12 +878,13 @@ namespace WorkStudio
             // of what a one-line label leaves beside it: that was cut mid-word ("CarryToG...") and
             // looked like a rendering fault. So those rows are taller, and the height is a sum.
             var ambiguous = Duplicates(rendered);
+            var defNameLine = DefNameLineHeight();
             var total = 0f;
             for (var i = 0; i < candidates.Count; i++)
             {
                 if (ambiguous.Contains(rendered[i]))
                 {
-                    heights[i] += DefNameLineHeight();
+                    heights[i] += defNameLine;
                 }
 
                 total += heights[i];
@@ -905,7 +906,7 @@ namespace WorkStudio
                 }
 
                 DrawGiverLabel(row, candidates[i], showOrigin: false, showCurrent: true, ambiguous,
-                    typeWidth, rendered[i], defNameBelow: true);
+                    typeWidth, rendered[i], defNameLine);
 
                 if (Widgets.ButtonInvisible(row))
                 {
@@ -1127,8 +1128,11 @@ namespace WorkStudio
 
         private static void DrawGiverLabel(Rect rect, WorkGiverDef giver, bool showOrigin,
             bool showCurrent = false, HashSet<string> ambiguous = null, float typeWidth = -1f,
-            string rendered = null, bool defNameBelow = false)
+            string rendered = null, float defNameLine = 0f)
         {
+            // A positive line height means the defName goes on a line of its own under the label:
+            // the caller made the row that much taller. Zero keeps it beside the label.
+            var defNameBelow = defNameLine > 0f;
             var anchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
 
@@ -1156,17 +1160,20 @@ namespace WorkStudio
             // text, and putting it on every row would make the column harder to read, not easier.
             // Matched on what is drawn, not on the full label: truncation is what makes two rows
             // read the same, so the full labels would look distinct while the screen does not.
-            var isAmbiguous = ambiguous != null && (ambiguous.Contains(label) || ambiguous.Contains(drawn));
+            // With the defName below, the same test the caller used to make the row taller: only
+            // what was drawn. Testing the full label as well could pick a row that was not given the
+            // extra line, and its label would be squeezed into a rectangle a line too short.
+            var isAmbiguous = ambiguous != null
+                && (defNameBelow ? ambiguous.Contains(drawn) : ambiguous.Contains(label) || ambiguous.Contains(drawn));
 
             if (isAmbiguous && defNameBelow)
             {
                 // The row was made one line taller for this (see the right-hand column): the label
                 // keeps the top, the defName takes the bottom line in full.
-                var line = DefNameLineHeight();
-                var top = new Rect(labelRect.x, labelRect.y, labelRect.width, labelRect.height - line);
+                var top = new Rect(labelRect.x, labelRect.y, labelRect.width, labelRect.height - defNameLine);
                 Widgets.Label(top, drawn);
 
-                var below = new Rect(labelRect.x, top.yMax, labelRect.width, line);
+                var below = new Rect(labelRect.x, top.yMax, labelRect.width, defNameLine);
                 var greyColor = GUI.color;
                 GUI.color = new Color(1f, 1f, 1f, 0.45f);
                 Widgets.Label(below, giver.defName.Truncate(below.width));

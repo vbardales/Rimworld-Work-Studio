@@ -126,3 +126,10 @@ link to a still-updating item is fine to post, but check the linked item is the 
 - Commit `Mod/About/PublishedFileId.txt` immediately if it ever changes (it should not, for an
   update to an existing item) — losing it before a commit makes the next envoi create a second item.
 - `git tag v1.1.0` and push it, so the Workshop version and the repository agree on what shipped.
+
+**The tag is not at the release commit yet.** `v1.1.0` was pushed on 2026-09-22 at `bf89753`, and the
+`[1.1.0]` section of `CHANGELOG.md` has been edited since (the duplicate task's defName on its own line,
+the confirmation of scenario 5), so the notes describe code the tag does not contain. Nothing has been
+uploaded to Steam, so nothing is wrong yet, but before the upload: fix the last commit, then re-point
+the tag at it (`git tag -f -a v1.1.0 <commit>` and a forced push of the tag, which needs the owner's word),
+or cut the tag again under a new number. Anything changed after that goes under `[Unreleased]`.

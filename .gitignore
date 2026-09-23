@@ -22,7 +22,16 @@ Art/Workshop/*.png
 
 # Full Pickle reports are kept locally before the shared runner releases its lock. Each pass
 # includes hundreds of screenshots (about 1 GB); STATUS.md records the verified summary.
-Tests/Pickle/evidence/
+Tests/Pickle/evidence/**
+# ...except what a citation needs and a clone can check: the verdict files, a few KB each.
+# Screenshots and logs stay local.
+!Tests/Pickle/evidence/**/
+!Tests/Pickle/evidence/**/summary.json
+!Tests/Pickle/evidence/**/summary.md
+!Tests/Pickle/evidence/**/junit.xml
+
+# Textures the build generates next to the PNGs.
+Mod/Textures/**/*.dds
 
 # System
 Thumbs.db

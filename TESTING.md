@@ -433,7 +433,7 @@ carried. `BACKLOG.md` keeps them in order, because the sequence is the useful pa
 
 **2026-09-23: the wait did not fix it, so the layout race was not the whole story.** Scenario 2 replayed
 against `incompat-fluffy-worktab` (report read before citing: setName, suite name and the three scenario
-names are this mod's; local copy in the ignored `Tests/Pickle/evidence/2026-09-23-fluffy-scenario2`): 2 of 3,
+names are this mod's; verdict files committed in `Tests/Pickle/evidence/2026-09-23-fluffy-scenario2`): 2 of 3,
 the button scenario failed again, now with the new diagnostic. Measured, not interpreted: the click step's
 pointer was at (1058, 774) before and after the click, which is where the button was drawn while the tab
 window was still narrow; the probe saw the button drawn at (1754, 759, 155x28), centre (1831.5, 773), and the

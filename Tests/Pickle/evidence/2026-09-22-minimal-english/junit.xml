@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+  <testsuite name="Work Studio loads and its patches apply" tests="3" failures="0" skipped="0" flakes="0" time="0.806">
+    <testcase name="the mod loads after Harmony" classname="Work Studio loads and its patches apply" time="0.465">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="the three patches are in place" classname="Work Studio loads and its patches apply" time="0.232">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="nothing from Work Studio in the startup log" classname="Work Studio loads and its patches apply" time="0.109">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="the button in the Work tab" tests="3" failures="0" skipped="0" flakes="0" time="38.431">
+    <testcase name="Work types… opens the editor" classname="the button in the Work tab" time="13.593">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="the Animals tab does not get the button" classname="the button in the Work tab" time="12.971">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="the Assign tab does not get the button" classname="the button in the Work tab" time="11.867">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="the three columns say what they are" tests="3" failures="0" skipped="0" flakes="0" time="26.134">
+    <testcase name="the editor with a work type selected" classname="the three columns say what they are" time="8.382">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: editor, Handling selected -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--editor--Handling-selected--step0.png
+</system-out>
+    </testcase>
+    <testcase name="the right column, searched" classname="the three columns say what they are" time="9.322">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: editor, other tasks searched for clean -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--editor--other-tasks-searched-for-clean--step0.png
+</system-out>
+    </testcase>
+    <testcase name="the help line under a long type name" classname="the three columns say what they are" time="8.430">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: editor, help line under a long type name -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--editor--help-line-under-a-long-type-name--step0.png
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="create a work type, and fill it" tests="5" failures="0" skipped="0" flakes="0" time="16.588">
+    <testcase name="a new type gets a column at once" classname="create a work type, and fill it" time="0.270">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="a task moves into it and leaves its old type" classname="create a work type, and fill it" time="0.490">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="the task goes home when the type is deleted" classname="create a work type, and fill it" time="0.486">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="a colonist's cell for the new type takes a priority" classname="create a work type, and fill it" time="8.414">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="a colonist assigned only to the new type goes and does its task" classname="create a work type, and fill it" time="6.928">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="priorities survive a reconfiguration across a save" tests="3" failures="0" skipped="0" flakes="0" time="39.165">
+    <testcase name="deleting a type in a running game keeps every other priority in place" classname="priorities survive a reconfiguration across a save" time="8.036">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="a save written with two types, loaded with one" classname="priorities survive a reconfiguration across a save" time="15.646">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="a save written with one type, loaded with two" classname="priorities survive a reconfiguration across a save" time="15.483">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="reordering is visible in the editor" tests="2" failures="0" skipped="0" flakes="0" time="15.649">
+    <testcase name="a downward work type drag leaves the row where it was dropped" classname="reordering is visible in the editor" time="7.166">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: editor, Cooking dropped below Mining -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--editor--Cooking-dropped-below-Mining--step0.png
+</system-out>
+    </testcase>
+    <testcase name="a downward task drag leaves the row where it was dropped" classname="reordering is visible in the editor" time="8.483">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: editor, Slaughter dropped below Tame -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--editor--Slaughter-dropped-below-Tame--step0.png
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="reordering types and tasks" tests="7" failures="0" skipped="0" flakes="0" time="2.349">
+    <testcase name="a work type dragged downwards lands where it was dropped" classname="reordering types and tasks" time="0.276">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="a work type dragged upwards lands where it was dropped" classname="reordering types and tasks" time="0.353">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="the arrows move a type one place" classname="reordering types and tasks" time="0.261">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="the up arrow on the first type does nothing" classname="reordering types and tasks" time="0.293">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="a task dragged downwards lands where it was dropped" classname="reordering types and tasks" time="0.435">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="a task dragged upwards lands where it was dropped" classname="reordering types and tasks" time="0.420">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="the down arrow on the last task does nothing" classname="reordering types and tasks" time="0.311">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="a renamed work type in the Work tab" tests="1" failures="0" skipped="0" flakes="0" time="7.506">
+    <testcase name="the column header and width after a rename" classname="a renamed work type in the Work tab" time="7.506">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: Work tab, Hauling renamed -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--Work-tab--Hauling-renamed--step0.png
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="rename a work type" tests="2" failures="0" skipped="0" flakes="0" time="0.582">
+    <testcase name="the header and its width follow the new name" classname="rename a work type" time="0.267">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="an empty name goes back to the original" classname="rename a work type" time="0.315">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="hide a column" tests="2" failures="0" skipped="0" flakes="0" time="16.350">
+    <testcase name="the column goes, the work stays" classname="hide a column" time="8.209">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="showing it again brings the column back with the priority" classname="hide a column" time="8.141">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="export, reset, import" tests="3" failures="0" skipped="0" flakes="0" time="2.737">
+    <testcase name="everything returns after a reset" classname="export, reset, import" time="0.988">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="the export carries no snapshot of this mod list" classname="export, reset, import" time="0.714">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="a broken file leaves the current setup whole" classname="export, reset, import" time="1.035">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Log tail:
+Exception while init loading file: /home/nelim/.config/unity3d/Ludeon Studios/RimWorld by Ludeon Studios/WorkStudio/pickle-workstudio-whole-truncated.xml
+System.Xml.XmlException: Unexpected end of file has occurred. The following elements are not closed: keys, priorityOverrides, workStudioConfig. Line 40, position 4.
+[Ref E128552A]
+  at System.Xml.XmlTextReaderImpl.Throw (System.Exception e) [0x00027] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlTextReaderImpl.Throw (System.String res, System.String arg) [0x00029] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlTextReaderImpl.Throw (System.Int32 pos, System.String res, System.String arg) [0x0000c] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlTextReaderImpl.ThrowUnclosedElements () [0x000cc] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlTextReaderImpl.ParseElementContent () [0x001eb] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlTextReaderImpl.Read () [0x00085] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlLoader.LoadNode (System.Boolean skipOverWhitespace) [0x0025b] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlLoader.LoadDocSequence (System.Xml.XmlDocument parentDoc) [0x0001b] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlLoader.Load (System.Xml.XmlDocument doc, System.Xml.XmlReader reader, System.Boolean preserveWhitespace) [0x000b4] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlDocument.Load (System.Xml.XmlReader reader) [0x0002e] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at Verse.ScribeLoader.InitLoading (System.String filePath) [0x00072] in &lt;b4d967f0d45a413fbb0223eefee4f2ae&gt;:0 
+[Work Studio] Import failed: System.Xml.XmlException: Unexpected end of file has occurred. The following elements are not closed: keys, priorityOverrides, workStudioConfig. Line 40, position 4.
+[Ref E3DEBE91]
+  at System.Xml.XmlTextReaderImpl.Throw (System.Exception e) [0x00027] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlTextReaderImpl.Throw (System.String res, System.String arg) [0x00029] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlTextReaderImpl.Throw (System.Int32 pos, System.String res, System.String arg) [0x0000c] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlTextReaderImpl.ThrowUnclosedElements () [0x000cc] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlTextReaderImpl.ParseElementContent () [0x001eb] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlTextReaderImpl.Read () [0x00085] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlLoader.LoadNode (System.Boolean skipOverWhitespace) [0x0025b] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlLoader.LoadDocSequence (System.Xml.XmlDocument parentDoc) [0x0001b] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlLoader.Load (System.Xml.XmlDocument doc, System.Xml.XmlReader reader, System.Boolean preserveWhitespace) [0x000b4] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at System.Xml.XmlDocument.Load (System.Xml.XmlReader reader) [0x0002e] in &lt;ef4224b053fb4497822e0667f970e07b&gt;:0 
+  at Verse.ScribeLoader.InitLoading (System.String filePath) [0x000ce] in &lt;b4d967f0d45a413fbb0223eefee4f2ae&gt;:0 
+  at WorkStudio.ConfigFile.Import (System.String path, System.String&amp; error) [0x00009] in &lt;fa76ecdc715d4d66a2d9a5bcd72ad15f&gt;:0 
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="the drift warning's wording" tests="1" failures="0" skipped="0" flakes="0" time="7.667">
+    <testcase name="the dialog a changed mod list produces" classname="the drift warning's wording" time="7.667">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: drift warning dialog -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--drift-warning-dialog--step0.png
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="the mod list drift warning" tests="2" failures="0" skipped="0" flakes="0" time="14.941">
+    <testcase name="a vanished type raises the warning once, and not again" classname="the mod list drift warning" time="7.454">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="no configuration, no warning" classname="the mod list drift warning" time="7.487">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="what removing the mod would leave behind, read from the raw save" tests="1" failures="0" skipped="0" flakes="0" time="7.673">
+    <testcase name="the custom type's priority sits where a mod-less load would simply stop reading" classname="what removing the mod would leave behind, read from the raw save" time="7.673">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="what the settings window looks like" tests="2" failures="0" skipped="0" flakes="0" time="18.520">
+    <testcase name="through the MainButtons shortcut" classname="what the settings window looks like" time="7.795">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: settings window, opened by the MainButtons shortcut -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--settings-window--opened-by-the-MainButtons-shortcut--step0.png
+</system-out>
+    </testcase>
+    <testcase name="through Mod options" classname="what the settings window looks like" time="10.725">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: settings window, opened through Mod options -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--settings-window--opened-through-Mod-options--step0.png
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="the settings window, both doors" tests="6" failures="0" skipped="0" flakes="0" time="56.421">
+    <testcase name="the hidden shortcut opens the settings window" classname="the settings window, both doors" time="9.450">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="Mod options opens the same settings" classname="the settings window, both doors" time="7.555">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="a configuration survives being re-read from disk" classname="the settings window, both doors" time="8.120">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="the reset button asks before it destroys anything" classname="the settings window, both doors" time="8.989">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="confirming the reset clears the configuration" classname="the settings window, both doors" time="11.366">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+    <testcase name="going back from the confirmation leaves the setup whole" classname="the settings window, both doors" time="10.941">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="images for the Workshop page" tests="3" failures="0" skipped="0" flakes="0" time="27.332">
+    <testcase name="the editor, with a type a player would have made" classname="images for the Workshop page" time="8.335">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: Workshop page, the editor -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--Workshop-page--the-editor--step0.png
+</system-out>
+    </testcase>
+    <testcase name="the new column in the Work tab" classname="images for the Workshop page" time="10.186">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: Workshop page, the new column -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--Workshop-page--the-new-column--step0.png
+</system-out>
+    </testcase>
+    <testcase name="the settings window" classname="images for the Workshop page" time="8.811">
+      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
+Attachment: Workshop page, the settings -&gt; /mnt/c/Users/nelim/Documents/rimworld/pickle-reports/screenshots/manual--Workshop-page--the-settings--step0.png
+</system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="the declared incompatibility with Fluffy's Work Tab" tests="1" failures="0" skipped="1" flakes="0" time="0.000">
+    <testcase name="Work Tab's startup column snapshot cannot contain a type created at runtime" classname="the declared incompatibility with Fluffy's Work Tab" time="0.000">
+      <skipped />
+    </testcase>
+  </testsuite>
+  <testsuite name="RIMMSQOL reveals and hides the Work Studio shortcut" tests="4" failures="0" skipped="4" flakes="0" time="0.000">
+    <testcase name="RIMMSQOL lists the shortcut hidden while the main bar omits it" classname="RIMMSQOL reveals and hides the Work Studio shortcut" time="0.000">
+      <skipped />
+    </testcase>
+    <testcase name="the revealed shortcut is persisted, drawn and opens Work Studio settings" classname="RIMMSQOL reveals and hides the Work Studio shortcut" time="0.000">
+      <skipped />
+    </testcase>
+    <testcase name="hiding and forgetting the choice removes every RIMMSQOL trace" classname="RIMMSQOL reveals and hides the Work Studio shortcut" time="0.000">
+      <skipped />
+    </testcase>
+    <testcase name="the revealed shortcut remains usable at 150 percent interface scale" classname="RIMMSQOL reveals and hides the Work Studio shortcut" time="0.000">
+      <skipped />
+    </testcase>
+  </testsuite>
+  <testsuite name="Work Type Tag follows a renamed work type without a restart" tests="1" failures="0" skipped="1" flakes="0" time="0.000">
+    <testcase name="the current job label changes immediately" classname="Work Type Tag follows a renamed work type without a restart" time="0.000">
+      <skipped />
+    </testcase>
+  </testsuite>
+</testsuites>
