@@ -388,7 +388,7 @@ crossing the two axes everywhere would buy nothing but machine time, and this ma
 | `sans-facultatifs`, English | 47 of 47 | The mod stands up alone. The five `@review` scenarios asserted nothing; the captures were read by a person and found clean |
 | `sans-facultatifs`, French | 47 of 47 | Same, in French, with the language named in the report; captures read, and the right-hand column was reworked because of what they showed |
 | `avec-better-work-tab` | 47 of 47 | Coexistence with Better Work Tab, including scenario 2, the one written for tab replacers |
-| `avec-enhanced-work-tab` | **45 of 47** on 2026-09-21; scenario 5 alone **3 of 3 on 2026-09-23** (a first claim on 09-22 was withdrawn, below) | The save-load fix is confirmed in game (below); the full set has been requeued and the button overlap, below, is untouched by the fix |
+| `avec-enhanced-work-tab` | **45 of 47** on 2026-09-21; **49 passed, 0 failed, 6 skipped of 55 on 2026-09-23** (the skips are other mods' @requires scenarios) | Coexistence holds on the current build: the button scenario and both save scenarios of 05 pass. A first claim of 05 on 09-22 was withdrawn, below |
 | `incompat-fluffy-worktab` | **45 of 47** | Historical exploration: the button race and save-load exception do not establish incompatibility. Feature 15 was added later from direct inspection and is written but not yet run |
 | `incompat-compact-worktab` | 47 of 47 | Historical coexistence result, consistent with the later code inspection; the incorrect incompatibility declaration was removed on 2026-09-22 |
 
