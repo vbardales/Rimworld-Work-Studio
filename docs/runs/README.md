@@ -1,19 +1,29 @@
-# Pickle runs
+# Runs
 
-One text summary per run that a document cites. The full reports (screenshots, `Player.log`,
-`junit.xml`, up to a gigabyte each) stay on disk in `Tests/Pickle/evidence/<name>`, ignored by git;
-the shared `pickle-reports` folder holds one report for the whole machine and rotates, so a report
-has to be read (set name, suite and scenario names) and summarised here before it is cited.
+One text file per day of testing, written from the run reports. It is the only record of a run that
+lives in git, and the same convention as the other mods of this workspace (`ContentedLivestock`,
+`SkillIcons`, ...).
 
-| Run | Set | Language | Passed / failed / skipped | exitReason |
-| --- | --- | --- | --- | --- |
-| [2026-09-22-avec-better-work-tab](2026-09-22-avec-better-work-tab.md) | `avec-better-work-tab` | English | 49 / 0 / 6 | passed |
-| [2026-09-22-avec-enhanced-work-tab](2026-09-22-avec-enhanced-work-tab.md) | `avec-enhanced-work-tab` | English | 48 / 1 / 6 | failed |
-| [2026-09-22-avec-work-type-tag](2026-09-22-avec-work-type-tag.md) | `avec-work-type-tag` | English | 50 / 0 / 5 | passed |
-| [2026-09-22-minimal-english](2026-09-22-minimal-english.md) | `sans-facultatifs` | English | 49 / 0 / 6 | passed |
-| [2026-09-22-minimal-french](2026-09-22-minimal-french.md) | `sans-facultatifs` | French | 49 / 0 / 6 | passed |
-| [2026-09-23-ewt-full](2026-09-23-ewt-full.md) | `avec-enhanced-work-tab` | English | 49 / 0 / 6 | passed |
-| [2026-09-23-ewt-scenario5](2026-09-23-ewt-scenario5.md) | `avec-enhanced-work-tab` | English | 3 / 0 / 0 | passed |
-| [2026-09-23-fluffy-scenario2](2026-09-23-fluffy-scenario2.md) | `incompat-fluffy-worktab` | English | 2 / 1 / 0 | failed |
-| [2026-09-23-minimal-english](2026-09-23-minimal-english.md) | `sans-facultatifs` | English | 49 / 0 / 6 | passed |
-| [2026-09-23-minimal-french](2026-09-23-minimal-french.md) | `sans-facultatifs` | French | 49 / 0 / 6 | passed |
+The evidence itself - Pickle reports, `Player.log`, screenshots, films - stays **on disk**, under
+`Tests/Pickle/evidence/`, and is ignored by git: a full pass is up to a gigabyte, mostly PNGs that never
+diff. The shared `pickle-reports` folder holds one report for the whole machine and rotates, so a report
+is read (set name, suite and scenario names, the launcher's totals) and summarised here before it is
+cited, and its archive folder gets a `keep.txt` if captures are still to be reviewed.
+
+What a summary here carries, since the media are not beside it:
+
+- the set (`setName`), the language, the revision tested, `exitReason`, and discovered / passed / failed / skipped
+- for a failure, the cause as read from the report, or "not established"
+- what a person actually opened and saw in the captures, and what they did not show
+- where the media are on disk
+
+A summary without those is a claim, not a record. The evidence directory is not backed up: if the
+machine is lost, these files and the history are what remains.
+
+An earlier attempt committed the verdict files (`summary.json`, `junit.xml`) and a generated file per
+run; it was dropped for this hand-written daily record.
+
+| Day | Contents |
+| --- | --- |
+| [2026-09-22](2026-09-22.md) | Five full passes by another session; the Enhanced Work Tab regression |
+| [2026-09-23](2026-09-23.md) | Scenario 5 confirmed, scenario 2 under Work Tab failed, three full passes |
