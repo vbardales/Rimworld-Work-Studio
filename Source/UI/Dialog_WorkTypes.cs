@@ -869,15 +869,27 @@ namespace WorkStudio
             // would have put it.
             var rendered = new string[candidates.Count];
             var heights = new float[candidates.Count];
-            var total = 0f;
             for (var i = 0; i < candidates.Count; i++)
             {
                 rendered[i] = LayOutGiverLabel(GiverLabel(candidates[i]), labelWidth, out heights[i]);
+            }
+
+            // A row that reads like another gets its defName on a line of its own, in full, instead
+            // of what a one-line label leaves beside it: that was cut mid-word ("CarryToG...") and
+            // looked like a rendering fault. So those rows are taller, and the height is a sum.
+            var ambiguous = Duplicates(rendered);
+            var total = 0f;
+            for (var i = 0; i < candidates.Count; i++)
+            {
+                if (ambiguous.Contains(rendered[i]))
+                {
+                    heights[i] += DefNameLineHeight();
+                }
+
                 total += heights[i];
             }
 
             var viewRect = new Rect(0f, 0f, contentWidth, total);
-            var ambiguous = Duplicates(rendered);
 
             Widgets.BeginScrollView(listRect, ref addScroll, viewRect);
 
@@ -893,7 +905,7 @@ namespace WorkStudio
                 }
 
                 DrawGiverLabel(row, candidates[i], showOrigin: false, showCurrent: true, ambiguous,
-                    typeWidth, rendered[i]);
+                    typeWidth, rendered[i], defNameBelow: true);
 
                 if (Widgets.ButtonInvisible(row))
                 {
@@ -1110,9 +1122,12 @@ namespace WorkStudio
             return Mathf.Min(widest + 4f, rowWidth * 0.42f);
         }
 
+        /// <summary>The height of the line that carries a defName under an ambiguous label.</summary>
+        private static float DefNameLineHeight() => Text.CalcHeight("A", 1000f);
+
         private static void DrawGiverLabel(Rect rect, WorkGiverDef giver, bool showOrigin,
             bool showCurrent = false, HashSet<string> ambiguous = null, float typeWidth = -1f,
-            string rendered = null)
+            string rendered = null, bool defNameBelow = false)
         {
             var anchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -1136,13 +1151,33 @@ namespace WorkStudio
 
             var label = GiverLabel(giver);
             var drawn = rendered ?? TruncateMiddle(label, labelRect.width);
-            Widgets.Label(labelRect, drawn);
 
             // Only when the label alone would not say which row this is: the defName is developer
             // text, and putting it on every row would make the column harder to read, not easier.
             // Matched on what is drawn, not on the full label: truncation is what makes two rows
             // read the same, so the full labels would look distinct while the screen does not.
-            if (ambiguous != null && (ambiguous.Contains(label) || ambiguous.Contains(drawn)))
+            var isAmbiguous = ambiguous != null && (ambiguous.Contains(label) || ambiguous.Contains(drawn));
+
+            if (isAmbiguous && defNameBelow)
+            {
+                // The row was made one line taller for this (see the right-hand column): the label
+                // keeps the top, the defName takes the bottom line in full.
+                var line = DefNameLineHeight();
+                var top = new Rect(labelRect.x, labelRect.y, labelRect.width, labelRect.height - line);
+                Widgets.Label(top, drawn);
+
+                var below = new Rect(labelRect.x, top.yMax, labelRect.width, line);
+                var greyColor = GUI.color;
+                GUI.color = new Color(1f, 1f, 1f, 0.45f);
+                Widgets.Label(below, giver.defName.Truncate(below.width));
+                GUI.color = greyColor;
+            }
+            else
+            {
+                Widgets.Label(labelRect, drawn);
+            }
+
+            if (isAmbiguous && !defNameBelow)
             {
                 var used = Mathf.Min(Text.CalcSize(drawn).x, labelRect.width);
                 var defNameRect = new Rect(labelRect.x + used + 6f, labelRect.y,

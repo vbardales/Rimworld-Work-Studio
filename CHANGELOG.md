@@ -29,7 +29,7 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 - **A task whose name does not fit its column now takes two lines** instead of being cut. A name that fits is left on one line, so the list keeps its rhythm; only past two lines is anything dropped, and then from the middle. This is what a French client showed first — the same names are longer there — but it applies to any language and any mod whose task names run long.
 - The grey type shown beside each task in the right-hand column took a fixed 42% of the row, whatever it held. It is now measured from the types actually listed, and the width it no longer needs goes to the task name.
-- When two tasks in the same column carry the same label, each now shows its `defName` in grey beside it. Vanilla alone has several — *construct placed frames* belongs to both Construction and Art, *carry to growth vat* appears twice — and a mod list adds more; the rows were indistinguishable in a column whose whole purpose is clicking one of them rather than the other. A label shown only once is left alone.
+- When two tasks in the same column carry the same label, each now shows its `defName` in grey, in full, on a line of its own under the label. Vanilla alone has several — *construct placed frames* belongs to both Construction and Art, *carry to growth vat* appears twice — and a mod list adds more; the rows were indistinguishable in a column whose whole purpose is clicking one of them rather than the other. A label shown only once is left alone.
 
 ### Fixed
 
