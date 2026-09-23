@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<testsuites>
-  <testsuite name="PickleTools interface scale" tests="1" failures="0" skipped="0" flakes="0" time="3.935">
-    <testcase name="a button is clickable at another interface scale" classname="PickleTools interface scale" time="3.935">
-      <system-out>Attachment: smoke-attachment -&gt; smoke test attachment content
-</system-out>
-    </testcase>
-  </testsuite>
-</testsuites>

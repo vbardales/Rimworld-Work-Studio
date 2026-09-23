@@ -388,7 +388,7 @@ crossing the two axes everywhere would buy nothing but machine time, and this ma
 | `sans-facultatifs`, English | 47 of 47 | The mod stands up alone. The five `@review` scenarios asserted nothing; the captures were read by a person and found clean |
 | `sans-facultatifs`, French | 47 of 47 | Same, in French, with the language named in the report; captures read, and the right-hand column was reworked because of what they showed |
 | `avec-better-work-tab` | 47 of 47 | Coexistence with Better Work Tab, including scenario 2, the one written for tab replacers |
-| `avec-enhanced-work-tab` | 45 of 47 on 2026-09-21; scenario 5 alone **3 of 3 on 2026-09-22** after the fix | The save-load failure is fixed (below); the full 47-scenario set has not been replayed since, and the button overlap, below, is untouched by this fix |
+| `avec-enhanced-work-tab` | **45 of 47** on 2026-09-21; a 2026-09-22 replay of scenario 5 alone was reported passed but its evidence was misattributed (below) and does not confirm anything | The fix is written (below) but **not confirmed in game**; the full 47-scenario set has not been replayed since it landed, and the button overlap, below, is untouched by it |
 | `incompat-fluffy-worktab` | **45 of 47** | Historical exploration: the button race and save-load exception do not establish incompatibility. Feature 15 was added later from direct inspection and is written but not yet run |
 | `incompat-compact-worktab` | 47 of 47 | Historical coexistence result, consistent with the later code inspection; the incorrect incompatibility declaration was removed on 2026-09-22 |
 
@@ -407,13 +407,15 @@ type gave it the SAME defName — and Enhanced Work Tab handed it the deleted ty
 while Work Studio's own list correctly held 0 for a name it had never written a value under. The fix
 (`ed41491`) keeps a counter in the settings that only ever goes up, read from the source of
 `EnhancedWorkTabGameComponent`/`PawnWorkSettings_GetPriority_Patch` decompiled for this diagnosis, not
-guessed. **Confirmed in game, 2026-09-22**: `avec-enhanced-work-tab`, filtered to
-`05-priorities-across-save.feature` alone, 3 of 3 scenarios passed, `exitReason: passed`
-(`Tests/Pickle/evidence/2026-09-22-scenario5-enhanced/`). The full 47-scenario set has not been
-replayed since the fix; that is still owed before this pass counts for `done -> tested`. Reading
+guessed. **Not confirmed in game.** A replay on 2026-09-22, filtered to
+`05-priorities-across-save.feature` alone against `avec-enhanced-work-tab`, was reported as 3 of 3
+passed and its `summary.json`/`junit.xml` were copied into the repository as evidence — but that
+copy turned out to belong to a different, unrelated test (`PickleTools interface scale`, a run
+queued around the same time on the same shared machine and reported through the same one-report-
+for-the-whole-machine folder). Removed 2026-09-23; the scenario still needs a real replay. Reading
 another mod's decompiled source to explain a failure, rather than only measuring the outside, is new
-for this mod's testing; it is the reason the cause could be named before the scenario was replayed
-rather than only after.
+for this mod's testing; it lets the cause be named before the scenario is replayed, which is not the
+same thing as the replay having happened.
 
 *The button scenario is a measured overlap, and the cause is not yet known to be Enhanced Work Tab's.*
 The tab window is vanilla `MainTabWindow_Work` here, so this mod **patches** the tab and does not
