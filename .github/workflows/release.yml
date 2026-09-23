@@ -30,11 +30,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release --dry-run
+      # semantic-release-steam neither installs SteamCMD nor places config.vdf: this action does,
+      # and exports STEAMCMD_PATH and STEAM_CONFIG_VDF (a path, not the secret) for the plugin.
+      # Pinned to a commit because the tag moves on every release and the action receives the session.
+      - name: Steam login
+        if: inputs.mode == 'publish'
+        uses: RimWorks/mod-ci/.github/actions/steam-login@931aff082d97c7746323da89c840e370f7001915 # v1.10
+        with:
+          steam-username: ${{ secrets.STEAM_USERNAME }}
+          steam-config-vdf-b64: ${{ secrets.STEAM_CONFIG_VDF_B64 }}
       - name: Publish after protected-environment approval
         if: inputs.mode == 'publish'
         env:
           STEAM_PUBLISH: 'true'
           STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
-          STEAM_CONFIG_VDF: ${{ secrets.STEAM_CONFIG_VDF }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
