@@ -780,3 +780,7 @@ for upstream, so an issue first and not a PR. None of it has a case that needs i
 Each was stated with more confidence than its evidence carried, and each was withdrawn the moment a
 measurement disagreed. The lesson for next time is the order: measure at the moment of the click,
 frame by frame, before forming a theory about where it landed.
+
+## An overlong header of a type without an icon shows two letters
+
+Seen 2026-09-24 in the Workshop capture on the ScreenshotStudio colony: a custom type named "Hauling and tidying" (no icon exists for a type the player made) draws as "HA" in the Work tab header, with no icon beside it. The fallback for overlong headers (icon and tooltip, 2026-09-22) has nothing to show when there is no icon, so it shows initials, which say nothing. The capture was fixed by naming the type "Tidying", not by fixing this. Worth a decision: a shortened label with an ellipsis, or the first word, instead of two letters.

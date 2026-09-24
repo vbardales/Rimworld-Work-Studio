@@ -31,12 +31,12 @@ Feature: images for the Workshop page
   # The editor is what the mod IS: three columns, a type the player made, and the tasks moved into
   # it. An empty middle column would sell nothing.
   Scenario: the editor, with a type a player would have made
-    When I create the work type "Hauling and tidying"
-    And I move the task "HaulGeneral" into "Hauling and tidying"
-    And I move the task "CleanFilth" into "Hauling and tidying"
-    And I select the work type "Hauling and tidying"
-    Then the task "HaulGeneral" belongs to "Hauling and tidying"
-    And the task "CleanFilth" belongs to "Hauling and tidying"
+    When I create the work type "Tidying"
+    And I move the task "HaulGeneral" into "Tidying"
+    And I move the task "CleanFilth" into "Tidying"
+    And I select the work type "Tidying"
+    Then the task "HaulGeneral" belongs to "Tidying"
+    And the task "CleanFilth" belongs to "Tidying"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "Workshop page, the editor"
     And Nelim's Pickle Tools: screenshot mode is disabled
@@ -44,18 +44,18 @@ Feature: images for the Workshop page
   # The point of the previous shot, seen from the Work tab: the column exists, immediately, without
   # a restart.
   Scenario: the new column in the Work tab
-    When I create the work type "Hauling and tidying"
-    And I move the task "HaulGeneral" into "Hauling and tidying"
+    When I create the work type "Tidying"
+    And I move the task "HaulGeneral" into "Tidying"
     And I close the work type editor
     And I open the "Work" tab
-    Then the Work tab has a column for "Hauling and tidying"
+    Then the Work tab has a column for "Tidying"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "Workshop page, the new column"
     And Nelim's Pickle Tools: screenshot mode is disabled
     And I close all windows but the main tabs, for Work Studio
 
   Scenario: the settings window
-    When I create the work type "Hauling and tidying"
+    When I create the work type "Tidying"
     And I close the work type editor
     And I open Work Studio's settings through Mod options
     Then window "Dialog_ModSettings" is open
