@@ -49,9 +49,10 @@ Feature: images for the Workshop page
     And I close the work type editor
     And I open the "Work" tab
     Then the Work tab has a column for "Tidying"
-    And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
+    # No screenshot mode here, on purpose: the Work tab is a main tab, and the bar under it with "Work"
+    # highlighted is what tells a visitor where the panel comes from. The image is cropped to the panel
+    # and that bar.
     And I take a screenshot "Workshop page, the new column"
-    And Nelim's Pickle Tools: screenshot mode is disabled
     And I close all windows but the main tabs, for Work Studio
 
   Scenario: the settings window
