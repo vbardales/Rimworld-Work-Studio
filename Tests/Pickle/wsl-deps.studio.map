@@ -8,4 +8,3 @@
 nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
 nelim.pickletools.screenshotmode     path:PickleTools/ScreenshotMode/Mod
 nelim.pickletools.screenshotstudio   path:PickleTools/ScreenshotStudio/Mod
-nelim.pickletools.clearscreen        path:PickleTools/ClearScreen/Mod

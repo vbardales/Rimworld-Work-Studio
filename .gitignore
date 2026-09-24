@@ -25,6 +25,9 @@ Art/Workshop/*.png
 Tests/Pickle/evidence/
 # A text summary of each run that a document cites is committed under docs/runs/ instead.
 
+# Raw Workshop captures, 3-4 MB each: only the cropped files in Art/Workshop/ready/ are kept.
+Art/Workshop/studio-raw/
+
 # Textures the build generates next to the PNGs.
 Mod/Textures/**/*.dds
 

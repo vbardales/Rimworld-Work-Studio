@@ -8,7 +8,10 @@
 #   1. The scene is built here, never borrowed. A screenshot of whatever the test fixture happens to
 #      hold puts a raw defName or a test name like "Pickle herding" on a store page, which reads as
 #      debug output. Everything below is named the way a player would name it.
-#   2. The interface around the windows is hidden, through the game's own screenshot mode. Until
+#   2. An option window of the mod (the editor, the settings) is taken with the interface around it
+#      hidden, through the game's own screenshot mode, and cropped tight; a game window the mod
+#      changes (the Work tab) is taken with the full interface, uncropped. The rules and the reasons
+#      are in PUBLICATION.md, "Workshop screenshots". Until
 #      2026-09-20 every capture carried Pickle's runner panel in the corner and had to be cropped by
 #      hand; it does not any more.
 #

@@ -22,47 +22,50 @@ gaps is the owner's call, recorded here rather than hidden.
   `wsl-deps.avec-enhanced-work-tab.map` set. Both are one command away
   (`scripts/Run-PickleWsl.ps1 -Mod WorkStudio -DepMap <map> ...`); neither has run since the fixes
   they are meant to confirm.
-- Retake the three Workshop screenshots (below): the current ones in `Art/Workshop/` are from
-  2026-09-20 23:48, one day before the two-line task labels and the measured grey-type width shipped
-  in this version. They show the OLD single-line, fixed-width layout — not what 1.1.0 draws.
+- Finish the three Workshop screenshots, following the rules below: two are captured and cropped on
+  the showcase colony, the Work tab one is queued. The older ones in `Art/Workshop/` predate the
+  two-line task labels and the duplicate-row defNames of this version and must not be uploaded.
 - Decide the two open design points STATUS.md lists (icons on by default; the long renamed header
   spilling into its neighbours in capture 07b) — not blocking, but worth a look before they are
   permanent on every subscriber's screen.
 
-## Screenshot order
+## Workshop screenshots: the rules, and where each image stands
 
-**Each upload stays under 2 MB.** Pickle's raw captures are ~2-3 MB PNGs at 1920x1080; cropping the
-empty margin (never resampling — resizing with interpolation blurs flat pixel-art regions and can
-make the file BIGGER despite fewer pixels, as it did on the first attempt for image 2 below) is
-usually enough on its own. Check with `(Get-Item <file>).Length / 1MB` before calling one ready.
+**The rules**, decided with the owner on 2026-09-24. They apply to every Workshop image of this mod and are the
+only place they are written; `14-publication-shots.feature` points here.
 
-Steam shows the first one large: it should be the most demonstrative, not the prettiest. Order,
-with what each proves, and where the file to upload is:
+1. **The scene is the owner's showcase colony**, `Nelim-Zen-Meadow-Studio`, never the test fixture. It is the fixture
+   `nelim-zen-meadow-studio` of `PickleTools/ScreenshotStudio`, only present in a pass that stages that companion:
+   `wsl-deps.studio.map`. Run it in English, the page is English.
+2. **Two kinds of image, two treatments:**
+   - **An option window** (this mod's own windows: the editor, the settings): the game's screenshot mode is on
+     (HUD and Pickle panels hidden) and the image is **cropped tight around the window**, its rectangle plus 16 px
+     of margin on every side. PNG.
+   - **An interface window** (a game window this mod changes, such as the Work tab, a main tab): the **full
+     interface**, screenshot mode off, **no crop**, the whole 1920x1080 frame, so the tab bar under it with the tab
+     highlighted says where the panel comes from. Saved as JPEG at quality 95 when the PNG is over 2 MB (on the
+     meadow: about 4 MB as PNG, 0.7 MB as JPEG).
+3. **Named as a player would name it**: no defName, no test name, and short enough that a column header reads in
+   full (`Tidying`, not `Hauling and tidying`, which drew as `HA` for want of an icon; see `BACKLOG.md`).
+4. **Each upload stays under 2 MB.** Crop, never resample: resizing with interpolation blurs flat pixel-art regions
+   and can make a PNG bigger despite fewer pixels. Check with `(Get-Item <file>).Length / 1MB`.
+5. **Every image is opened and looked at before it is called ready**, and its composition is the owner's call: a
+   passed scenario proves the state, not that the picture sells the mod.
+6. **Where files live:** raw captures in `Art/Workshop/studio-raw/` (ignored by git, delete once cropped), finished
+   files in `Art/Workshop/ready/`. Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`,
+   collected with `Art/Update-WorkshopScreenshots.ps1`.
 
-1. **The three-column editor** with a work type a player would actually make ("Hauling and
-   tidying", fed from Hauling and Cleaning). This is what the mod IS.
-   **`Art/Workshop/01-the-editor.png` — not ready.** It shows the bug 1.1.0 fixes: two "Carry to
-   growth vat" rows in the right-hand column, both truncated and indistinguishable ("Carry..." /
-   "Haul..."). Cropping does not fix that; it needs retaking against the current build (queue
-   `14-publication-shots.feature`, English, then `Art/Update-WorkshopScreenshots.ps1`), and this
-   slot stays empty until then.
-2. **The new column, seen from the Work tab**: it exists immediately, no restart.
-   **`Art/Workshop/ready/02-the-new-column.png`, 1600×890, 1.78 MB — ready.** Cropped 2026-09-22 from
-   the original 1920×1080 (`x 0-1600, y 190-1080`) to trim the empty sky and the mostly-empty desert
-   on the right (solar panels already half cut off there); the priorities panel and the built rooms
-   fill more of the frame. Nothing in the dialog was cut.
-3. **The settings window**, opened through Mod options, so the page shows there is a configuration
-   surface beyond the editor.
-   **`Art/Workshop/ready/03-the-settings.png`, 1620×1000, 1.66 MB — ready.** Cropped 2026-09-22 from
-   1920×1080 (`x 150-1770, y 40-1040`) to trim the wide empty desert on both sides and a sliver top
-   and bottom; the dialog itself (`x 510-1408, y 190-890` in the original) is untouched.
+**Where each image stands (2026-09-24).** Steam shows the first one large; a proposed order, the owner's to confirm:
+the Work tab first for its impact, then the editor, then the settings.
 
-The originals stay in `Art/Workshop/`; the cropped, upload-ready files are in `Art/Workshop/ready/`.
-Slot 1 has no ready file yet — upload 2 and 3 in the meantime only if the page cannot wait, and
-replace this note once 1 is retaken and cropped the same way.
+| Image | Kind | State |
+| --- | --- | --- |
+| The new column in the Work tab | interface window | scenario reworked (full interface, type `Tidying`); capture queued on the showcase colony |
+| The editor with a type a player made | option window | captured 2026-09-24 on the showcase colony; cropped to 1210x790, 0.24 MB, not yet moved to `ready/` (waits for the retake, which will rename the type `Tidying`) |
+| The settings window | option window | captured and cropped to 930x730, 0.16 MB, same wait |
 
-Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature` (English only — the page
-is English) and collected with `Art/Update-WorkshopScreenshots.ps1`, then cropped by hand.
+`Art/Workshop/ready/02-the-new-column.png` and `03-the-settings.png` (fixture desert, 2026-09-22) are **superseded**;
+do not upload them. `Art/Workshop/01-the-editor.png` shows the truncated duplicate rows 1.1.0 fixes: do not upload it.
 
 `Preview.png` and `ModIcon.png` (in `Mod/About/`) ship with the mod. The Preview was regenerated and
 visually reviewed on 2026-09-22 at 896×504 and 545,873 bytes. Its text-free source, deterministic
