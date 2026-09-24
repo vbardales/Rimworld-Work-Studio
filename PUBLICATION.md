@@ -51,7 +51,11 @@ only place they are written; `14-publication-shots.feature` points here.
    and can make a PNG bigger despite fewer pixels. Check with `(Get-Item <file>).Length / 1MB`.
 5. **Every image is opened and looked at before it is called ready**, and its composition is the owner's call: a
    passed scenario proves the state, not that the picture sells the mod.
-6. **Where files live:** raw captures in `Art/Workshop/studio-raw/` (ignored by git, delete once cropped), finished
+6. **A capture on the map** (an object or a pawn shown zoomed and cropped; this mod has none today, the rule is
+   for the day it has): aim at an **orange zone** of the studio, and never at the black tiles, where the subject
+   drowns; or at the grass **just above the smiley** emblem. On the grass, **circle in red what is worth seeing**
+   so the eye finds it, since the meadow is busy.
+7. **Where files live:** raw captures in `Art/Workshop/studio-raw/` (ignored by git, delete once cropped), finished
    files in `Art/Workshop/ready/`. Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`,
    collected with `Art/Update-WorkshopScreenshots.ps1`.
 
