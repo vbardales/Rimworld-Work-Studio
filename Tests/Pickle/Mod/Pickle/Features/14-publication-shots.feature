@@ -45,7 +45,9 @@ Feature: images for the Workshop page
     And Nelim's Pickle Tools: screenshot mode is disabled
 
   # The point of the previous shot, seen from the Work tab: the column exists, immediately, without
-  # a restart.
+  # a restart. The showcase colony is heavy for the software-rendered Linux game: opening the tab
+  # took 10 s on 2026-09-24 and died on the default five-second step budget, hence the tag.
+  @timeout:30
   Scenario: the new column in the Work tab
     When I create the work type "Tidying"
     And I move the task "HaulGeneral" into "Tidying"
