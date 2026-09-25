@@ -30,9 +30,11 @@ Steam change note is the fenced block under `### 1.2.0` below, the release notes
 
 **Before the actual Steam upload, still to do:**
 
-- The Workshop description still carries the old Compact Work Tab incompatibility sentence. Run the publish with
-  `update_description` on: the dry-run then prints a line diff of what changes on the page. (RimWorld does not
-  resend `About.xml`'s description on an update.)
+- Run the publish with `update_description` on. The live description already says only what the template says about
+  Compact Work Tab (the dry-run of 2026-09-25 shows no such sentence on the page), so the description would change
+  by one line: the new bullet about icons. The rest of its diff is list formatting only (the renderer indents each
+  `[*]` and drops the space after it). RimWorld does not resend `About.xml`'s description on an update, so without
+  the option the page keeps the old text.
 - Replay `02-work-tab-button.feature` against `wsl-deps.incompat-fluffy-worktab.map`, and the full
   `wsl-deps.avec-enhanced-work-tab.map` set. Both are one command away
   (`scripts/Run-PickleWsl.ps1 -Mod WorkStudio -DepMap <map> ...`); neither has run since the fixes
