@@ -13,13 +13,18 @@ been replayed since it was written, and the full 47-scenario Enhanced Work Tab s
 replayed since the defName fix — only that one scenario has, and it passed. Publishing over these
 gaps is the owner's call, recorded here rather than hidden.
 
-**Why 1.2.0.** The Workshop page shows a change note "1.1.1 — Update of mod's preview picture", posted by nelim17 on
-2026-09-22 at 12:00, uploaded from the game (the owner's word, 2026-09-25). It is not the CI's: no tag, no GitHub
-release and no publishing run of this repository match it. Its content is not established: it came about 13 minutes
-after `c27b8af` ("Rebuild preview from preserved source", 11:47), so it most likely uploaded the mod folder as it stood
-then (the work prepared as 1.1.0) and **not** what came after (`bb48d04`, the settings and Work tab overlap fix of
-22:47, and everything later). The owner chose **1.2.0** on 2026-09-25 and `CHANGELOG.md` lists everything since 1.0.1
-under it, so no subscriber misses a line whichever of the two uploads they got.
+**The Workshop history, as the owner pasted it on 2026-09-25** (the change notes of the page; all uploaded from the game
+except the last):
+
+| When | Note | What was actually in the mod |
+| --- | --- | --- |
+| 2026-09-22 09:09 | `1.1.0 — 2026-09-22`, Added / Changed / Fixed | The commit of the tag `v1.1.0` (`bf89753`, pushed 09:07). |
+| 2026-09-22 12:00 | `1.1.1 Update of mod's preview picture` | The same DLL and, from git (`c27b8af`, 11:47): the new Preview, the Compact Work Tab entry removed from `incompatibleWith` in `About.xml`, the ATTRIBUTION copy. The note says only the preview. |
+| 2026-09-25 11:27 | The 1.2.0 note (Added / Changed / Fixed, no version number) | Commit `7a9ffec`, by the CI (`publish-tag.yml`, run 36118066093). |
+
+**Why 1.2.0.** 1.1.0 and 1.1.1 were taken, and what follows them is a new DLL (the settings and Work tab overlap fixes,
+the `defName` of a duplicate on its own line), which the owner named 1.2.0. `CHANGELOG.md` has one section per version,
+split from what the notes say; the 1.2.0 note, as published, repeats the items of 1.1.0 and 1.1.1 along with its own.
 
 **How it is published now.** By `.github/workflows/publish-tag.yml`, generated from `Rimworld-Release-Admin`. The
 semantic-release path (`release.yml`, `release.config.mjs`, `release-steam-plugin.mjs`, `package.json`) was removed on
@@ -198,8 +203,7 @@ link to a still-updating item is fine to post, but check the linked item is the 
 - Then check the public page: title, new update time, the change note, the description if it was sent, and upload the
   three images of `Art/Workshop/` by hand (no tool of the chain can send a gallery).
 
-**The tag `v1.1.0`** was pushed by hand on 2026-09-22 at `bf89753` (09:07), before the owner's upload from the game at
-12:00 the same day, which she considers the published 1.1.x and whose Workshop change note reads "1.1.1". The tag matches
-neither that label nor, most likely, that upload's commit (about `c27b8af`, 11:47), and no GitHub release goes with it.
-**It stays, as history: it is not deleted** (the owner's word, 2026-09-25). `publish-tag.yml` only looks at the tag of the
-version it publishes, so it does no harm. The commit that was actually uploaded on 2026-09-22 carries no tag.
+**The tag `v1.1.0`** (`bf89753`, pushed by hand at 09:07 on 2026-09-22) is the commit that was uploaded from the game at
+09:09 as 1.1.0: it is right, and it stays (the owner's word, 2026-09-25). `v1.1.1` has no tag: the 12:00 upload was of
+about `c27b8af`, and a tag is not created after the fact. `publish-tag.yml` only looks at the tag of the version it
+publishes.
