@@ -5,6 +5,10 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ## [Unreleased]
 
+### Fixed
+
+- **With Fluffy's Work Tab, the Work types button sits clear of that tab's own controls.** It was drawn on top of its "Expand all priorities" toggle, which took the click, expanded the table and widened the window instead of opening the editor. Fluffy's Work Tab is still declared incompatible: a type created here is absent from its column list.
+
 ## [1.2.0] — 2026-09-25
 
 Published by the CI (`publish-tag.yml`, tag `v1.2.0`). Its Workshop note lists the changes of 1.1.0, 1.1.1 and this version together, without a version number; the sections here are split by version.

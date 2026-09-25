@@ -94,6 +94,15 @@ namespace WorkStudio
             {
                 button.x -= 215f;
             }
+            else if (ModsConfig.IsActive("fluffy.worktab"))
+            {
+                // Fluffy's Work Tab draws its own three toggles in the same corner, and the first of them
+                // is "Expand all priorities". Measured 2026-09-25 under Pickle: a click on our button, in the
+                // narrow layout that tab shows after it opens, went to that toggle, which expanded the
+                // table and widened the window, and the editor did not open. That mod is declared
+                // incompatible, but a player who keeps it should still find the button.
+                button.x -= 170f;
+            }
 
             var font = Text.Font;
             Text.Font = GameFont.Small;
