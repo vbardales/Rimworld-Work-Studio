@@ -54,6 +54,8 @@ Feature: images for the Workshop page
     And I close the work type editor
     And I open the "Work" tab
     Then the Work tab has a column for "Tidying"
+    # The runner starts the game with developer mode on, and its toolbar showed on the 2026-09-25 image.
+    And Nelim's Pickle Tools: developer mode is turned off for the capture
     # No screenshot mode here, on purpose: the Work tab is a main tab, and the bar under it (Architect,
     # Work, Schedule...) is what tells a visitor where the panel comes from. The game does not highlight
     # the open tab. The image is the whole frame, uncropped.
