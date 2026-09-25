@@ -13,6 +13,29 @@ anything that needs checking in play is in `TESTING.md`.
 
 ## An icon and a colour for each work type
 
+**Where it stands, 2026-09-25.** 1.2.0 shipped one fixed icon per vanilla skill and per vanilla work type, in the
+character tab's skill list and on the Work tab column headers, with three settings. There is no picker, and a type the
+player creates has no icon (so an overlong header of one falls back to two letters, see the last entry of this file).
+The owner's list of what comes next, in her words, with the row of the table below each one lands on and a reading
+that she confirms or corrects:
+
+1. **Icons in Work Studio's options** — the icon of each type shown in Work Studio's own windows (editor, settings).
+   Reading: the editor's type list and its middle column header carry the icon, and the settings preview it.
+2. **At the colonist level** — the icon of the type a colonist is working on, on the colonist. Rows: marker above
+   the pawn, colonist bar portrait (soft link to Busywork / Useful Marks, silent when absent).
+3. **On the current task in the HUD** — the icon in front of the colonist's current job line. Row: "In front of the
+   current job" ([baku] Work Type Tag draws there; it has no icon, only a colour). Which line of the HUD is meant
+   (the inspect pane's activity, the selected colonist's tooltip) is to be confirmed.
+4. **In front of the current task in the actions menu** — the icon in the right-click menu of a colonist. Row:
+   "Right-click action menu", our own patch, nobody else draws there.
+5. **Being able to change the icons for something else** — the per-type picker, and a first icon for the types the
+   player creates. Not started; it is the part every other item leans on.
+
+Suggested order, the owner's to change: 5 first (one icon per type, custom ones included, and the picker in the
+editor), then 1 (it uses that picker), then 4 (our own patch, no dependency on another mod), then 2 and 3 (soft links,
+which are written last because they are the ones another mod's update can break). Each item is its own small
+release; none of the licence notes below changes.
+
 Proposed 2026-09-11 in the Work Studio thread, as the 1.1.0; written down 2026-09-17, when
 [baku] Work Type Tag came up again and the plan turned out to exist only in that conversation.
 
