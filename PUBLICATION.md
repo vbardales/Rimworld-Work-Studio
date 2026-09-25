@@ -17,7 +17,7 @@ gaps is the owner's call, recorded here rather than hidden.
 2026-09-22 at 12:00, uploaded from the game (the owner's word, 2026-09-25). It is not the CI's: no tag, no GitHub
 release and no publishing run of this repository match it. Its content is not established: it came about 13 minutes
 after `c27b8af` ("Rebuild preview from preserved source", 11:47), so it most likely uploaded the mod folder as it stood
-then (the work of the planned 1.1.0) and **not** what came after (`bb48d04`, the settings and Work tab overlap fix of
+then (the work prepared as 1.1.0) and **not** what came after (`bb48d04`, the settings and Work tab overlap fix of
 22:47, and everything later). The owner chose **1.2.0** on 2026-09-25 and `CHANGELOG.md` lists everything since 1.0.1
 under it, so no subscriber misses a line whichever of the two uploads they got.
 
@@ -198,7 +198,8 @@ link to a still-updating item is fine to post, but check the linked item is the 
 - Then check the public page: title, new update time, the change note, the description if it was sent, and upload the
   three images of `Art/Workshop/` by hand (no tool of the chain can send a gallery).
 
-**The old tag `v1.1.0`** was pushed by hand on 2026-09-22 at `bf89753` and never published: no GitHub release goes with
-it, and Steam never carried a 1.1.0. It describes nothing that shipped. Deleting it (`git push origin :refs/tags/v1.1.0`
-and `git tag -d v1.1.0`) needs the owner's word; leaving it does no harm to `publish-tag.yml`, which only looks at
-`v1.2.0`.
+**The tag `v1.1.0`** was pushed by hand on 2026-09-22 at `bf89753` (09:07), before the owner's upload from the game at
+12:00 the same day, which she considers the published 1.1.x and whose Workshop change note reads "1.1.1". The tag matches
+neither that label nor, most likely, that upload's commit (about `c27b8af`, 11:47), and no GitHub release goes with it.
+**It stays, as history: it is not deleted** (the owner's word, 2026-09-25). `publish-tag.yml` only looks at the tag of the
+version it publishes, so it does no harm. The commit that was actually uploaded on 2026-09-22 carries no tag.

@@ -7,7 +7,7 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ## [1.2.0] — 2026-09-25
 
-The work of the never-published 1.1.0, plus what came after it. The Workshop shows a "1.1.1" of 2026-09-22 that only updated the preview picture (uploaded from the game); what it contained is not established, so everything since 1.0.1 is listed here.
+The work prepared as 1.1.0, plus what came after it. It was uploaded from the game on 2026-09-22, and the Workshop's change note for that upload reads "1.1.1 — Update of mod's preview picture"; what that upload contained is not established, so everything since 1.0.1 is listed here.
 
 ### Added
 
