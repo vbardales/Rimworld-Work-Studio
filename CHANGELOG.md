@@ -5,19 +5,9 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ## [Unreleased]
 
-### Changed
+## [1.2.0] — 2026-09-25
 
-- Regenerated the Workshop preview in a near-orthographic RimWorld-like presentation, preserving
-  the Work Studio title and explanation while making the reordering action clearer at thumbnail size.
-
-### Fixed
-
-- Removed the incorrect incompatibility declaration for Compact Work Tab. Its 1.6 code patches
-  the current vanilla work-priority columns in place and explicitly supports mods that add work
-  types; it does not keep a competing column list. Fluffy's Work Tab remains incompatible because
-  it restores a startup-time column snapshot that cannot contain types created later by Work Studio.
-
-## [1.1.0] — 2026-09-22
+The work of the never-published 1.1.0, plus what came after it. The Workshop shows a "1.1.1" of 2026-09-22 that only updated the preview picture (uploaded from the game); what it contained is not established, so everything since 1.0.1 is listed here.
 
 ### Added
 
@@ -27,11 +17,18 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ### Changed
 
+- The Workshop preview picture was regenerated in a near-orthographic RimWorld-like presentation, keeping the Work Studio title and explanation while making the reordering action clearer at thumbnail size.
+
 - **A task whose name does not fit its column now takes two lines** instead of being cut. A name that fits is left on one line, so the list keeps its rhythm; only past two lines is anything dropped, and then from the middle. This is what a French client showed first — the same names are longer there — but it applies to any language and any mod whose task names run long.
 - The grey type shown beside each task in the right-hand column took a fixed 42% of the row, whatever it held. It is now measured from the types actually listed, and the width it no longer needs goes to the task name.
 - When two tasks in the same column carry the same label, each now shows its `defName` in grey, in full, on a line of its own under the label. Vanilla alone has several — *construct placed frames* belongs to both Construction and Art, *carry to growth vat* appears twice — and a mod list adds more; the rows were indistinguishable in a column whose whole purpose is clicking one of them rather than the other. A label shown only once is left alone.
 
 ### Fixed
+
+- **A work type whose name is too long for its column header no longer spills over the next column.** The header shows its icon, and the full name in the tooltip, instead.
+- **The settings window's footer no longer covers the note about how priorities are saved** (it hid the French one altogether). The window is larger and the redundant footer button is gone.
+- **With Enhanced Work Tab, the Work types button sits further left**, clear of that mod's "Done editing" button, which was on top of it.
+- Removed the incorrect incompatibility declaration for Compact Work Tab. Its 1.6 code patches the current vanilla work-priority columns in place and explicitly supports mods that add work types; it does not keep a competing column list. Fluffy's Work Tab remains incompatible because it restores a startup-time column snapshot that cannot contain types created later by Work Studio.
 
 - **A work type you create no longer takes the name of one you deleted.** The editor gave a new type the first free name, so deleting a type and creating another reused its defName — and anything that keeps data by defName then handed the new type the old one's values. Enhanced Work Tab does this: it keeps each colonist's priorities by defName in the save and never prunes them, so the new type could read the priority the deleted one had. Names now only go up, counted per installation; a setup made before this update continues above its highest existing type. Found by the in-game test *a save written with one type, loaded with two*, which read 2 where the game's own list held 0. The cause was read from Enhanced Work Tab's code. Confirmed in game on 2026-09-23: with Enhanced Work Tab loaded, the three scenarios of that feature pass. (A first "confirmation" on 2026-09-22 was withdrawn: its report belonged to another test.)
 

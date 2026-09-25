@@ -5,29 +5,34 @@ this update and for whoever ships the next one. This is not the first publicatio
 (3792836684) already exists, published as 1.0.0 and updated to 1.0.1 — so the first-envoi steps of
 AUDIT.md's `tested -> prepublished` do not all apply; what follows is scoped to an update.
 
-## This update: 1.1.0
+## This update: 1.2.0
 
-Prepared 2026-09-22, on the owner's word that the mod is stable enough to push, **with two
+Prepared 2026-09-22 as "1.1.0", on the owner's word that the mod is stable enough to push, **with two
 `done -> tested` items still open** (see `STATUS.md`): the button-click fix under Work Tab has not
 been replayed since it was written, and the full 47-scenario Enhanced Work Tab set has not been
 replayed since the defName fix — only that one scenario has, and it passed. Publishing over these
 gaps is the owner's call, recorded here rather than hidden.
 
-**The version numbers below are stale.** The Workshop page shows a change note "1.1.1 — Update of mod's preview
-picture", posted by nelim17 on 2026-09-22 at 12:00 (the owner's word, 2026-09-25). It is not the CI's: no tag, no
-GitHub release and no publishing run of this repository match it (`release.yml` has only dry-runs). Its content is not
-established. It came about 13 minutes after `c27b8af` ("Rebuild preview from preserved source", 11:47), so it most
-likely uploaded the mod folder as it stood then: the 1.1.0 work up to that point (icons, shortcut, two-line rows,
-defName on its own line, the defName-reuse fix), and **not** what came after (`bb48d04`, the settings and Work tab
-overlap fix of 22:47, and everything later). Nothing here is confirmed until the owner reads what the Workshop's change
-history or the item's files say. Whatever is published next therefore cannot be called 1.1.0 or 1.1.1; the number and
-the Steam notes are being settled with the CI/CD session, and `CHANGELOG.md` is renumbered once they are.
+**Why 1.2.0.** The Workshop page shows a change note "1.1.1 — Update of mod's preview picture", posted by nelim17 on
+2026-09-22 at 12:00, uploaded from the game (the owner's word, 2026-09-25). It is not the CI's: no tag, no GitHub
+release and no publishing run of this repository match it. Its content is not established: it came about 13 minutes
+after `c27b8af` ("Rebuild preview from preserved source", 11:47), so it most likely uploaded the mod folder as it stood
+then (the work of the planned 1.1.0) and **not** what came after (`bb48d04`, the settings and Work tab overlap fix of
+22:47, and everything later). The owner chose **1.2.0** on 2026-09-25 and `CHANGELOG.md` lists everything since 1.0.1
+under it, so no subscriber misses a line whichever of the two uploads they got.
+
+**How it is published now.** Not by `release.yml` (semantic-release, which would have computed 1.1.1 from a stale tag)
+but by `.github/workflows/publish-tag.yml`, generated from `Rimworld-Release-Admin`: the version is typed in, the
+Steam change note is the fenced block under `### 1.2.0` below, the release notes are the `## [1.2.0]` section of
+`CHANGELOG.md`, and the description (only when `update_description` is on) is the fenced BBCode block of
+"Steam description" below. See `Rimworld-Release-Admin/docs/OPERATIONS.md`: a dry-run of the exact commit first,
+`publish` with its full 40-character SHA, and only the owner approves `steam-production`.
 
 **Before the actual Steam upload, still to do:**
 
-- Edit the existing Workshop description manually to remove the old Compact Work Tab
-  incompatibility sentence and retain only the documented Fluffy Work Tab conflict. RimWorld does
-  not resend `About.xml`'s description on an update.
+- The Workshop description still carries the old Compact Work Tab incompatibility sentence. Run the publish with
+  `update_description` on: the dry-run then prints a line diff of what changes on the page. (RimWorld does not
+  resend `About.xml`'s description on an update.)
 - Replay `02-work-tab-button.feature` against `wsl-deps.incompat-fluffy-worktab.map`, and the full
   `wsl-deps.avec-enhanced-work-tab.map` set. Both are one command away
   (`scripts/Run-PickleWsl.ps1 -Mod WorkStudio -DepMap <map> ...`); neither has run since the fixes
@@ -104,11 +109,12 @@ Unchanged since 1.0.0, verified against the source, not the intention:
 **No.** Nothing in this mod's assets, descriptions or screenshots is adult content. The Workshop
 checkboxes for mature/adult content are answered No.
 
-## Steam patch notes, 1.1.0
+## Steam patch notes
 
-Written here so the update tab is not blank at the moment of the envoi (AUDIT.md's own warning:
-that tab is easy to forget because nothing prompts for it until the form is open). BBCode, plain
-text otherwise — matches the style of the `[Unreleased]` -> `[1.1.0]` section of `CHANGELOG.md`.
+The publish workflow reads the note of the version it publishes from the fenced block under `### <version>` of
+this file. BBCode. It matches the `## [1.2.0]` section of `CHANGELOG.md`; keep the two in step.
+
+### 1.2.0
 
 ```
 [b]Added[/b]
@@ -121,15 +127,97 @@ text otherwise — matches the style of the `[Unreleased]` -> `[1.1.0]` section 
 [list]
 [*] A task name that does not fit its column now wraps to two lines instead of being cut.
 [*] The grey type shown beside a task in the right-hand column is measured from what is actually listed, instead of a fixed width.
-[*] Two tasks sharing a label now each show their defName in grey beside it, so they can be told apart.
+[*] Two tasks sharing a label now each show their defName in grey, in full, on a line of their own under the label, so they can be told apart.
+[*] New preview picture.
 [/list]
 
 [b]Fixed[/b]
 [list]
-[*] A work type you create could take the name of one you had just deleted, and with it, its old priority for colonists — confirmed with Enhanced Work Tab installed, which is what exposed it. Names now only ever go up.
+[*] A work type you create could take the name of one you had just deleted, and with it, its old priority for colonists. Confirmed with Enhanced Work Tab installed, which is what exposed it. Names now only ever go up.
+[*] A column header too long for its column no longer spills over the next one: it shows its icon, and the full name in the tooltip.
+[*] The settings window's footer no longer covers the note about how priorities are saved.
+[*] With Enhanced Work Tab, the Work types button sits clear of its "Done editing" button.
 [*] The editor's help line was clipped as soon as it wrapped onto two lines.
+[*] Work Studio is no longer declared incompatible with Compact Work Tab: they coexist. Fluffy's Work Tab remains incompatible.
 [*] A packaging mistake could throw a FieldAccessException on some runtimes; not observed in the shipped game, fixed regardless.
 [/list]
+```
+
+## Steam description
+
+The page description, sent only when `update_description` is on. It is **generated** from `Mod/README.template.md`
+(the Markdown source of the description); do not edit the block by hand. To regenerate it after changing the
+template: `npm ci`, then
+`node -e "import('semantic-release-steam/lib/description.mjs').then(m=>console.log(m.renderSteamBBCode(require('fs').readFileSync('Mod/README.template.md','utf8'))))"`,
+and paste the result over the block. 8000 bytes is Steam's limit; the block is about 5.3 KB.
+
+```
+Reorganize the Work tab from inside the game, without restarting.
+
+[list]
+  [*]Create your own work types and fill them with tasks taken from other types — pull “tend animals” out of Handling, or separate cooking from serving.
+  [*]Rename, reorder and hide columns, including vanilla columns.
+  [*]Drag and drop at two levels: the order of work types and the order of tasks within a type.
+  [*]Use the up/down arrows as an alternative to dragging, including on Steam Deck.
+  [*]Import and export setups between games.
+  [*]Icons for each skill and each work type, in the character tab and at the foot of each Work tab column. Three settings choose what shows.
+[/list]
+
+Everything applies immediately. No def file to write and no restart required.
+
+[h1]YOUR PRIORITIES ARE SAFE[/h1]
+
+RimWorld stores colonist priorities in a list indexed by position, without recording which work type each value belongs to. Adding or removing a work type — yours, or one supplied by another mod — can therefore shift the whole list.
+
+Work Studio stores priorities by defName in the save and restores them against the correct work type when loading. This protects vanilla and modded work types alike.
+
+[h1]GOOD TO KNOW[/h1]
+
+[list]
+  [*]Work Studio does not create new tasks. It redistributes existing tasks.
+  [*]A type fed from several sources inherits the disabling rules of each source. Work combining medicine and hauling is disabled for a colonist incapable of either.
+  [*]Incompatible with [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3552152340]Work Tab[/url], which preserves its own startup-time column list and restores it when its tab opens.
+  [*]Removing Work Studio returns moved tasks to their original work types.
+  [*]A hidden MainButtons shortcut is available for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1084452457]RIMMSQOL[/url] and similar customization mods. Revealing it opens the same settings as Mod options → Work Studio.
+[/list]
+
+[h1]WITH BETTER WORK TAB[/h1]
+
+Work Studio and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3626737803]Better Work Tab[/url] agree as long as you leave the latter’s columns alone. It only records a column order after you drag a column there. Until then, the order configured in Work Studio controls both the columns and the order in which colonists move between work types.
+
+After columns have been reordered there, its saved order wins for the work types it recorded. Reordering those types in Work Studio will no longer affect their execution order. A work type created afterwards is absent from that saved list, so it appears last until positioned there.
+
+Everything else remains available: creating work types, moving and ordering tasks, renaming, hiding columns and protecting priorities.
+
+Interface available in English and French.
+
+[h1]IF I GO QUIET[/h1]
+
+If I do not answer within a reasonable time after being contacted, anyone may freely update this or any other of my mods, including publishing a continuation of it. All credit must be preserved.
+
+AI-GENERATED
+
+This mod's code was written with Claude Code (Anthropic) and Codex (OpenAI). Its images were generated with DALL-E (OpenAI) and OpenAI ImageGen, under human direction, review and testing. Stated openly: designing with these tools is my job.
+
+THANKS
+
+[url=https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077]Harmony[/url], by Andreas Pardeike (pardeike / Brrainz), without which none of this would exist.
+
+Andreas Pardeike (pardeike / Brrainz), and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=730936602]Achtung![/url], whose MIT-licensed DynamicWorkTypes.cs is the reason work types can be changed without a restart.
+
+Above all, 0。0, who pointed at that technique publicly and explained where to find it — without that pointer this mod would not exist at all.
+
+Densevoid and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2722053051]Personal Work Categories[/url], where the pointer was shared.
+
+Thanks to [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3552152340]Work Tab[/url], [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3626737803]Better Work Tab[/url], [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3250322299]Compact Work Tab (Continued)[/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3715873875]Enhanced Work Tab[/url], whose distinct approaches made the compatibility boundaries worth checking directly.
+
+Thanks to [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1084452457]RIMMSQOL[/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3779138895]Work Type Tag[/url] for the optional integrations tested here.
+
+[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3791648678]Pickle[/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3733484696]RimLogging[/url] made the automated in-game evidence possible. [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3806142401]Nelim's Pickle Tools[/url] supplied shared test steps. These are development tools only, never dependencies of the distributed mod.
+
+What is reused and how it differs is detailed in ATTRIBUTION.md. This mod is MIT licensed.
+
+[url=https://github.com/vbardales/Rimworld-Work-Studio]Source code on GitHub[/url]
 ```
 
 ## Thank-you messages
@@ -144,11 +232,12 @@ link to a still-updating item is fine to post, but check the linked item is the 
 
 - Commit `Mod/About/PublishedFileId.txt` immediately if it ever changes (it should not, for an
   update to an existing item) — losing it before a commit makes the next envoi create a second item.
-- `git tag v1.1.0` and push it, so the Workshop version and the repository agree on what shipped.
+- Do not create the tag or the release by hand: `publish-tag.yml` creates `v1.2.0` and the GitHub release (with the
+  `## [1.2.0]` section of `CHANGELOG.md`) once the upload has succeeded, and refuses to start if the tag exists.
+- Then check the public page: title, new update time, the change note, the description if it was sent, and upload the
+  three images of `Art/Workshop/ready/` by hand (no tool of the chain can send a gallery).
 
-**The tag is not at the release commit yet.** `v1.1.0` was pushed on 2026-09-22 at `bf89753`, and the
-`[1.1.0]` section of `CHANGELOG.md` has been edited since (the duplicate task's defName on its own line,
-the confirmation of scenario 5), so the notes describe code the tag does not contain. Nothing has been
-uploaded to Steam, so nothing is wrong yet, but before the upload: fix the last commit, then re-point
-the tag at it (`git tag -f -a v1.1.0 <commit>` and a forced push of the tag, which needs the owner's word),
-or cut the tag again under a new number. Anything changed after that goes under `[Unreleased]`.
+**The old tag `v1.1.0`** was pushed by hand on 2026-09-22 at `bf89753` and never published: no GitHub release goes with
+it, and Steam never carried a 1.1.0. It describes nothing that shipped. Deleting it (`git push origin :refs/tags/v1.1.0`
+and `git tag -d v1.1.0`) needs the owner's word; leaving it does no harm to `publish-tag.yml`, which only looks at
+`v1.2.0`.
