@@ -207,3 +207,12 @@ link to a still-updating item is fine to post, but check the linked item is the 
 09:09 as 1.1.0: it is right, and it stays (the owner's word, 2026-09-25). `v1.1.1` has no tag: the 12:00 upload was of
 about `c27b8af`, and a tag is not created after the fact. `publish-tag.yml` only looks at the tag of the version it
 publishes.
+
+**To adopt at the next publication (CI/CD setup, 2026-09-25, nothing forced):** the standard is now that the description is
+written once, in Markdown, in a fenced `markdown` block under `## Steam description` of this file; the CI converts it to
+BBCode and generates the `<description>` of `Mod/About/About.xml` from it, and a dry-run or publish stops if the two differ.
+That replaces `Mod/README.template.md` as the source and the hand-kept `About.xml` text of 2026-09-25. It goes through
+`generate-publish-workflow.sh ... --description-markdown PUBLICATION.md --description-heading '^## Steam description$'
+--about-from-description --replace`, then `node .github/scripts/sync-about-description.mjs` (read the diff before `--write`),
+and needs a new dry-run since it changes the SHA. The CI also refuses a change note whose first line does not carry the
+version (`[b]1.3.0[/b]`), which the rule above already asks for.
