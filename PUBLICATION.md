@@ -13,6 +13,16 @@ been replayed since it was written, and the full 47-scenario Enhanced Work Tab s
 replayed since the defName fix — only that one scenario has, and it passed. Publishing over these
 gaps is the owner's call, recorded here rather than hidden.
 
+**The version numbers below are stale.** The Workshop page shows a change note "1.1.1 — Update of mod's preview
+picture", posted by nelim17 on 2026-09-22 at 12:00 (the owner's word, 2026-09-25). It is not the CI's: no tag, no
+GitHub release and no publishing run of this repository match it (`release.yml` has only dry-runs). Its content is not
+established. It came about 13 minutes after `c27b8af` ("Rebuild preview from preserved source", 11:47), so it most
+likely uploaded the mod folder as it stood then: the 1.1.0 work up to that point (icons, shortcut, two-line rows,
+defName on its own line, the defName-reuse fix), and **not** what came after (`bb48d04`, the settings and Work tab
+overlap fix of 22:47, and everything later). Nothing here is confirmed until the owner reads what the Workshop's change
+history or the item's files say. Whatever is published next therefore cannot be called 1.1.0 or 1.1.1; the number and
+the Steam notes are being settled with the CI/CD session, and `CHANGELOG.md` is renumbered once they are.
+
 **Before the actual Steam upload, still to do:**
 
 - Edit the existing Workshop description manually to remove the old Compact Work Tab
