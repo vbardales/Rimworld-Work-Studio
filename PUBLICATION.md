@@ -35,16 +35,35 @@ Steam change note is the fenced block under `### 1.2.0` below, the release notes
   by one line: the new bullet about icons. The rest of its diff is list formatting only (the renderer indents each
   `[*]` and drops the space after it). RimWorld does not resend `About.xml`'s description on an update, so without
   the option the page keeps the old text.
-- Replay `02-work-tab-button.feature` against `wsl-deps.incompat-fluffy-worktab.map`, and the full
-  `wsl-deps.avec-enhanced-work-tab.map` set. Both are one command away
-  (`scripts/Run-PickleWsl.ps1 -Mod WorkStudio -DepMap <map> ...`); neither has run since the fixes
-  they are meant to confirm.
+- Nothing blocks the upload any more on the two open runtime checks: under the fail-fast policy below they run
+  **after** the publication. They are `02-work-tab-button.feature` against `wsl-deps.incompat-fluffy-worktab.map`, and the
+  full `wsl-deps.avec-enhanced-work-tab.map` set, filed as small tickets through the TicketDispatcher; neither has run
+  since the fixes they are meant to confirm.
 - Upload the three Workshop screenshots of `Art/Workshop/ready/` in the order of their names. They are done and
   follow the rules below; the owner has seen the Work tab one and said it is beautiful, the editor and the settings
   were sent to her too. The older ones in `Art/Workshop/` must not be uploaded.
 - Decide the two open design points STATUS.md lists (icons on by default; the long renamed header
   spilling into its neighbours in capture 07b) — not blocking, but worth a look before they are
   permanent on every subscriber's screen.
+
+## Publication policy: fail fast
+
+The owner's rule (2026-09-25): **publish, then let the tests speak; if they come back red, publish a rollback and a
+fix.** A mod that has passed its dry-run and whose known gaps are written down is not held back for the runs still
+queued behind thirty other sessions' tickets.
+
+- The dry-run of the exact commit still comes first (`Rimworld-Release-Admin/docs/OPERATIONS.md`), and the owner still
+  approves `steam-production`. Fail fast removes the wait for the remaining game tests, not the gates of the pipeline.
+- The tests still open at publication time run right after it, one small ticket each. Their verdict goes in
+  `STATUS.md` and `docs/runs/`. A red result is a defect of the published version, said as such.
+- **On a red result, roll back first, then fix.** The rollback is a new publication, since version numbers only go up
+  and `publish-tag.yml` refuses a tag that exists: dispatch it with `ref` = the full SHA of the last good commit and
+  the next patch number, and give the change note "Rolls back to <what>, because <what failed>". The fix is a
+  second, later publication of its own.
+- **Choose the rollback target before publishing, not after the red run.** For 1.2.0 the only tagged good state is
+  `v1.0.0` (`53215a5`); 1.0.1 has no tag and 1.1.1 (a preview-only upload from the game, content unknown) has no
+  commit. Write down the commit to fall back to with the owner if it is needed, and tag the next good version, so the
+  next rollback has a target.
 
 ## Workshop screenshots: the rules, and where each image stands
 
