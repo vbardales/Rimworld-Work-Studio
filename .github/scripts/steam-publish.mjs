@@ -100,12 +100,21 @@ let description;
 if (updateDescription) {
   if (!config.description) throw new Error('update_description: publish.config.json has no "description" source');
   const source = await readFile(join(commitDir, config.description.file), 'utf8');
-  description = config.description.heading
-    ? fencedBlockUnder(source, new RegExp(config.description.heading), { label: `"${config.description.heading}"`, what: 'description' })
-    : source.trim();
+  const markdown = config.description.format === 'markdown';
+  if (markdown) {
+    if (!source.trim()) throw new Error(`update_description: ${config.description.file} is empty`);
+    // The same converter semantic-release-steam uses for a README: Markdown in, Steam BBCode out.
+    const { renderSteamBBCode } = await import('semantic-release-steam/lib/description.mjs');
+    description = renderSteamBBCode(source).trim();
+  } else {
+    description = config.description.heading
+      ? fencedBlockUnder(source, new RegExp(config.description.heading), { label: `"${config.description.heading}"`, what: 'description' })
+      : source.trim();
+  }
   const descriptionBytes = checkBytes('update_description: the description', description, LIMITS.description);
   const local = digest(Buffer.from(description));
-  console.log(`description to send: ${description.length} characters (${descriptionBytes} bytes), sha256 ${local.sha256}, from ${config.description.file}`);
+  console.log(`description to send: ${description.length} characters (${descriptionBytes} bytes), sha256 ${local.sha256}, from ${config.description.file}${markdown ? ' (Markdown converted to BBCode)' : ''}`);
+  if (markdown) console.log(`description as converted (this exact text is sent):\n${description}`);
   if (page) {
     const diff = lineDiff(page.description, description);
     console.log(isIdentical(diff) ? 'the page already has this description: nothing would change' : `changes against the description on the page ('-' is on the page now, '+' would be sent):\n${formatDiff(diff)}`);

@@ -9,34 +9,38 @@
   </supportedVersions>
   <description>Reorganize the Work tab from inside the game, without restarting.
 
-• Create your own work types and fill them with tasks taken from other types — pull "tend animals" out of Handler, carve a cooking job apart from serving.
-• Rename, reorder and hide columns, vanilla ones included.
-• Drag and drop on two levels: the order of the types themselves, and the order of tasks within a type. Up/down arrows double the drag, with the Steam Deck in mind.
-• Import and export your setups to carry them from one game to the next.
+• Create your own work types and fill them with tasks taken from other types — pull “tend animals” out of Handling, or separate cooking from serving.
+• Rename, reorder and hide columns, including vanilla columns.
+• Drag and drop at two levels: the order of work types and the order of tasks within a type.
+• Use the up/down arrows as an alternative to dragging, including on Steam Deck.
+• Import and export setups between games.
+• Icons for each skill and each work type, in the character tab and at the foot of each Work tab column. Three settings choose what shows.
 
-Everything applies immediately. No def file to write, no restart.
+Everything applies immediately. No def file to write and no restart required.
 
 YOUR PRIORITIES ARE SAFE
 
-RimWorld stores colonist priorities in a list indexed by position, without ever recording which work each value belongs to. Adding or removing a work type — yours, or one from a mod you just installed — therefore shifts the whole column. This mod stores those priorities by name in the save and puts them back against the right work on load, which protects vanilla and other mods' work types too.
+RimWorld stores colonist priorities in a list indexed by position, without recording which work type each value belongs to. Adding or removing a work type — yours, or one supplied by another mod — can therefore shift the whole list.
+
+Work Studio stores priorities by defName in the save and restores them against the correct work type when loading. This protects vanilla and modded work types alike.
 
 GOOD TO KNOW
 
-• This mod does not create new tasks: it redistributes the ones that already exist.
-• A type fed from several sources inherits the disabling rules of each. A work mixing medicine and hauling will be disabled for a colonist incapable of either.
-• Incompatible with Work Tab, which keeps its own startup-time column list and restores it when the tab opens.
-• Removing this mod gives moved tasks their original types back.
-• A hidden MainButtons shortcut is available for RIMMSQOL and similar customization mods to reveal, opening the exact same settings.
+• Work Studio does not create new tasks. It redistributes existing tasks.
+• A type fed from several sources inherits the disabling rules of each source. Work combining medicine and hauling is disabled for a colonist incapable of either.
+• Incompatible with Work Tab (Fluffy), which preserves its own startup-time column list and restores it when its tab opens.
+• Removing Work Studio returns moved tasks to their original work types.
+• A hidden MainButtons shortcut is available for RIMMSQOL and similar customization mods. Revealing it opens the same settings as Mod options → Work Studio.
 
 WITH BETTER WORK TAB
 
-The two agree as long as you leave its columns alone. Better Work Tab only records a column order once you drag a column there; until then it has none, and the order you set here drives both the columns and the order in which a colonist moves from one job to the next.
+Work Studio and Better Work Tab agree as long as you leave the latter’s columns alone. It only records a column order after you drag a column there. Until then, the order configured in Work Studio controls both the columns and the order in which colonists move between work types.
 
-Once you have reordered columns in Better Work Tab, its order wins for the types it recorded, and reordering them here stops having an effect. A type created afterwards is not in its list, so it goes last until you place it there.
+After columns have been reordered there, its saved order wins for the work types it recorded. Reordering those types in Work Studio will no longer affect their execution order. A work type created afterwards is absent from that saved list, so it appears last until positioned there.
 
-Everything else is unaffected either way — creating types, moving tasks between them, the order of tasks within a type, renaming, hiding, and the priority protection.
+Everything else remains available: creating work types, moving and ordering tasks, renaming, hiding columns and protecting priorities.
 
-Interface in English and French.
+Interface available in English and French.
 
 IF I GO QUIET
 
@@ -44,21 +48,25 @@ If I do not answer within a reasonable time after being contacted, anyone may fr
 
 AI-GENERATED
 
-This mod's code was written with Claude Code (Anthropic) and its images generated with DALL-E (OpenAI), under human direction, review and testing. Stated openly: designing with these tools is my job.
+This mod's code was written with Claude Code (Anthropic) and Codex (OpenAI). Its images were generated with DALL-E (OpenAI) and OpenAI ImageGen, under human direction, review and testing. Stated openly: designing with these tools is my job.
 
 THANKS
 
-Claude Code (Anthropic) and DALL-E (OpenAI).
+Andreas Pardeike (pardeike / Brrainz), for Harmony without which none of this would exist.
+https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077
 
-Andreas Pardeike (pardeike / Brrainz), for Harmony without which none of this would exist, and for Achtung!, whose MIT-licensed DynamicWorkTypes.cs is the whole reason work types can be changed without a restart. Achtung! is where this technique was first made to work, and this mod stands on it.
+Andreas Pardeike, and Achtung!, whose MIT-licensed DynamicWorkTypes.cs is the reason work types can be changed without a restart.
 https://steamcommunity.com/sharedfiles/filedetails/?id=730936602
-https://github.com/pardeike/RimWorld-Achtung-Mod
 
 Above all, 0。0, who pointed at that technique publicly and explained where to find it — without that pointer this mod would not exist at all.
 https://steamcommunity.com/profiles/76561198380244407
 
-Densevoid, for Personal Work Categories, where the pointer was shared.
+Densevoid and Personal Work Categories, where the pointer was shared.
 https://steamcommunity.com/sharedfiles/filedetails/?id=2722053051
+
+Thanks to Work Tab, Better Work Tab, Compact Work Tab (Continued) and Enhanced Work Tab, whose distinct approaches made the compatibility boundaries worth checking directly. Thanks to RIMMSQOL and Work Type Tag for the optional integrations tested here.
+
+Pickle and RimLogging made the automated in-game evidence possible, and Nelim's Pickle Tools supplied shared test steps. These are development tools only, never dependencies of the distributed mod.
 
 What is reused and how it differs is detailed in ATTRIBUTION.md. This mod is MIT licensed.
 

@@ -1,5 +1,5 @@
 {
-  "templateStamp": "eba6b3fdf670",
+  "templateStamp": "683151266dd1",
   "workshopId": "3792836684",
   "packageId": "nelim.workstudio",
   "releaseTitle": "Work Studio {version}",
@@ -11,7 +11,7 @@
   "previewFile": "About/Preview.png",
   "galleryDir": "Art/Workshop",
   "description": {
-    "file": "PUBLICATION.md",
-    "heading": "^## Steam description$"
+    "file": "Mod/README.template.md",
+    "format": "markdown"
   }
 }

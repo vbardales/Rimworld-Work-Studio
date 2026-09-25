@@ -32,6 +32,12 @@ test('rejects what would send the wrong thing or escape the repository', () => {
   for (const text of ['null', '[]', '"text"', '3']) assert.throws(() => parseConfig(text), /must contain a JSON object/, text);
 });
 
+test('a description is BBCode by default, or a Markdown file to convert, and never both a heading and Markdown', () => {
+  assert.equal(parseConfig(JSON.stringify({ ...valid, description: { file: 'README.template.md', format: 'markdown' } })).description.format, 'markdown');
+  assert.equal(parseConfig(JSON.stringify({ ...valid, description: { file: 'P.md', format: 'bbcode', heading: '^## 1' } })).description.format, 'bbcode');
+  for (const description of [{ file: 'R.md', format: 'html' }, { file: 'R.md', format: 'markdown', heading: '^## 1' }]) assert.throws(() => parseConfig(JSON.stringify({ ...valid, description })), /description./, JSON.stringify(description));
+});
+
 test('the template stamp is kept when it is a string', () => {
   assert.equal(parseConfig(JSON.stringify({ ...valid, templateStamp: 'abc123' })).templateStamp, 'abc123');
 });

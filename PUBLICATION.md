@@ -26,8 +26,8 @@ semantic-release path (`release.yml`, `release.config.mjs`, `release-steam-plugi
 2026-09-25: it computed the version from commits and tags, so with the stale `v1.1.0` it would have proposed 1.1.1, and
 it could still be dispatched in publish mode next to the manual one. Now: the version is typed in, the
 Steam change note is the fenced block under `### 1.2.0` below, the release notes are the `## [1.2.0]` section of
-`CHANGELOG.md`, and the description (only when `update_description` is on) is the fenced BBCode block of
-"Steam description" below. See `Rimworld-Release-Admin/docs/OPERATIONS.md`: a dry-run of the exact commit first,
+`CHANGELOG.md`, and the description (only when `update_description` is on) is `Mod/README.template.md`, converted by the
+workflow ("Steam description" below). See `Rimworld-Release-Admin/docs/OPERATIONS.md`: a dry-run of the exact commit first,
 `publish` with its full 40-character SHA, and only the owner approves `steam-production`.
 
 **Before the actual Steam upload, still to do:**
@@ -136,7 +136,12 @@ checkboxes for mature/adult content are answered No.
 ## Steam patch notes
 
 The publish workflow reads the note of the version it publishes from the fenced block under `### <version>` of
-this file. BBCode. It matches the `## [1.2.0]` section of `CHANGELOG.md`; keep the two in step.
+this file. BBCode. It matches the `## [<version>]` section of `CHANGELOG.md`; keep the two in step.
+
+**Every note starts with its version number, on a line of its own** (`[b]1.3.0[/b]`), then the sections. The owner noticed
+on 2026-09-25 that the 1.2.0 note, as shown on the Workshop page, does not say which version it is: the block below is
+kept as it was published, and the rule holds from the next version. A published note can only be changed by hand on the
+Steam page, so it is not edited here after the fact.
 
 ### 1.2.0
 
@@ -169,81 +174,12 @@ this file. BBCode. It matches the `## [1.2.0]` section of `CHANGELOG.md`; keep t
 
 ## Steam description
 
-The page description, sent only when `update_description` is on. It is **generated** from `Mod/README.template.md`
-(the Markdown source of the description); do not edit the block by hand. To regenerate it after changing the
-template: `npm install --no-save --ignore-scripts --prefix .npm/render semantic-release-steam@2.1.3` (the
-folder is ignored by git; the workflow installs the same version), then
-`node -e "import('./.npm/render/node_modules/semantic-release-steam/lib/description.mjs').then(m=>process.stdout.write(m.renderSteamBBCode(require('fs').readFileSync('Mod/README.template.md','utf8'))))"`,
-and paste the result over the block. 8000 bytes is Steam's limit; the block is about 5.3 KB.
-
-```
-Reorganize the Work tab from inside the game, without restarting.
-
-[list]
-  [*]Create your own work types and fill them with tasks taken from other types — pull “tend animals” out of Handling, or separate cooking from serving.
-  [*]Rename, reorder and hide columns, including vanilla columns.
-  [*]Drag and drop at two levels: the order of work types and the order of tasks within a type.
-  [*]Use the up/down arrows as an alternative to dragging, including on Steam Deck.
-  [*]Import and export setups between games.
-  [*]Icons for each skill and each work type, in the character tab and at the foot of each Work tab column. Three settings choose what shows.
-[/list]
-
-Everything applies immediately. No def file to write and no restart required.
-
-[h1]YOUR PRIORITIES ARE SAFE[/h1]
-
-RimWorld stores colonist priorities in a list indexed by position, without recording which work type each value belongs to. Adding or removing a work type — yours, or one supplied by another mod — can therefore shift the whole list.
-
-Work Studio stores priorities by defName in the save and restores them against the correct work type when loading. This protects vanilla and modded work types alike.
-
-[h1]GOOD TO KNOW[/h1]
-
-[list]
-  [*]Work Studio does not create new tasks. It redistributes existing tasks.
-  [*]A type fed from several sources inherits the disabling rules of each source. Work combining medicine and hauling is disabled for a colonist incapable of either.
-  [*]Incompatible with [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3552152340]Work Tab[/url], which preserves its own startup-time column list and restores it when its tab opens.
-  [*]Removing Work Studio returns moved tasks to their original work types.
-  [*]A hidden MainButtons shortcut is available for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1084452457]RIMMSQOL[/url] and similar customization mods. Revealing it opens the same settings as Mod options → Work Studio.
-[/list]
-
-[h1]WITH BETTER WORK TAB[/h1]
-
-Work Studio and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3626737803]Better Work Tab[/url] agree as long as you leave the latter’s columns alone. It only records a column order after you drag a column there. Until then, the order configured in Work Studio controls both the columns and the order in which colonists move between work types.
-
-After columns have been reordered there, its saved order wins for the work types it recorded. Reordering those types in Work Studio will no longer affect their execution order. A work type created afterwards is absent from that saved list, so it appears last until positioned there.
-
-Everything else remains available: creating work types, moving and ordering tasks, renaming, hiding columns and protecting priorities.
-
-Interface available in English and French.
-
-[h1]IF I GO QUIET[/h1]
-
-If I do not answer within a reasonable time after being contacted, anyone may freely update this or any other of my mods, including publishing a continuation of it. All credit must be preserved.
-
-AI-GENERATED
-
-This mod's code was written with Claude Code (Anthropic) and Codex (OpenAI). Its images were generated with DALL-E (OpenAI) and OpenAI ImageGen, under human direction, review and testing. Stated openly: designing with these tools is my job.
-
-THANKS
-
-[url=https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077]Harmony[/url], by Andreas Pardeike (pardeike / Brrainz), without which none of this would exist.
-
-Andreas Pardeike (pardeike / Brrainz), and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=730936602]Achtung![/url], whose MIT-licensed DynamicWorkTypes.cs is the reason work types can be changed without a restart.
-
-Above all, 0。0, who pointed at that technique publicly and explained where to find it — without that pointer this mod would not exist at all.
-
-Densevoid and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2722053051]Personal Work Categories[/url], where the pointer was shared.
-
-Thanks to [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3552152340]Work Tab[/url], [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3626737803]Better Work Tab[/url], [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3250322299]Compact Work Tab (Continued)[/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3715873875]Enhanced Work Tab[/url], whose distinct approaches made the compatibility boundaries worth checking directly.
-
-Thanks to [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1084452457]RIMMSQOL[/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3779138895]Work Type Tag[/url] for the optional integrations tested here.
-
-[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3791648678]Pickle[/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3733484696]RimLogging[/url] made the automated in-game evidence possible. [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3806142401]Nelim's Pickle Tools[/url] supplied shared test steps. These are development tools only, never dependencies of the distributed mod.
-
-What is reused and how it differs is detailed in ATTRIBUTION.md. This mod is MIT licensed.
-
-[url=https://github.com/vbardales/Rimworld-Work-Studio]Source code on GitHub[/url]
-```
+Sent only when `update_description` is on for a publish. The source is `Mod/README.template.md`, in Markdown, converted to
+Steam BBCode by the workflow itself (`.github/publish.config.json`: `"format": "markdown"`, the `--description-markdown`
+option of `generate-publish-workflow.sh`). The dry-run prints the converted text, its size, its SHA-256 and a line diff
+against the page, so the text sent is read before the approval. Nothing is copied by hand any more: until 2026-09-25 the
+BBCode was pasted here from a render of the template, and the two could drift. The template sits in `Mod/` but is listed
+in `Mod/.steamignore`, so it does not reach players. Steam's limit is 8000 bytes; the description is about 5.3 KB.
 
 ## Thank-you messages
 

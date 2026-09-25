@@ -25,6 +25,8 @@ export function parseConfig(text) {
   const description = raw.description ?? null;
   if (description !== null) {
     if (typeof description.file !== 'string' || !isPathList([description.file])) throw new Error(`${CONFIG_PATH}: description.file must be a path relative to the repository`);
+    if (description.format !== undefined && !['bbcode', 'markdown'].includes(description.format)) throw new Error(`${CONFIG_PATH}: description.format must be "bbcode" or "markdown"`);
+    if (description.format === 'markdown' && description.heading !== undefined) throw new Error(`${CONFIG_PATH}: description.heading applies to a BBCode file, not to a Markdown one (the whole file is converted)`);
     if (description.heading !== undefined) {
       try { new RegExp(description.heading); } catch { throw new Error(`${CONFIG_PATH}: description.heading is not a valid regular expression`); }
     }
