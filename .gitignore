@@ -14,18 +14,16 @@ Source/bin/
 *.suo
 *.csproj.user
 
-# Workshop screenshots collected from a Pickle @review run by Art/Update-WorkshopScreenshots.ps1.
-# They are regenerated on every run and differ each time - time of day, colonists standing
-# elsewhere - so tracking them by default would fill the history with near-identical 2 MB captures.
-# A set actually worth publishing goes in deliberately: git add -f Art/Workshop/<file>.
-Art/Workshop/*.png
+# Art/Workshop/ holds ONLY the images to upload to the Steam page, numbered in upload order: tracked.
+# The raw captures a Pickle @review run produces (3-4 MB each, different every run) go to
+# Art/Workshop/studio-raw/ and are never committed; crop or convert them into Art/Workshop/ by hand.
 
 # Full Pickle reports are kept locally before the shared runner releases its lock. Each pass
 # includes hundreds of screenshots (about 1 GB); STATUS.md records the verified summary.
 Tests/Pickle/evidence/
 # A text summary of each run that a document cites is committed under docs/runs/ instead.
 
-# Raw Workshop captures, 3-4 MB each: only the cropped files in Art/Workshop/ready/ are kept.
+# Raw Workshop captures, 3-4 MB each: only the finished files of Art/Workshop/ are kept.
 Art/Workshop/studio-raw/
 
 # Textures the build generates next to the PNGs.

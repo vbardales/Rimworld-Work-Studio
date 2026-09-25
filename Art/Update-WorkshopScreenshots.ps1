@@ -1,7 +1,8 @@
 <#
 .SYNOPSIS
-    Collects the screenshots the Pickle @review scenarios take into Art/Workshop/, named for the
-    Steam page rather than for the test that produced them.
+    Collects the RAW screenshots the Pickle @review scenarios take into Art/Workshop/studio-raw/ (ignored by
+    git), named for the page rather than for the test that produced them. It does not make the images to
+    upload: those are cropped or converted by hand into Art/Workshop/ (see PUBLICATION.md).
 
 .DESCRIPTION
     Tests/Pickle's 14-publication-shots.feature builds a scene worth showing - a work type named the
@@ -16,13 +17,12 @@
     photograph exactly what the Workshop page needs to show, in a clean fixture colony, at a
     consistent size, every run. This copies that set out of the report folder under stable names.
 
-    Nothing is deleted and nothing is uploaded: the files land in Art/Workshop/ and go to Steam by
-    hand, like Preview.png does. Art/ is not shipped with the mod, so none of this reaches
+    Nothing is deleted and nothing is uploaded: the raw files land in Art/Workshop/studio-raw/; the finished
+    images of Art/Workshop/ go to Steam by hand, like Preview.png does. Art/ is not shipped with the mod, so none of this reaches
     subscribers.
 
-    These images are large (~2 MB each) and change on every run - different time of day, colonists
-    standing elsewhere. Commit a set when it is one you would publish, not automatically, or the
-    history fills with near-identical captures.
+    These images are large (3-4 MB each) and change on every run - different time of day, colonists
+    standing elsewhere. They are never committed.
 
 .PARAMETER ReportFolder
     Where Pickle writes its screenshots. Defaults to the RimWorld save-data folder of the current
@@ -47,16 +47,16 @@ $wanted = [ordered] @{
     # that is not a letter or a digit into a dash - so "Workshop page, the editor" becomes
     # "Workshop-page--the-editor". A renamed screenshot step must be renamed here too; the script
     # says which one it could not find rather than silently producing a short set.
-    "manual--Workshop-page--the-editor--step0.png"      = "01-the-editor.png"
-    "manual--Workshop-page--the-new-column--step0.png"  = "02-the-new-column.png"
-    "manual--Workshop-page--the-settings--step0.png"    = "03-the-settings.png"
+    "manual--Workshop-page--the-editor--step0.png"      = "the-editor.png"
+    "manual--Workshop-page--the-new-column--step0.png"  = "the-new-column.png"
+    "manual--Workshop-page--the-settings--step0.png"    = "the-settings.png"
 }
 
 if (-not (Test-Path -LiteralPath $ReportFolder)) {
     throw "No Pickle screenshot folder at '$ReportFolder'. Run the suite first, or pass -ReportFolder."
 }
 
-$destination = Join-Path $PSScriptRoot 'Workshop'
+$destination = Join-Path (Join-Path $PSScriptRoot 'Workshop') 'studio-raw'
 if (-not (Test-Path -LiteralPath $destination)) {
     New-Item -ItemType Directory -Path $destination | Out-Null
 }

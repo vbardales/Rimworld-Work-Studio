@@ -9,7 +9,7 @@
   ],
   "forbidPaths": [],
   "previewFile": "About/Preview.png",
-  "galleryDir": "Art/Workshop/ready",
+  "galleryDir": "Art/Workshop",
   "description": {
     "file": "PUBLICATION.md",
     "heading": "^## Steam description$"

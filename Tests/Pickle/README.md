@@ -189,10 +189,10 @@ consistent size. After a run:
 .\Art\Update-WorkshopScreenshots.ps1
 ```
 
-copies that set into `Art/Workshop/` under names meant for the page rather than for the test that
-took them. `Art/` is not shipped, so none of it reaches subscribers, and the files are gitignored
-by default — they change every run, and only a set worth publishing belongs in the history
-(`git add -f` one when it is).
+copies that set, raw, into `Art/Workshop/studio-raw/` (gitignored: it changes every run). It is not the set
+to upload: the finished images (cropped or converted by hand, numbered in upload order) are the only files of
+`Art/Workshop/` itself, and the rules are in `PUBLICATION.md`. `Art/` is not shipped, so none of it reaches
+subscribers.
 
 Pickle's own runner panel used to sit in the corner of every frame, and cropping it by hand was
 weighed and accepted on 2026-09-18. It is not needed any more: the shared

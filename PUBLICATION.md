@@ -39,9 +39,9 @@ Steam change note is the fenced block under `### 1.2.0` below, the release notes
   **after** the publication. They are `02-work-tab-button.feature` against `wsl-deps.incompat-fluffy-worktab.map`, and the
   full `wsl-deps.avec-enhanced-work-tab.map` set, filed as small tickets through the TicketDispatcher; neither has run
   since the fixes they are meant to confirm.
-- Upload the three Workshop screenshots of `Art/Workshop/ready/` in the order of their names. They are done and
+- Upload the three Workshop screenshots of `Art/Workshop/` in the order of their names. They are done and
   follow the rules below; the owner has seen the Work tab one and said it is beautiful, the editor and the settings
-  were sent to her too. The older ones in `Art/Workshop/` must not be uploaded.
+  were sent to her too.
 - Decide the two open design points STATUS.md lists (icons on by default; the long renamed header
   spilling into its neighbours in capture 07b) — not blocking, but worth a look before they are
   permanent on every subscriber's screen.
@@ -91,12 +91,13 @@ only place they are written; `14-publication-shots.feature` points here.
    for the day it has): aim at an **orange zone** of the studio, and never at the black tiles, where the subject
    drowns; or at the grass **just above the smiley** emblem. On the grass, **circle in red what is worth seeing**
    so the eye finds it, since the meadow is busy.
-7. **Where files live:** raw captures in `Art/Workshop/studio-raw/` (ignored by git, delete once cropped), finished
-   files in `Art/Workshop/ready/`. Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`,
+7. **Where files live: `Art/Workshop/` holds only the images to upload, numbered `01-`, `02-`, `03-`... in the order they
+   go on the page, nothing else** (no older versions, no raw captures, no subfolder: an image that is not to be uploaded
+   does not stay there). Raw captures go to `Art/Workshop/studio-raw/` (ignored by git, delete once cropped). Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`,
    collected with `Art/Update-WorkshopScreenshots.ps1`.
 
 **Where each image stands (2026-09-25).** Steam shows the first one large; the order is the Work tab first for its
-impact, then the editor, then the settings. Shots in `Art/Workshop/ready/`, all on the showcase colony, all in English,
+impact, then the editor, then the settings. Shots in `Art/Workshop/`, all on the showcase colony, all in English,
 type `Tidying`:
 
 | File | Kind | Size | State |
@@ -106,8 +107,8 @@ type `Tidying`:
 | `03-the-settings.png` | option window | 930x730, 0.16 MB | same |
 
 The Work tab shot comes from `docs/runs/2026-09-24.md`; the editor and settings from the same feature, same map. The
-older images of `Art/Workshop/` (`01-the-editor.png`, `02-the-new-column.png`, the 2026-09-18 ones) predate the two-line
-labels and the duplicate-row defNames, or sit on the fixture desert: do not upload any of them.
+older images (2026-09-18 and 2026-09-20: they predated the two-line labels and the duplicate-row defNames, or sat on the
+fixture desert) were deleted on 2026-09-25, so that the folder can be uploaded as it is.
 
 `Preview.png` and `ModIcon.png` (in `Mod/About/`) ship with the mod. The Preview was regenerated and
 visually reviewed on 2026-09-22 at 896×504 and 545,873 bytes. Its text-free source, deterministic
@@ -256,7 +257,7 @@ link to a still-updating item is fine to post, but check the linked item is the 
 - Do not create the tag or the release by hand: `publish-tag.yml` creates `v1.2.0` and the GitHub release (with the
   `## [1.2.0]` section of `CHANGELOG.md`) once the upload has succeeded, and refuses to start if the tag exists.
 - Then check the public page: title, new update time, the change note, the description if it was sent, and upload the
-  three images of `Art/Workshop/ready/` by hand (no tool of the chain can send a gallery).
+  three images of `Art/Workshop/` by hand (no tool of the chain can send a gallery).
 
 **The old tag `v1.1.0`** was pushed by hand on 2026-09-22 at `bf89753` and never published: no GitHub release goes with
 it, and Steam never carried a 1.1.0. It describes nothing that shipped. Deleting it (`git push origin :refs/tags/v1.1.0`
