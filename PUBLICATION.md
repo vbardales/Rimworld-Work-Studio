@@ -21,8 +21,10 @@ then (the work of the planned 1.1.0) and **not** what came after (`bb48d04`, the
 22:47, and everything later). The owner chose **1.2.0** on 2026-09-25 and `CHANGELOG.md` lists everything since 1.0.1
 under it, so no subscriber misses a line whichever of the two uploads they got.
 
-**How it is published now.** Not by `release.yml` (semantic-release, which would have computed 1.1.1 from a stale tag)
-but by `.github/workflows/publish-tag.yml`, generated from `Rimworld-Release-Admin`: the version is typed in, the
+**How it is published now.** By `.github/workflows/publish-tag.yml`, generated from `Rimworld-Release-Admin`. The
+semantic-release path (`release.yml`, `release.config.mjs`, `release-steam-plugin.mjs`, `package.json`) was removed on
+2026-09-25: it computed the version from commits and tags, so with the stale `v1.1.0` it would have proposed 1.1.1, and
+it could still be dispatched in publish mode next to the manual one. Now: the version is typed in, the
 Steam change note is the fenced block under `### 1.2.0` below, the release notes are the `## [1.2.0]` section of
 `CHANGELOG.md`, and the description (only when `update_description` is on) is the fenced BBCode block of
 "Steam description" below. See `Rimworld-Release-Admin/docs/OPERATIONS.md`: a dry-run of the exact commit first,
@@ -169,8 +171,9 @@ this file. BBCode. It matches the `## [1.2.0]` section of `CHANGELOG.md`; keep t
 
 The page description, sent only when `update_description` is on. It is **generated** from `Mod/README.template.md`
 (the Markdown source of the description); do not edit the block by hand. To regenerate it after changing the
-template: `npm ci`, then
-`node -e "import('semantic-release-steam/lib/description.mjs').then(m=>console.log(m.renderSteamBBCode(require('fs').readFileSync('Mod/README.template.md','utf8'))))"`,
+template: `npm install --no-save --ignore-scripts --prefix .npm/render semantic-release-steam@2.1.3` (the
+folder is ignored by git; the workflow installs the same version), then
+`node -e "import('./.npm/render/node_modules/semantic-release-steam/lib/description.mjs').then(m=>process.stdout.write(m.renderSteamBBCode(require('fs').readFileSync('Mod/README.template.md','utf8'))))"`,
 and paste the result over the block. 8000 bytes is Steam's limit; the block is about 5.3 KB.
 
 ```
