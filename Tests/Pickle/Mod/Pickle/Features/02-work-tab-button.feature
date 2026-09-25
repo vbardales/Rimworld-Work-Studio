@@ -17,6 +17,9 @@ Feature: the button in the Work tab
     When I open the "Work" tab
     And Nelim's Pickle Tools: the button keyed "WorkStudio.OpenEditorShort" has stood still
     And Nelim's Pickle Tools: the button keyed "WorkStudio.OpenEditorShort" is reachable in "MainTabWindow"
+    # 2026-09-25: under Work Tab the pointer went to the button's old, narrow-window position. This picture,
+    # taken with the pointer already on what Pickle resolved, is compared with the numbers of the failure.
+    And I take a screenshot "Work types button, pointer on it, before the click"
     When Nelim's Pickle Tools: I click the button keyed "WorkStudio.OpenEditorShort" and the window "Dialog_WorkTypes" opens
 
   Scenario: the Animals tab does not get the button
