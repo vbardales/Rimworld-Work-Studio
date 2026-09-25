@@ -22,9 +22,9 @@ gaps is the owner's call, recorded here rather than hidden.
   `wsl-deps.avec-enhanced-work-tab.map` set. Both are one command away
   (`scripts/Run-PickleWsl.ps1 -Mod WorkStudio -DepMap <map> ...`); neither has run since the fixes
   they are meant to confirm.
-- Finish the three Workshop screenshots, following the rules below: two are captured and cropped on
-  the showcase colony, the Work tab one is queued. The older ones in `Art/Workshop/` predate the
-  two-line task labels and the duplicate-row defNames of this version and must not be uploaded.
+- Upload the three Workshop screenshots of `Art/Workshop/ready/` in the order of their names. They are done and
+  follow the rules below; the owner has seen the Work tab one and said it is beautiful, the editor and the settings
+  were sent to her too. The older ones in `Art/Workshop/` must not be uploaded.
 - Decide the two open design points STATUS.md lists (icons on by default; the long renamed header
   spilling into its neighbours in capture 07b) — not blocking, but worth a look before they are
   permanent on every subscriber's screen.
@@ -42,9 +42,9 @@ only place they are written; `14-publication-shots.feature` points here.
      (HUD and Pickle panels hidden) and the image is **cropped tight around the window**, its rectangle plus 16 px
      of margin on every side. PNG.
    - **An interface window** (a game window this mod changes, such as the Work tab, a main tab): the **full
-     interface**, screenshot mode off, **no crop**, the whole 1920x1080 frame, so the tab bar under it with the tab
-     highlighted says where the panel comes from. Saved as JPEG at quality 95 when the PNG is over 2 MB (on the
-     meadow: about 4 MB as PNG, 0.7 MB as JPEG).
+     interface**, screenshot mode off, **no crop**, the whole 1920x1080 frame, so the tab bar under it (Architect,
+     Work, Schedule...) says where the panel comes from. The game never highlights the open tab, so do not count on
+     that. Saved as JPEG at quality 95 when the PNG is over 2 MB (on the meadow: about 4 MB as PNG, 0.75 MB as JPEG).
 3. **Named as a player would name it**: no defName, no test name, and short enough that a column header reads in
    full (`Tidying`, not `Hauling and tidying`, which drew as `HA` for want of an icon; see `BACKLOG.md`).
 4. **Each upload stays under 2 MB.** Crop, never resample: resizing with interpolation blurs flat pixel-art regions
@@ -59,17 +59,19 @@ only place they are written; `14-publication-shots.feature` points here.
    files in `Art/Workshop/ready/`. Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`,
    collected with `Art/Update-WorkshopScreenshots.ps1`.
 
-**Where each image stands (2026-09-24).** Steam shows the first one large; a proposed order, the owner's to confirm:
-the Work tab first for its impact, then the editor, then the settings.
+**Where each image stands (2026-09-25).** Steam shows the first one large; the order is the Work tab first for its
+impact, then the editor, then the settings. Shots in `Art/Workshop/ready/`, all on the showcase colony, all in English,
+type `Tidying`:
 
-| Image | Kind | State |
-| --- | --- | --- |
-| The new column in the Work tab | interface window | scenario reworked (full interface, type `Tidying`); capture queued on the showcase colony |
-| The editor with a type a player made | option window | captured 2026-09-24 on the showcase colony; cropped to 1210x790, 0.24 MB, not yet moved to `ready/` (waits for the retake, which will rename the type `Tidying`) |
-| The settings window | option window | captured and cropped to 930x730, 0.16 MB, same wait |
+| File | Kind | Size | State |
+| --- | --- | --- | --- |
+| `01-the-new-column.jpg` | interface window | 1920x1080, 0.75 MB | seen by the owner 2026-09-25 ("c'est beau") |
+| `02-the-editor.png` | option window | 1210x790, 0.24 MB | captured 2026-09-24, cropped to the window + 16 px |
+| `03-the-settings.png` | option window | 930x730, 0.16 MB | same |
 
-`Art/Workshop/ready/02-the-new-column.png` and `03-the-settings.png` (fixture desert, 2026-09-22) are **superseded**;
-do not upload them. `Art/Workshop/01-the-editor.png` shows the truncated duplicate rows 1.1.0 fixes: do not upload it.
+The Work tab shot comes from `docs/runs/2026-09-24.md`; the editor and settings from the same feature, same map. The
+older images of `Art/Workshop/` (`01-the-editor.png`, `02-the-new-column.png`, the 2026-09-18 ones) predate the two-line
+labels and the duplicate-row defNames, or sit on the fixture desert: do not upload any of them.
 
 `Preview.png` and `ModIcon.png` (in `Mod/About/`) ship with the mod. The Preview was regenerated and
 visually reviewed on 2026-09-22 at 896×504 and 545,873 bytes. Its text-free source, deterministic
