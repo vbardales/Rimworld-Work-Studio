@@ -1,0 +1,13 @@
+{
+  "templateStamp": "eba6b3fdf670",
+  "workshopId": "3792836684",
+  "packageId": "nelim.workstudio",
+  "releaseTitle": "Work Studio {version}",
+  "requirePaths": [
+    "Assemblies/WorkStudio.dll",
+    "About/About.xml"
+  ],
+  "forbidPaths": [],
+  "previewFile": "About/Preview.png",
+  "galleryDir": "Art/Workshop/ready"
+}
