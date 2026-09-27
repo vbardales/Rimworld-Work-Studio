@@ -41,6 +41,9 @@ Feature: the settings window, both doors
     And I click the Work Studio button keyed "WorkStudio.Settings.ResetAll"
     Then Work Studio asks to confirm first
     And a work type labelled "Pickle herding" exists
+    # The confirmation is modal and would stay on top of the next scenario, whose click on ResetAll then
+    # found nothing to press (timed out after 5 s in four runs of five, 2026-09-26): close it.
+    And I click the Work Studio button keyed "GoBack"
 
   Scenario: confirming the reset clears the configuration
     When I create the work type "Pickle herding"
