@@ -807,3 +807,31 @@ frame by frame, before forming a theory about where it landed.
 ## An overlong header of a type without an icon shows two letters
 
 Seen 2026-09-24 in the Workshop capture on the ScreenshotStudio colony: a custom type named "Hauling and tidying" (no icon exists for a type the player made) draws as "HA" in the Work tab header, with no icon beside it. The fallback for overlong headers (icon and tooltip, 2026-09-22) has nothing to show when there is no icon, so it shows initials, which say nothing. The capture was fixed by naming the type "Tidying", not by fixing this. Worth a decision: a shortened label with an ellipsis, or the first word, instead of two letters.
+
+## The button covers part of Enhanced Work Tab's "lower priority =>" label
+
+Seen 2026-09-26, reviewing the nine captures of the 2026-09-25 Enhanced Work Tab pass (`Tests/Pickle/evidence/0925-ewt-full`):
+in the Work tab, our "Work types…" button sits on the left part of EWT's centred "lower priority =>" label, of which only
+"lo" still shows. Not a defect of any passed scenario, and no scenario asserts that label.
+
+**Why it is not a quick fix.** Read from the same capture, in screen pixels: our button is 155 px wide and starts right where
+the label's text begins; EWT's own "Edit order" button sits about 130 px further right. That gap is narrower than our
+button, so sliding it right to clear the label would run it into "Edit order" instead — EWT's layout leaves no place wide
+enough for both. Fixing it would mean either shrinking our button's text (risk: French run longer) or reading EWT's own
+`DoWindowContents` to place ours from its actual remaining space rather than a guessed offset, which we have not decompiled.
+Left as the owner's to weigh: worth a targeted look at EWT's layout code, or accepted as a minor cosmetic loss under a
+mod Work Studio does not otherwise need to know so much about.
+
+## Whether Work Studio can shield RIMMSQOL's save-load crash
+
+The red first seen 2026-09-23 and confirmed unrelated to 1.2.0 on 2026-09-26 (`docs/runs/2026-09-26.md`): loading a save
+written with one more custom work type than the current game has, under RIMMSQOL, throws `ArgumentOutOfRangeException`
+from `RIMMSqol.DefMapSaveStateFix.Postfix`, a Harmony postfix RIMMSQOL puts on vanilla's `DefMap<D,V>.ExposeData`. It fires
+during `LoadingVars`, before Work Studio's own `Patch_WorkSettingsExposeData.Restore` (which already re-keys priorities by
+work type name precisely to survive a type count that moved between saves) gets to run in `PostLoadInit`. So the existing
+named-priority mechanism does not reach it in time.
+
+**What is open.** Whether a player actually loses priorities when this fires (the scenario stops at the logged error, never
+checked), and whether Work Studio can pre-empt it — a prefix ahead of RIMMSQOL's postfix on the same method, padding the
+list before RIMMSQOL reads it — is unexplored: it would need decompiling `RIMMSqol.DefMapSaveStateFix` to know what it
+actually indexes into, which has not been done. Otherwise this is RIMMSQOL's own bug to fix.
