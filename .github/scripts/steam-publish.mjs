@@ -1,7 +1,8 @@
-import { mkdtemp, readFile, readdir, stat, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { aboutName, tagsFor } from './about.mjs';
+import { aboutProblem, descriptionMarkdown } from './about-description.mjs';
 import { changenoteFor, fencedBlockUnder } from './changenote.mjs';
 import { checkMod, loadConfig } from './config.mjs';
 import { formatGallery, listGallery } from './gallery.mjs';
@@ -9,7 +10,7 @@ import { LIMITS, checkBytes } from './limits.mjs';
 import { digest, checkPreview } from './preview.mjs';
 import { formatDiff, isIdentical, lineDiff } from './line-diff.mjs';
 import { relocatingExec } from './relocate-vdf.mjs';
-import { formatSummary, topLevelSummary } from './stage-summary.mjs';
+import { formatSummary, measure, topLevelSummary } from './stage-summary.mjs';
 import { fetchImageDigest, fetchPage } from './steam-page.mjs';
 
 const APP_ID = '294100';
@@ -18,23 +19,6 @@ function required(name) {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is required`);
   return value;
-}
-
-async function totalSize(dir) {
-  let files = 0;
-  let bytes = 0;
-  for (const entry of await readdir(dir, { withFileTypes: true })) {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      const sub = await totalSize(path);
-      files += sub.files;
-      bytes += sub.bytes;
-    } else {
-      files += 1;
-      bytes += (await stat(path)).size;
-    }
-  }
-  return { files, bytes };
 }
 
 const flag = (name) => process.env[name] === 'true';
@@ -51,6 +35,13 @@ const config = await loadConfig(commitDir);
 const changenote = changenoteFor(await readFile(join(commitDir, 'PUBLICATION.md'), 'utf8'), version);
 await checkMod(modPath, config);
 checkBytes('the change note', changenote, LIMITS.changenote);
+// With aboutFromDescription the <description> of About.xml is generated from the description source: a hand edit that
+// drifted from it stops the run, in the dry-run as in the publish.
+if (config.aboutFromDescription) {
+  const problem = await aboutProblem(commitDir, config);
+  if (problem) throw new Error(problem);
+  console.log(`About.xml: its description is the plain text of ${config.description.file}`);
+}
 
 const { stageModContent } = await import('semantic-release-steam/lib/stage-content.mjs');
 const { uploadWorkshopItem } = await import('semantic-release-steam/lib/steamcmd.mjs');
@@ -59,7 +50,7 @@ if (typeof uploadWorkshopItem !== 'function' || typeof createWorkshopVdf !== 'fu
   throw new Error('semantic-release-steam does not export the upload functions this script relies on');
 }
 const stagePath = await stageModContent({ modPath });
-const { files, bytes } = await totalSize(stagePath);
+const { files, bytes } = await measure(stagePath);
 console.log(`staged ${files} files, ${(bytes / 1e6).toFixed(2)} MB, from ${modPath}`);
 console.log(`content by top-level entry:\n${formatSummary(await topLevelSummary(stagePath))}`);
 console.log(`target: Workshop item ${config.workshopId} (app ${APP_ID}); visibility is never sent`);
@@ -99,21 +90,23 @@ if (page?.previewUrl && updatePreview) {
 let description;
 if (updateDescription) {
   if (!config.description) throw new Error('update_description: publish.config.json has no "description" source');
-  const source = await readFile(join(commitDir, config.description.file), 'utf8');
   const markdown = config.description.format === 'markdown';
   if (markdown) {
-    if (!source.trim()) throw new Error(`update_description: ${config.description.file} is empty`);
+    // The same extraction aboutProblem/About.xml already used above, so the two never diverge on the same source file.
+    const text = await descriptionMarkdown(commitDir, config.description);
+    if (!text.trim()) throw new Error(`update_description: ${config.description.file} is empty`);
     // The same converter semantic-release-steam uses for a README: Markdown in, Steam BBCode out.
     const { renderSteamBBCode } = await import('semantic-release-steam/lib/description.mjs');
-    description = renderSteamBBCode(source).trim();
+    description = renderSteamBBCode(text).trim();
   } else {
+    const source = await readFile(join(commitDir, config.description.file), 'utf8');
     description = config.description.heading
       ? fencedBlockUnder(source, new RegExp(config.description.heading), { label: `"${config.description.heading}"`, what: 'description' })
       : source.trim();
   }
   const descriptionBytes = checkBytes('update_description: the description', description, LIMITS.description);
   const local = digest(Buffer.from(description));
-  console.log(`description to send: ${description.length} characters (${descriptionBytes} bytes), sha256 ${local.sha256}, from ${config.description.file}${markdown ? ' (Markdown converted to BBCode)' : ''}`);
+  console.log(`description to send: ${description.length} characters (${descriptionBytes} bytes), sha256 ${local.sha256}, from ${config.description.file}${markdown ? `${config.description.heading ? ', block under the heading,' : ''} (Markdown converted to BBCode)` : ''}`);
   if (markdown) console.log(`description as converted (this exact text is sent):\n${description}`);
   if (page) {
     const diff = lineDiff(page.description, description);

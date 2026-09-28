@@ -26,12 +26,18 @@ export function parseConfig(text) {
   if (description !== null) {
     if (typeof description.file !== 'string' || !isPathList([description.file])) throw new Error(`${CONFIG_PATH}: description.file must be a path relative to the repository`);
     if (description.format !== undefined && !['bbcode', 'markdown'].includes(description.format)) throw new Error(`${CONFIG_PATH}: description.format must be "bbcode" or "markdown"`);
-    if (description.format === 'markdown' && description.heading !== undefined) throw new Error(`${CONFIG_PATH}: description.heading applies to a BBCode file, not to a Markdown one (the whole file is converted)`);
     if (description.heading !== undefined) {
       try { new RegExp(description.heading); } catch { throw new Error(`${CONFIG_PATH}: description.heading is not a valid regular expression`); }
     }
   }
-  return { templateStamp: typeof raw.templateStamp === 'string' ? raw.templateStamp : null, workshopId: raw.workshopId, packageId: raw.packageId, releaseTitle: raw.releaseTitle, requirePaths, forbidPaths, previewFile, galleryDir, description };
+  if (raw.aboutFromDescription !== undefined && typeof raw.aboutFromDescription !== 'boolean') throw new Error(`${CONFIG_PATH}: aboutFromDescription must be true or false`);
+  const aboutFromDescription = raw.aboutFromDescription === true;
+  if (aboutFromDescription && description?.format !== 'markdown') throw new Error(`${CONFIG_PATH}: aboutFromDescription needs a Markdown description source (description.format "markdown")`);
+  const build = raw.build ?? null;
+  if (build !== null && (typeof build !== 'object' || typeof build.project !== 'string' || !build.project.endsWith('.csproj') || !isPathList([build.project]))) {
+    throw new Error(`${CONFIG_PATH}: build.project must be a .csproj path relative to the repository`);
+  }
+  return { templateStamp: typeof raw.templateStamp === 'string' ? raw.templateStamp : null, workshopId: raw.workshopId, packageId: raw.packageId, releaseTitle: raw.releaseTitle, requirePaths, forbidPaths, previewFile, galleryDir, description, aboutFromDescription, build };
 }
 
 export async function loadConfig(commitDir) {

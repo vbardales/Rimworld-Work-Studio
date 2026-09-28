@@ -49,3 +49,13 @@ test('fails for an unknown version and for an empty section', async () => {
   const empty = spawnSync('bash', [script, await fixture('## [1.0.2]\n\n## [1.0.1]\n- x\n'), '1.0.2'], { encoding: 'utf8' });
   assert.notEqual(empty.status, 0);
 });
+
+test('a pre-release section is found by its own name only', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'changelog-'));
+  const file = join(dir, 'CHANGELOG.md');
+  await writeFile(file, ['# Changelog', '', '## [1.0.6-beta.1] - 2026-09-26', '', '- the beta', '', '## [1.0.5] - 2026-09-25', '', '- stable', ''].join('\n'));
+  const run = (version) => spawnSync('bash', [join(import.meta.dirname, '..', 'scripts', 'changelog-section.sh'), file, version], { encoding: 'utf8' });
+  assert.equal(run('1.0.6-beta.1').stdout.trim(), '- the beta');
+  assert.notEqual(run('1.0.6').status, 0, 'the stable 1.0.6 has no section yet');
+  assert.notEqual(run('1.0.6-beta.10').status, 0);
+});

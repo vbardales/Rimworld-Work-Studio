@@ -70,7 +70,7 @@ jobs:
     steps:
       - name: Validate the inputs
         run: |
-          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "version must look like 1.2.3, got '$VERSION'" >&2; exit 1; }
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?$ ]] || { echo "version must look like 1.2.3 or 1.2.3-beta.1 (alpha, beta or rc), got '$VERSION'" >&2; exit 1; }
           [[ "$REF" =~ ^[A-Za-z0-9._/-]+$ ]] || { echo "ref contains characters that are not allowed: '$REF'" >&2; exit 1; }
           # The approval gate comes before this job starts, so a branch or tag name could move
           # while the run waits for approval. Publishing takes the exact commit the dry-run printed.
@@ -79,7 +79,7 @@ jobs:
           fi
 
       - name: Check out the commit to publish
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ inputs.ref }}
           path: release
@@ -110,12 +110,47 @@ jobs:
           echo "Publishing $sha as version $VERSION"
           echo "Commit $sha, version $VERSION, mode $MODE, update_preview=${{ inputs.update_preview }}, update_description=${{ inputs.update_description }}, update_title=${{ inputs.update_title }}, update_tags=${{ inputs.update_tags }}. To publish exactly this commit with these options, dispatch with ref=$sha." >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Check the release notes exist
-        run: bash release/.github/scripts/changelog-section.sh release/CHANGELOG.md "$VERSION" | head -5
+      # The scripts come from the pinned commit but this file comes from the dispatched branch: its blob is logged so that
+      # dispatch-publish.sh refuses a publish when the file changed after the dry-run that was shown.
+      - name: Record the version of this workflow file
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+          WORKFLOW_SHA: ${{ github.workflow_sha }}
+        run: |
+          file="${WORKFLOW_REF#"$GITHUB_REPOSITORY/"}"; file="${file%%@*}"
+          blob="$(gh api "repos/$GITHUB_REPOSITORY/contents/$file?ref=$WORKFLOW_SHA" --jq .sha)"
+          [[ "$blob" =~ ^[0-9a-f]{40}$ ]] || { echo "could not read the blob of $file at $WORKFLOW_SHA" >&2; exit 1; }
+          echo "Workflow file $file blob $blob"
 
-      - uses: actions/setup-node@v4
+      - name: Check the release notes exist
+        # Captured before the pipe: the default shell has no pipefail, so a failing changelog-section.sh would leave the
+        # exit status of head and the dry-run green, then fail after the Steam upload.
+        run: |
+          set -euo pipefail
+          notes="$(bash release/.github/scripts/changelog-section.sh release/CHANGELOG.md "$VERSION")"
+          printf '%s\n' "$notes" | head -5
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22.x'
+
+      # A version can only go up: above every existing tag. A tag that already exists on this commit is the re-run of a
+      # dry-run and is judged by the step that resolved the commit.
+      - name: Check the version follows the last tag
+        working-directory: release
+        run: |
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "tag v$VERSION already exists (on this commit, checked above): the order is not judged again."
+          else
+            node .github/scripts/version-order.mjs "$VERSION"
+          fi
+
+      # Only when publish.config.json names a build project: rebuilds it, reports any difference with the tracked Mod/,
+      # ships the tracked files. A project that does not compile stops the run.
+      - name: Rebuild and compare the tracked Mod/ (optional)
+        working-directory: release
+        run: bash .github/scripts/build-check.sh
 
       - name: Install the Steam upload library
         working-directory: release
@@ -152,7 +187,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out the published commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ needs.publish.outputs.sha }}
           fetch-depth: 0
@@ -168,5 +203,8 @@ jobs:
           fi
           title="$(node -p "JSON.parse(require('fs').readFileSync('.github/publish.config.json','utf8')).releaseTitle.replace('{version}', process.env.VERSION)")"
           bash .github/scripts/changelog-section.sh CHANGELOG.md "$VERSION" > "$RUNNER_TEMP/notes.md"
+          # A version with a suffix (1.2.3-beta.1) is a pre-release on GitHub; Steam has no such notion and gets it like any other.
+          flags=()
+          [[ "$VERSION" == *-* ]] && flags+=(--prerelease)
           gh release create "v$VERSION" --repo "$GITHUB_REPOSITORY" --target "$SHA" \
-            --title "$title" --notes-file "$RUNNER_TEMP/notes.md"
+            --title "$title" --notes-file "$RUNNER_TEMP/notes.md" ${flags[@]+"${flags[@]}"}
