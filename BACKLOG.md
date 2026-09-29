@@ -831,6 +831,11 @@ during `LoadingVars`, before Work Studio's own `Patch_WorkSettingsExposeData.Res
 work type name precisely to survive a type count that moved between saves) gets to run in `PostLoadInit`. So the existing
 named-priority mechanism does not reach it in time.
 
+**What is open.** Whether a player actually loses priorities when this fires (the scenario stops at the logged error, never
+checked), and whether Work Studio can pre-empt it — a prefix ahead of RIMMSQOL's postfix on the same method, padding the
+list before RIMMSQOL reads it — is unexplored: it would need decompiling `RIMMSqol.DefMapSaveStateFix` to know what it
+actually indexes into, which has not been done. Otherwise this is RIMMSQOL's own bug to fix.
+
 ## Mech Work Tab: untested, undeclared
 
 Seen 2026-09-29 reading a competitor's page (Work Type Editor, workshopId 3809535580): it names Mech Work Tab as a mod it
@@ -841,7 +846,10 @@ way these mods do, the same failure mode is plausible here and has never been ch
 own patches, and if it can break the same way EWT and Fluffy did, add a coexistence set (`wsl-deps.avec-mechworktab.map`)
 the same shape as the others.
 
-**What is open.** Whether a player actually loses priorities when this fires (the scenario stops at the logged error, never
-checked), and whether Work Studio can pre-empt it — a prefix ahead of RIMMSQOL's postfix on the same method, padding the
-list before RIMMSQOL reads it — is unexplored: it would need decompiling `RIMMSqol.DefMapSaveStateFix` to know what it
-actually indexes into, which has not been done. Otherwise this is RIMMSQOL's own bug to fix.
+**The competitor's own answer, 2026-09-29 (its creator, in Chinese, machine-read):** tested compatible, but Mech Work Tab
+does not refresh live — a work type created while playing only shows in the mechanoid work tab after a restart, everything
+else is fine. Its own reasoning: its mod applies its changes once at game start, and so does Mech Work Tab, so a type made
+later is invisible to it until the next load. That reasoning applies to Work Studio's own custom types too — they are
+created live, mid-game, which is exactly the case this creator flags. So the open question narrows: not "does it break
+Mech Work Tab", most likely not, but "does a Work Studio type made mid-game show in the mechanoid work tab without a
+restart", which still wants its own scenario to answer rather than inferring it from someone else's mod.
