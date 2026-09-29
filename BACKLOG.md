@@ -831,6 +831,16 @@ during `LoadingVars`, before Work Studio's own `Patch_WorkSettingsExposeData.Res
 work type name precisely to survive a type count that moved between saves) gets to run in `PostLoadInit`. So the existing
 named-priority mechanism does not reach it in time.
 
+## Mech Work Tab: untested, undeclared
+
+Seen 2026-09-29 reading a competitor's page (Work Type Editor, workshopId 3809535580): it names Mech Work Tab as a mod it
+coexists with, and a comment there asks whether it disables it the way Personal Work Categories (its own inspiration) does.
+Grep of `Mod/About/About.xml`, `TESTING.md` and `STATUS.md` turns up nothing about Mech Work Tab at all — no declared
+compatibility either way, no scenario. Given Work Studio already patches the Work tab and touches `WorkTypeDef`s the same
+way these mods do, the same failure mode is plausible here and has never been checked. Worth a look: read Mech Work Tab's
+own patches, and if it can break the same way EWT and Fluffy did, add a coexistence set (`wsl-deps.avec-mechworktab.map`)
+the same shape as the others.
+
 **What is open.** Whether a player actually loses priorities when this fires (the scenario stops at the logged error, never
 checked), and whether Work Studio can pre-empt it — a prefix ahead of RIMMSQOL's postfix on the same method, padding the
 list before RIMMSQOL reads it — is unexplored: it would need decompiling `RIMMSqol.DefMapSaveStateFix` to know what it
