@@ -853,3 +853,16 @@ later is invisible to it until the next load. That reasoning applies to Work Stu
 created live, mid-game, which is exactly the case this creator flags. So the open question narrows: not "does it break
 Mech Work Tab", most likely not, but "does a Work Studio type made mid-game show in the mechanoid work tab without a
 restart", which still wants its own scenario to answer rather than inferring it from someone else's mod.
+
+## Category UI misaligned when it holds a custom work type: untested
+
+Seen 2026-10-01, same competitor page (Work Type Editor, workshopId 3809535580), two comments by one user (machine-read
+from Chinese). They report that opening a category containing certain work types shifts the interface out of alignment,
+for example with the mod "I Want This" (`sts_defect`). They add that other work types show the same effect, but that this
+mod makes it more visible because it adds a work type of its own.
+
+Not reproduced, cause unknown: no one has said which screen shifts (Work tab, category popup, or a window of the other mod).
+Work Studio creates custom work types and categories, so the same layout failure is plausible here and has never been
+checked. Worth a look: open a category holding a custom work type from another mod, and one holding a Work Studio type,
+and compare row alignment. Open a scenario only if the shift reproduces; add I Want This to the coexistence candidates if
+it does.
