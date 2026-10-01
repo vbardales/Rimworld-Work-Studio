@@ -866,3 +866,11 @@ Work Studio creates custom work types and categories, so the same layout failure
 checked. Worth a look: open a category holding a custom work type from another mod, and one holding a Work Studio type,
 and compare row alignment. Open a scenario only if the shift reproduces; add I Want This to the coexistence candidates if
 it does.
+
+Update 2026-10-01: the competitor's creator answered the same user that it is fixed: it had not considered that some mods
+write no `label` on their work type. So the cause is a `WorkTypeDef` with no `label` mishandled by their mod, not a fault
+of I Want This. Work Studio reads of `label` were read in `Source/` the same day: `Dialog_WorkTypes` (falls back to
+`defName`), `ConfigDrift` (same fallback), `WorkTypeIcons` (`NullOrEmpty` checks, `CapitalizeFirst` is null-safe) and
+`WorkTypeRuntime` (keeps the original null and writes it back unchanged). All guard the empty case on reading; nothing in
+the code suggests the same misalignment. Not tested in game: a scenario with a label-less work type from another mod would
+be the only proof.
