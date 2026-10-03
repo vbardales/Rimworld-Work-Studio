@@ -1,7 +1,7 @@
 ---
 localization: complete
 translation_en: complete
-translation_fr: complete
+translation_fr: unchecked
 mod:          Work Studio
 packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
