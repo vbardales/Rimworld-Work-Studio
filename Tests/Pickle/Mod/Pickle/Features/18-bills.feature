@@ -6,7 +6,7 @@ Feature: bills at a workbench still reach the colonists
     Given the save "test-colony" is loaded
     And a colonist "Keeper" exists
     And "Keeper" is given backstories that disable no work type
-    And "Keeper" can do the work types "Cooking"
+    And "Keeper" can do the work types "Cooking" and "Cleaning"
 
   Scenario: every bill task is still reachable with the default configuration
     When I set "Keeper" to priority 1 for "Cooking"
