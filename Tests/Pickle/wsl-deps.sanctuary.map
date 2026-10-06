@@ -13,3 +13,5 @@ nelim.pickletools.camerazoom         path:PickleTools/CameraZoom/Mod
 nelim.pickletools.stagedecor         path:PickleTools/StageDecor/Mod
 nelim.pickletools.coatsteps          path:PickleTools/CoatSteps/Mod
 nelim.pickletools.clearscreen        path:PickleTools/ClearScreen/Mod
+# The staging steps of image 2 ("stands at ... facing"): ColonistRace.
+nelim.pickletools.colonistrace       path:PickleTools/ColonistRace/Mod
