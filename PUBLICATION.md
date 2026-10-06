@@ -105,8 +105,8 @@ only place they are written; `14-publication-shots.feature` points here.
    subfolder). Raw captures stay in the evidence folder of the run (ignored by git) and the chosen ones are copied by hand.
    Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`, one scenario per image.
 8. **The gallery tells one story** (PUBLISHING.md, 2026-10-06): one morning at the sanctuary, in ONE place at three close
-   hours, in the order of the scenarios of the feature. `1-early-morning-the-editor` (8: the editor, a full-screen window,
-   so on `exhibition-zone`), `2-morning-the-new-column` (9: the Work tab, in the story place `water-garden`),
+   hours, in the order of the scenarios of the feature. `1-early-morning-the-editor` (8: the editor, a wide full-screen window,
+   so on `window-backdrop-for-width`, the bamboo backdrop Pickle Tools made for it), `2-morning-the-new-column` (9: the Work tab, in the story place `water-garden`),
    `3-late-morning-the-settings` (10: the settings window, same place). Each name carries its number and its moment. The old
    files of those names still show the previous scene until the run.
 

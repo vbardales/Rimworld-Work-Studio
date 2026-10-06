@@ -31,8 +31,11 @@
 # THE PLACES WERE CHOSEN AMONG ALL THE NAMED ONES (SANCTUAIRE-LIEUX.md, read 2026-10-06), by what is being photographed:
 #   - the place of the story is "water-garden", the pond with lilies and ducks: the Work tab (a main tab) and the settings
 #     window stay in it, at the hour of their image, and the map shows around the table, selling the game.
-#   - the editor is a full-screen window: the rule sends those to "exhibition-zone" (alias grand-place), the plain orange
-#     carpet, with no building to compete with the window. It is the only image that leaves the place of the story.
+#   - the editor is a wide full-screen window (about 63% of the screen wide, 73% high): "window-backdrop-for-width", the bamboo
+#     field with two smileys sticking out of the top corners, which Pickle Tools made for exactly this and Virginie validated
+#     (2026-10-06). Chosen over "exhibition-zone" (the orange carpet) after looking at both photographs: the bamboo green fills
+#     the margins around the window, the carpet would not. It is the only image that leaves the place of the story.
+#     "window-backdrop-for-height" is NOT validated: do not use it.
 # No place is emptied or created.
 #
 # RUN THESE WITH THE GAME IN ENGLISH. The Workshop page is English, and these images carry the
@@ -58,7 +61,8 @@ Feature: images for the Workshop page
     And I select the work type "Tidying"
     Then the task "HaulGeneral" belongs to "Tidying"
     And the task "CleanFilth" belongs to "Tidying"
-    And Nelim's Pickle Tools: I am at the sanctuary "exhibition-zone"
+    And Nelim's Pickle Tools: all animals are removed
+    And Nelim's Pickle Tools: I am at the sanctuary "window-backdrop-for-width"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "workshop-1-early-morning-the-editor"
     And Nelim's Pickle Tools: screenshot mode is disabled
