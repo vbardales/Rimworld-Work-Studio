@@ -77,9 +77,11 @@ queued behind thirty other sessions' tickets.
 **The rules**, decided with the owner on 2026-09-24. They apply to every Workshop image of this mod and are the
 only place they are written; `14-publication-shots.feature` points here.
 
-1. **The scene is the owner's showcase colony**, `Nelim-Zen-Meadow-Studio`, never the test fixture. It is the fixture
-   `nelim-zen-meadow-studio` of `PickleTools/ScreenshotStudio`, only present in a pass that stages that companion:
-   `wsl-deps.studio.map`. Run it in English, the page is English.
+1. **The scene is Nelim's sanctuary**, the fixture `Nelims-tribe` shared by every mod's gallery (`PickleTools/docs/GALERIE.md`,
+   `PickleTools/docs/SANCTUAIRE-LIEUX.md`), never the test fixture. It is only present in a pass that stages
+   `PickleTools/ScreenshotStudio`: `wsl-deps.sanctuary.map`. Run it in English, the page is English. Choose the place by
+   reading every named one: a game window goes on `exhibition-zone`, a main tab on a place that sells the game
+   (`water-garden`). Before 2026-10-06 the scene was `nelim-zen-meadow-studio` (`wsl-deps.studio.map`, now removed).
 2. **Two kinds of image, two treatments:**
    - **An option window** (this mod's own windows: the editor, the settings): the game's screenshot mode is on
      (HUD and Pickle panels hidden) and the image is **cropped tight around the window**, its rectangle plus 16 px

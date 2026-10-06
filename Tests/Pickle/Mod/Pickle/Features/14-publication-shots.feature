@@ -15,10 +15,19 @@
 #      2026-09-20 every capture carried Pickle's runner panel in the corner and had to be cropped by
 #      hand; it does not any more.
 #
-# THE SCENE IS THE OWNER'S SHOWCASE COLONY, not the test fixture: a Workshop image with the fixture's
-# plain desert behind it is not the one she publishes with. It is the fixture
-# "nelim-zen-meadow-studio" of PickleTools/ScreenshotStudio, which only exists in a pass that stages
-# that companion (wsl-deps.studio.map); every other pass skips this feature. (Chosen 2026-09-23.)
+# THE SCENE IS THE SHARED FIXTURE OF EVERY MOD'S GALLERY, Nelim's sanctuary ("Nelims-tribe", PickleTools docs/GALERIE.md and
+# docs/SANCTUAIRE-LIEUX.md), not the test fixture: a Workshop image with the fixture's plain desert behind it is not the one
+# she publishes with. It needs the pass of wsl-deps.sanctuary.map; every other pass skips this feature. (Moved from the
+# "nelim-zen-meadow-studio" fixture on 2026-10-06, after Pickle Tools announced the final fixture.)
+#
+# THE PLACES WERE CHOSEN AMONG ALL THE NAMED ONES (SANCTUAIRE-LIEUX.md, read 2026-10-06), by what is being photographed:
+#   - the editor and the settings window are game windows, photographed with the interface hidden: "exhibition-zone"
+#     (alias grand-place), the plain orange carpet, one object per cell, is the place Virginie advises for a window subject;
+#     it is also a validated framing (not in her review list), and it has no building to compete with the window.
+#   - the Work tab is a main tab, photographed with the whole interface: the map shows around the table, so it gets a place
+#     that sells the game rather than the carpet: "water-garden", the pond with lilies and ducks, validated as well.
+# No place is emptied or created: nothing is spawned for these shots, so the fixture's own pawn (Nelim, the only colonist) is
+# the one the Work tab lists.
 #
 # RUN THESE WITH THE GAME IN ENGLISH. The Workshop page is English, and these images carry the
 # mod's own labels. The @review features are the ones to run in each language.
@@ -28,8 +37,11 @@
 Feature: images for the Workshop page
 
   Background:
-    Given the save "nelim-zen-meadow-studio" is loaded
+    Given the save "Nelims-tribe" is loaded
     And game speed is paused
+    And I close all dialogs
+    And I set the hour to 12
+    And I set the weather to "Clear"
 
   # The editor is what the mod IS: three columns, a type the player made, and the tasks moved into
   # it. An empty middle column would sell nothing.
@@ -40,6 +52,7 @@ Feature: images for the Workshop page
     And I select the work type "Tidying"
     Then the task "HaulGeneral" belongs to "Tidying"
     And the task "CleanFilth" belongs to "Tidying"
+    And Nelim's Pickle Tools: I am at the sanctuary "exhibition-zone"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "Workshop page, the editor"
     And Nelim's Pickle Tools: screenshot mode is disabled
@@ -54,6 +67,7 @@ Feature: images for the Workshop page
     And I close the work type editor
     And I open the "Work" tab
     Then the Work tab has a column for "Tidying"
+    And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
     # The runner starts the game with developer mode on, and its toolbar showed on the 2026-09-25 image.
     And Nelim's Pickle Tools: developer mode is turned off for the capture
     # No screenshot mode here, on purpose: the Work tab is a main tab, and the bar under it (Architect,
@@ -68,6 +82,7 @@ Feature: images for the Workshop page
     And I open Work Studio's settings through Mod options
     Then window "Dialog_ModSettings" is open
     And the Mod options window is drawing Work Studio's own settings
+    And Nelim's Pickle Tools: I am at the sanctuary "exhibition-zone"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "Workshop page, the settings"
     And Nelim's Pickle Tools: screenshot mode is disabled

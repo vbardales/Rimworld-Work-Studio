@@ -1,0 +1,15 @@
+# The showcase pass: the Workshop images, taken on Nelim's sanctuary ("Nelims-tribe"), the fixture shared by every mod's
+# gallery (PickleTools docs/GALERIE.md, docs/SANCTUAIRE-LIEUX.md). Only 14-publication-shots.feature asks for it, and it is
+# skipped in every other pass, so this map is only for that feature:
+#   Run-PickleWsl.ps1 -Mod WorkStudio -DepMap wsl-deps.sanctuary.map -Filter 14-publication-shots.feature
+# Run it in English: the Workshop page is English.
+# Modelled on PickleTools' Tests/Pickle/wsl-deps.sanctuary.map (studio fixtures, camera, stage decor, coat steps, clear screen),
+# plus the two companions this mod's own steps use (click diagnostics, screenshot mode). Replaces wsl-deps.studio.map,
+# whose fixture "nelim-zen-meadow-studio" is gone from the gallery (2026-10-06).
+nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
+nelim.pickletools.screenshotmode     path:PickleTools/ScreenshotMode/Mod
+nelim.pickletools.screenshotstudio   path:PickleTools/ScreenshotStudio/Mod
+nelim.pickletools.camerazoom         path:PickleTools/CameraZoom/Mod
+nelim.pickletools.stagedecor         path:PickleTools/StageDecor/Mod
+nelim.pickletools.coatsteps          path:PickleTools/CoatSteps/Mod
+nelim.pickletools.clearscreen        path:PickleTools/ClearScreen/Mod
