@@ -88,8 +88,8 @@ Feature: images for the Workshop page
     # z 168-176; the burrow at (149, 173) is kept out of the frame), and she stands among them. Second attempt, 2026-10-06, after the
     # owner read the first: the pawn stood idle, the filth was barely visible and the burrow drew the eye. Now she stands at the foot
     # of the logs facing them, the filth lies in a cluster around her, and the frame is shifted north so the burrow leaves it.
-    # Pickle Tools has no step to make a pawn carry an item: asked of them, not worked around. The decor belongs to this image only
-    # and is removed after the capture.
+    # Pickle Tools had no step to make a pawn carry an item: asked of them, they wrote `"Nelim" carries the item "WoodLog"`
+    # (ColonistRace, after the `stands at` step, which stops her job). The decor belongs to this image only and is removed after the capture.
     And Nelim's Pickle Tools: all animals are removed
     And Nelim's Pickle Tools: I place the decor "WoodLog" at (147, 169)
     And Nelim's Pickle Tools: I place the decor "WoodLog" at (148, 170)
@@ -103,6 +103,7 @@ Feature: images for the Workshop page
     And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (152, 171)
     And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (151, 168)
     And Nelim's Pickle Tools: "Nelim" stands at (150, 170) facing West
+    And Nelim's Pickle Tools: "Nelim" carries the item "WoodLog"
     And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
     And Nelim's Pickle Tools: I frame the cell (150, 166) at zoom 9
     And I open the "Work" tab
