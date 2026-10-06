@@ -95,16 +95,16 @@ Feature: images for the Workshop page
     And Nelim's Pickle Tools: I place the decor "Steel" at (153, 168)
     And Nelim's Pickle Tools: I place the decor "ChunkSlagSteel" at (154, 170)
     And Nelim's Pickle Tools: I place the decor "ChunkGranite" at (146, 171)
-    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (150, 169)
+    And Nelim's Pickle Tools: I place the decor "Filth_Trash" at (150, 169)
     And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (151, 170)
-    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (152, 169)
-    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (150, 171)
+    And Nelim's Pickle Tools: I place the decor "Filth_Trash" at (152, 169)
+    And Nelim's Pickle Tools: I place the decor "Filth_Trash" at (150, 171)
     And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (152, 171)
-    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (151, 168)
+    And Nelim's Pickle Tools: I place the decor "Filth_Trash" at (151, 168)
     And Nelim's Pickle Tools: "Nelim" stands at (150, 170) facing West
     And Nelim's Pickle Tools: "Nelim" carries the item "WoodLog"
     And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
-    And Nelim's Pickle Tools: I frame the cell (150, 164) at zoom 9
+    And Nelim's Pickle Tools: I frame the cell (150, 168) at zoom 4
     # Run 7ef2 showed the learning helper again ("Camera dolly", the lesson the camera move triggers): hidden here, after the frame
     # move and before the tab opens, instead of at the top of the scenario.
     And Nelim's Pickle Tools: the learning helper is hidden
