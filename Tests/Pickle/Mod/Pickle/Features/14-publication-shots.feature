@@ -20,17 +20,19 @@
 # she publishes with. It needs the pass of wsl-deps.sanctuary.map; every other pass skips this feature. (Moved from the
 # "nelim-zen-meadow-studio" fixture on 2026-10-06, after Pickle Tools announced the final fixture.)
 #
-# THE GALLERY TELLS ONE STORY (PUBLISHING.md, 2026-10-06): a day at the sanctuary, in the order of the scenarios below.
-# Nelim tidies her colony's chores. At DAWN she opens the editor and makes a work type of her own, "Tidying" (1); in the
-# MORNING the new column is there in the Work tab, with no restart (2); in the EVENING she looks at the settings (3).
-# One scenario is one image. Nothing is spawned or staged for them: the shots are the mod's own windows, "screen captures of
-# what they are", and the only pawn is the fixture's, Nelim, the one colonist. The hour changes from one image to the next.
+# THE GALLERY TELLS ONE STORY (PUBLISHING.md, 2026-10-06): one MORNING at the sanctuary, in the order of the scenarios below, in
+# ONE place at three close hours (the rule allows it: what changes between two images is the subject and the story, not the
+# place). Nelim tidies her colony's chores. EARLY MORNING (8): she opens the editor and makes a work type of her own,
+# "Tidying" (1). MORNING (9): the new column is there in the Work tab, with no restart (2). LATE MORNING (10): she looks at
+# the settings (3). The image names carry the number and the moment, so the order reads without opening the feature.
+# One scenario is one image. Nothing is spawned or staged: the shots are the mod's own windows, "screen captures of what
+# they are", and the only pawn is the fixture's, Nelim, the one colonist.
 #
 # THE PLACES WERE CHOSEN AMONG ALL THE NAMED ONES (SANCTUAIRE-LIEUX.md, read 2026-10-06), by what is being photographed:
-#   - the editor is a full-screen window: "exhibition-zone" (alias grand-place), the plain orange carpet, is the place the
-#     rule gives to those (PUBLISHING.md), with no building to compete with the window.
-#   - the Work tab (a main tab) and the settings window stay in the place of the story, at its hour: "water-garden", the pond
-#     with lilies and ducks, which sells the game behind the table.
+#   - the place of the story is "water-garden", the pond with lilies and ducks: the Work tab (a main tab) and the settings
+#     window stay in it, at the hour of their image, and the map shows around the table, selling the game.
+#   - the editor is a full-screen window: the rule sends those to "exhibition-zone" (alias grand-place), the plain orange
+#     carpet, with no building to compete with the window. It is the only image that leaves the place of the story.
 # No place is emptied or created.
 #
 # RUN THESE WITH THE GAME IN ENGLISH. The Workshop page is English, and these images carry the
@@ -48,8 +50,8 @@ Feature: images for the Workshop page
 
   # The editor is what the mod IS: three columns, a type the player made, and the tasks moved into
   # it. An empty middle column would sell nothing.
-  Scenario: 1, dawn, the editor, with a type a player would have made
-    Given I set the hour to 6
+  Scenario: 1, early morning, the editor, with a type a player would have made
+    Given I set the hour to 8
     When I create the work type "Tidying"
     And I move the task "HaulGeneral" into "Tidying"
     And I move the task "CleanFilth" into "Tidying"
@@ -58,7 +60,7 @@ Feature: images for the Workshop page
     And the task "CleanFilth" belongs to "Tidying"
     And Nelim's Pickle Tools: I am at the sanctuary "exhibition-zone"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
-    And I take a screenshot "workshop-1-dawn-the-editor"
+    And I take a screenshot "workshop-1-early-morning-the-editor"
     And Nelim's Pickle Tools: screenshot mode is disabled
 
   # The point of the previous shot, seen from the Work tab: the column exists, immediately, without
@@ -81,8 +83,8 @@ Feature: images for the Workshop page
     And I take a screenshot "workshop-2-morning-the-new-column"
     And I close all windows but the main tabs, for Work Studio
 
-  Scenario: 3, evening, the settings window
-    Given I set the hour to 18
+  Scenario: 3, late morning, the settings window
+    Given I set the hour to 10
     When I create the work type "Tidying"
     And I close the work type editor
     And I open Work Studio's settings through Mod options
@@ -90,5 +92,5 @@ Feature: images for the Workshop page
     And the Mod options window is drawing Work Studio's own settings
     And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
-    And I take a screenshot "workshop-3-evening-the-settings"
+    And I take a screenshot "workshop-3-late-morning-the-settings"
     And Nelim's Pickle Tools: screenshot mode is disabled

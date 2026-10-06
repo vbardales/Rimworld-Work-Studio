@@ -104,10 +104,11 @@ only place they are written; `14-publication-shots.feature` points here.
    then `1-`, `2-`, `3-`... in the order they go on the page, nothing else** (no older versions, no raw captures, no
    subfolder). Raw captures stay in the evidence folder of the run (ignored by git) and the chosen ones are copied by hand.
    Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`, one scenario per image.
-8. **The gallery tells one story** (PUBLISHING.md, 2026-10-06): a day at the sanctuary, in the order of the scenarios of the
-   feature. `1-dawn-the-editor` (the editor, full-screen window, on `exhibition-zone` at dawn), `2-morning-the-new-column`
-   (the Work tab, in the story place `water-garden`, at 9), `3-evening-the-settings` (the settings window, same place, at 18).
-   Each name carries its number and its moment. The old files of those names still show the previous scene until the run.
+8. **The gallery tells one story** (PUBLISHING.md, 2026-10-06): one morning at the sanctuary, in ONE place at three close
+   hours, in the order of the scenarios of the feature. `1-early-morning-the-editor` (8: the editor, a full-screen window,
+   so on `exhibition-zone`), `2-morning-the-new-column` (9: the Work tab, in the story place `water-garden`),
+   `3-late-morning-the-settings` (10: the settings window, same place). Each name carries its number and its moment. The old
+   files of those names still show the previous scene until the run.
 
 **Where each image stands (2026-09-25).** Steam shows the first one large; the order is the Work tab first for its
 impact, then the editor, then the settings. Shots in `Art/Gallery/` (old scene, to be replaced), all in English,
