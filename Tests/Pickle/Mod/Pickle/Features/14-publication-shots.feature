@@ -85,20 +85,26 @@ Feature: images for the Workshop page
     And Nelim's Pickle Tools: the resource readout is hidden
     # THE SCENE (owner, 2026-10-06: the Work tab image needed to be more scenic): Nelim tidying the pond shore, the very work of the
     # "Tidying" type she just made. Things to haul and filth to clean lie on the brown shore west of the pond (water-garden, x 143-158,
-    # z 168-176; the burrow at (149, 173) is avoided), and she stands among them. The decor belongs to this image only and is removed
-    # after the capture. First attempt, framing to be read on the run.
+    # z 168-176; the burrow at (149, 173) is kept out of the frame), and she stands among them. Second attempt, 2026-10-06, after the
+    # owner read the first: the pawn stood idle, the filth was barely visible and the burrow drew the eye. Now she stands at the foot
+    # of the logs facing them, the filth lies in a cluster around her, and the frame is shifted north so the burrow leaves it.
+    # Pickle Tools has no step to make a pawn carry an item: asked of them, not worked around. The decor belongs to this image only
+    # and is removed after the capture.
     And Nelim's Pickle Tools: all animals are removed
-    And Nelim's Pickle Tools: I place the decor "WoodLog" at (146, 170)
-    And Nelim's Pickle Tools: I place the decor "WoodLog" at (147, 171)
-    And Nelim's Pickle Tools: I place the decor "Steel" at (153, 170)
-    And Nelim's Pickle Tools: I place the decor "ChunkSlagSteel" at (155, 171)
-    And Nelim's Pickle Tools: I place the decor "ChunkGranite" at (145, 172)
-    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (150, 170)
-    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (152, 172)
-    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (154, 169)
-    And Nelim's Pickle Tools: "Nelim" stands at (151, 171) facing East
+    And Nelim's Pickle Tools: I place the decor "WoodLog" at (147, 169)
+    And Nelim's Pickle Tools: I place the decor "WoodLog" at (148, 170)
+    And Nelim's Pickle Tools: I place the decor "Steel" at (153, 168)
+    And Nelim's Pickle Tools: I place the decor "ChunkSlagSteel" at (154, 170)
+    And Nelim's Pickle Tools: I place the decor "ChunkGranite" at (146, 171)
+    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (150, 169)
+    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (151, 170)
+    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (152, 169)
+    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (150, 171)
+    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (152, 171)
+    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (151, 168)
+    And Nelim's Pickle Tools: "Nelim" stands at (150, 170) facing West
     And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
-    And Nelim's Pickle Tools: I frame the cell (151, 168) at zoom 9
+    And Nelim's Pickle Tools: I frame the cell (150, 166) at zoom 9
     And I open the "Work" tab
     Then the Work tab has a column for "Tidying"
     # The runner starts the game with developer mode on, and its toolbar showed on the 2026-09-25 image.
