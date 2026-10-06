@@ -46,9 +46,9 @@ workflow ("Steam description" below). See `Rimworld-Release-Admin/docs/OPERATION
   **after** the publication. They are `02-work-tab-button.feature` against `wsl-deps.incompat-fluffy-worktab.map`, and the
   full `wsl-deps.avec-enhanced-work-tab.map` set, filed as small tickets through the TicketDispatcher; neither has run
   since the fixes they are meant to confirm.
-- Upload the three Workshop screenshots of `Art/Workshop/` in the order of their names. They are done and
-  follow the rules below; the owner has seen the Work tab one and said it is beautiful, the editor and the settings
-  were sent to her too.
+- Upload the Workshop images of `Art/Gallery/` in the order of their names (`0-` is the Preview, already on the page). The
+  three files there still show the old studio scene: they are replaced by the run of `14-publication-shots.feature` on
+  the sanctuary (generations with a pawn are on hold, 2026-10-06), then read, then uploaded.
 - Decide the two open design points STATUS.md lists (icons on by default; the long renamed header
   spilling into its neighbours in capture 07b) — not blocking, but worth a look before they are
   permanent on every subscriber's screen.
@@ -100,13 +100,17 @@ only place they are written; `14-publication-shots.feature` points here.
    for the day it has): aim at an **orange zone** of the studio, and never at the black tiles, where the subject
    drowns; or at the grass **just above the smiley** emblem. On the grass, **circle in red what is worth seeing**
    so the eye finds it, since the meadow is busy.
-7. **Where files live: `Art/Workshop/` holds only the images to upload, numbered `01-`, `02-`, `03-`... in the order they
-   go on the page, nothing else** (no older versions, no raw captures, no subfolder: an image that is not to be uploaded
-   does not stay there). Raw captures go to `Art/Workshop/studio-raw/` (ignored by git, delete once cropped). Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`,
-   collected with `Art/Update-WorkshopScreenshots.ps1`.
+7. **Where files live: `Art/Gallery/` holds only the images to upload, `0-preview.png` (a byte copy of `Mod/About/Preview.png`) first,
+   then `1-`, `2-`, `3-`... in the order they go on the page, nothing else** (no older versions, no raw captures, no
+   subfolder). Raw captures stay in the evidence folder of the run (ignored by git) and the chosen ones are copied by hand.
+   Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`, one scenario per image.
+8. **The gallery tells one story** (PUBLISHING.md, 2026-10-06): a day at the sanctuary, in the order of the scenarios of the
+   feature. `1-dawn-the-editor` (the editor, full-screen window, on `exhibition-zone` at dawn), `2-morning-the-new-column`
+   (the Work tab, in the story place `water-garden`, at 9), `3-evening-the-settings` (the settings window, same place, at 18).
+   Each name carries its number and its moment. The old files of those names still show the previous scene until the run.
 
 **Where each image stands (2026-09-25).** Steam shows the first one large; the order is the Work tab first for its
-impact, then the editor, then the settings. Shots in `Art/Workshop/`, all on the showcase colony, all in English,
+impact, then the editor, then the settings. Shots in `Art/Gallery/` (old scene, to be replaced), all in English,
 type `Tidying`:
 
 | File | Kind | Size | State |
@@ -203,7 +207,7 @@ link to a still-updating item is fine to post, but check the linked item is the 
 - Do not create the tag or the release by hand: `publish-tag.yml` creates `v1.2.0` and the GitHub release (with the
   `## [1.2.0]` section of `CHANGELOG.md`) once the upload has succeeded, and refuses to start if the tag exists.
 - Then check the public page: title, new update time, the change note, the description if it was sent, and upload the
-  three images of `Art/Workshop/` by hand (no tool of the chain can send a gallery).
+  images of `Art/Gallery/` by hand (no tool of the chain can send a gallery).
 
 **The tag `v1.1.0`** (`bf89753`, pushed by hand at 09:07 on 2026-09-22) is the commit that was uploaded from the game at
 09:09 as 1.1.0: it is right, and it stays (the owner's word, 2026-09-25). `v1.1.1` has no tag: the 12:00 upload was of

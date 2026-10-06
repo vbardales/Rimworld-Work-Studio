@@ -9,7 +9,7 @@
   ],
   "forbidPaths": [],
   "previewFile": "About/Preview.png",
-  "galleryDir": "Art/Workshop",
+  "galleryDir": "Art/Gallery",
   "description": {
     "file": "Mod/README.template.md",
     "format": "markdown"

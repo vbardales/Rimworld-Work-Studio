@@ -20,19 +20,23 @@
 # she publishes with. It needs the pass of wsl-deps.sanctuary.map; every other pass skips this feature. (Moved from the
 # "nelim-zen-meadow-studio" fixture on 2026-10-06, after Pickle Tools announced the final fixture.)
 #
+# THE GALLERY TELLS ONE STORY (PUBLISHING.md, 2026-10-06): a day at the sanctuary, in the order of the scenarios below.
+# Nelim tidies her colony's chores. At DAWN she opens the editor and makes a work type of her own, "Tidying" (1); in the
+# MORNING the new column is there in the Work tab, with no restart (2); in the EVENING she looks at the settings (3).
+# One scenario is one image. Nothing is spawned or staged for them: the shots are the mod's own windows, "screen captures of
+# what they are", and the only pawn is the fixture's, Nelim, the one colonist. The hour changes from one image to the next.
+#
 # THE PLACES WERE CHOSEN AMONG ALL THE NAMED ONES (SANCTUAIRE-LIEUX.md, read 2026-10-06), by what is being photographed:
-#   - the editor and the settings window are game windows, photographed with the interface hidden: "exhibition-zone"
-#     (alias grand-place), the plain orange carpet, one object per cell, is the place Virginie advises for a window subject;
-#     it is also a validated framing (not in her review list), and it has no building to compete with the window.
-#   - the Work tab is a main tab, photographed with the whole interface: the map shows around the table, so it gets a place
-#     that sells the game rather than the carpet: "water-garden", the pond with lilies and ducks, validated as well.
-# No place is emptied or created: nothing is spawned for these shots, so the fixture's own pawn (Nelim, the only colonist) is
-# the one the Work tab lists.
+#   - the editor is a full-screen window: "exhibition-zone" (alias grand-place), the plain orange carpet, is the place the
+#     rule gives to those (PUBLISHING.md), with no building to compete with the window.
+#   - the Work tab (a main tab) and the settings window stay in the place of the story, at its hour: "water-garden", the pond
+#     with lilies and ducks, which sells the game behind the table.
+# No place is emptied or created.
 #
 # RUN THESE WITH THE GAME IN ENGLISH. The Workshop page is English, and these images carry the
 # mod's own labels. The @review features are the ones to run in each language.
 #
-# Collect them afterwards with Art/Update-WorkshopScreenshots.ps1.
+# Copy the chosen captures afterwards, by hand, from the run's evidence folder into Art/Gallery/ as 1-, 2-, 3-... (PUBLISHING.md).
 @review @requires:nelim.pickletools.screenshotmode @requires:nelim.pickletools.screenshotstudio
 Feature: images for the Workshop page
 
@@ -40,12 +44,12 @@ Feature: images for the Workshop page
     Given the save "Nelims-tribe" is loaded
     And game speed is paused
     And I close all dialogs
-    And I set the hour to 12
     And I set the weather to "Clear"
 
   # The editor is what the mod IS: three columns, a type the player made, and the tasks moved into
   # it. An empty middle column would sell nothing.
-  Scenario: the editor, with a type a player would have made
+  Scenario: 1, dawn, the editor, with a type a player would have made
+    Given I set the hour to 6
     When I create the work type "Tidying"
     And I move the task "HaulGeneral" into "Tidying"
     And I move the task "CleanFilth" into "Tidying"
@@ -54,14 +58,15 @@ Feature: images for the Workshop page
     And the task "CleanFilth" belongs to "Tidying"
     And Nelim's Pickle Tools: I am at the sanctuary "exhibition-zone"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
-    And I take a screenshot "Workshop page, the editor"
+    And I take a screenshot "workshop-1-dawn-the-editor"
     And Nelim's Pickle Tools: screenshot mode is disabled
 
   # The point of the previous shot, seen from the Work tab: the column exists, immediately, without
   # a restart. The showcase colony is heavy for the software-rendered Linux game: opening the tab
   # took 10 s on 2026-09-24 and died on the default five-second step budget, hence the tag.
   @timeout:30
-  Scenario: the new column in the Work tab
+  Scenario: 2, morning, the new column in the Work tab
+    Given I set the hour to 9
     When I create the work type "Tidying"
     And I move the task "HaulGeneral" into "Tidying"
     And I close the work type editor
@@ -73,16 +78,17 @@ Feature: images for the Workshop page
     # No screenshot mode here, on purpose: the Work tab is a main tab, and the bar under it (Architect,
     # Work, Schedule...) is what tells a visitor where the panel comes from. The game does not highlight
     # the open tab. The image is the whole frame, uncropped.
-    And I take a screenshot "Workshop page, the new column"
+    And I take a screenshot "workshop-2-morning-the-new-column"
     And I close all windows but the main tabs, for Work Studio
 
-  Scenario: the settings window
+  Scenario: 3, evening, the settings window
+    Given I set the hour to 18
     When I create the work type "Tidying"
     And I close the work type editor
     And I open Work Studio's settings through Mod options
     Then window "Dialog_ModSettings" is open
     And the Mod options window is drawing Work Studio's own settings
-    And Nelim's Pickle Tools: I am at the sanctuary "exhibition-zone"
+    And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
-    And I take a screenshot "Workshop page, the settings"
+    And I take a screenshot "workshop-3-evening-the-settings"
     And Nelim's Pickle Tools: screenshot mode is disabled
