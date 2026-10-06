@@ -1,0 +1,6 @@
+# Pass for feature 19: Mech Work Tab (Spacemoth.MechTab, Workshop 3268299107; needs Biotech, which the base pass stages).
+# Select it with -DepMap wsl-deps.avec-mechworktab.map, in English. A named map REPLACES the default one, so
+# ClickDiagnostics stays staged: the rest of the suite uses it, and the other features skip themselves on their own tags.
+# The page was reported removed from the Workshop for a guideline reason (2026-10-06): if the download fails, say so in STATUS.md.
+Spacemoth.MechTab                    3268299107
+nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
