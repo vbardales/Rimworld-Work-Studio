@@ -21,3 +21,10 @@ Feature: a work type written without a label does not break the screens
     # Out again, so the scenarios played after this one do not meet it in the database.
     When I close all windows but the main tabs, for Work Studio
     And the other mod's work type "PickleLabelless" is taken out again
+
+  # Found on the 2026-10-06 gallery image: the editor listed three vanilla types by their raw defName, because they carry a
+  # labelShort and no label. The name now falls back to the short label, as the Work tab columns do.
+  Scenario: vanilla types that have no label are named by their short label
+    Then Work Studio names the work type "BasicWorker" "Basic"
+    And Work Studio names the work type "PatientBedRest" "Bed rest"
+    And Work Studio names the work type "PlantCutting" "Plant cut"

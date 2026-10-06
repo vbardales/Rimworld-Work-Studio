@@ -77,7 +77,7 @@ namespace WorkStudio
 
         private static string TypeLabel(WorkTypeDef type)
         {
-            return type.label.NullOrEmpty() ? type.defName : type.LabelCap.ToString();
+            return WorkTypeRuntime.DisplayLabel(type);
         }
 
         private static string GiverLabel(WorkGiverDef giver)

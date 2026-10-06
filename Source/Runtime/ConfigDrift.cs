@@ -110,7 +110,7 @@ namespace WorkStudio
         private static string TypeLabel(string defName)
         {
             var def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
-            return def == null || def.label.NullOrEmpty() ? defName : def.LabelCap.ToString();
+            return def == null ? defName : WorkTypeRuntime.DisplayLabel(def);
         }
 
         private static string Summarize(List<string> names, System.Func<string, string> display)

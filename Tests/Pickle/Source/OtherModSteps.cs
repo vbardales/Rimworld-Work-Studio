@@ -169,6 +169,15 @@ namespace WorkStudio.PickleSteps
             remove.Invoke(null, new object[] { def });
         }
 
+        [Then("Work Studio names the work type {string} {string}")]
+        public void NamesType(PickleContext ctx, string defName, string expected)
+        {
+            var def = Driver.WorkType(ctx, defName);
+            var actual = WorkTypeRuntime.DisplayLabel(def);
+            ctx.Assert(actual == expected,
+                $"'{defName}' is named '{actual}', expected '{expected}' (label '{def.label}', labelShort '{def.labelShort}')");
+        }
+
         [Then("the work type editor lists the work type {string}")]
         public void EditorLists(PickleContext ctx, string defName)
         {
