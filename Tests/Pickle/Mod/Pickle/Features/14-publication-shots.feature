@@ -76,6 +76,12 @@ Feature: images for the Workshop page
     When I create the work type "Tidying"
     And I move the task "HaulGeneral" into "Tidying"
     And I close the work type editor
+    # The sanctuary scene carries a tutorial box, hunger alerts and a long resource list (seen on the 2026-10-06 run). Hidden with
+    # Pickle Tools' own steps, NOT with presentation mode: that one would also hide the tab bar this image keeps. The learning
+    # helper is closed BEFORE the tab opens, as its author asks.
+    And Nelim's Pickle Tools: the learning helper is hidden
+    And Nelim's Pickle Tools: the alerts are hidden
+    And Nelim's Pickle Tools: the resource readout is hidden
     And I open the "Work" tab
     Then the Work tab has a column for "Tidying"
     And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
