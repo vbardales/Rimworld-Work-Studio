@@ -80,7 +80,7 @@ only place they are written; `14-publication-shots.feature` points here.
 1. **The scene is Nelim's sanctuary**, the fixture `Nelims-tribe` shared by every mod's gallery (`PickleTools/docs/GALERIE.md`,
    `PickleTools/docs/SANCTUAIRE-LIEUX.md`), never the test fixture. It is only present in a pass that stages
    `PickleTools/ScreenshotStudio`: `wsl-deps.sanctuary.map`. Run it in English, the page is English. Choose the place by
-   reading every named one: a game window goes on `exhibition-zone`, a main tab on a place that sells the game
+   reading every named one: a wide full-screen window goes on `window-backdrop-for-width` (or `exhibition-zone` for one that needs a plain carpet), a main tab on a place that sells the game
    (`water-garden`). Before 2026-10-06 the scene was `nelim-zen-meadow-studio` (`wsl-deps.studio.map`, now removed).
 2. **Two kinds of image, two treatments:**
    - **An option window** (this mod's own windows: the editor, the settings): the game's screenshot mode is on
