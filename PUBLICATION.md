@@ -47,8 +47,8 @@ workflow ("Steam description" below). See `Rimworld-Release-Admin/docs/OPERATION
   full `wsl-deps.avec-enhanced-work-tab.map` set, filed as small tickets through the TicketDispatcher; neither has run
   since the fixes they are meant to confirm.
 - Upload the Workshop images of `Art/Gallery/` in the order of their names (`0-` is the Preview, already on the page). The
-  three files there still show the old studio scene: they are replaced by the run of `14-publication-shots.feature` on
-  the sanctuary (generations with a pawn are on hold, 2026-10-06), then read, then uploaded.
+  three files there come from the run of `14-publication-shots.feature` on the sanctuary (2026-10-06, `afa7`): to upload
+  once the owner has looked at them.
 - Decide the two open design points STATUS.md lists (icons on by default; the long renamed header
   spilling into its neighbours in capture 07b) — not blocking, but worth a look before they are
   permanent on every subscriber's screen.
@@ -107,8 +107,8 @@ only place they are written; `14-publication-shots.feature` points here.
 8. **The gallery tells one story** (PUBLISHING.md, 2026-10-06): one morning at the sanctuary, in ONE place at three close
    hours, in the order of the scenarios of the feature. `1-early-morning-the-editor` (8: the editor, a wide full-screen window,
    so on `window-backdrop-for-width`, the bamboo backdrop Pickle Tools made for it), `2-morning-the-new-column` (9: the Work tab, in the story place `water-garden`),
-   `3-late-morning-the-settings` (10: the settings window, same place). Each name carries its number and its moment. The old
-   files of those names still show the previous scene until the run.
+   `3-late-morning-the-settings` (10: the settings window, same place). Each name carries its number and its moment. Played on 2026-10-06 (ticket `afa7`, `f3d594f`), read, and kept
+   whole-frame: the bamboo backdrop is meant to be seen around the editor, so it is not cropped.
 
 **Where each image stands (2026-09-25).** Steam shows the first one large; the order is the Work tab first for its
 impact, then the editor, then the settings. Shots in `Art/Gallery/` (old scene, to be replaced), all in English,
