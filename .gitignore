@@ -29,7 +29,6 @@ Art/Workshop/studio-raw/
 
 # Shared renderer outputs (scripts/Render-Preview.cjs), regenerated on every run; the delivered image is Mod/About/Preview.png.
 Art/.render/
-Art/*.ico
 
 # Textures the build generates next to the PNGs.
 Mod/Textures/**/*.dds

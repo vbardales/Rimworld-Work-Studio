@@ -1,0 +1,18 @@
+{
+  "title": "Work Studio",
+  "titleSize": 46,
+  "titleParts": [{ "text": "WORK STUDIO" }],
+  "suffix": "",
+  "tag": "",
+  "tagInline": true,
+  "copyLines": ["Reorganize work types in game.", "No restart required."],
+  "layout": "panel",
+  "panelAnchor": "top-left",
+  "modIconSource": "ModIcon-source.png",
+  "backgroundFile": "Preview-source.png",
+  "backgroundPosition": "center",
+  "backgroundSize": "cover",
+  "echo": { "file": "echo.png", "preSized": true, "mode": "alpha", "color": "var(--accent)", "width": 205, "height": 160, "opacity": 1, "veil": false, "panelTop": 42, "panelRight": 1, "panelWidth": 30, "flipX": true },
+  "iconBadge": { "file": "ModIcon-source.png", "corner": "bottom-left", "width": 180, "translate": "12%, -12%", "rotate": 15, "radius": 48, "outline": false, "veil": "radial", "veilSize": 250, "veilLeft": -45, "veilBottom": -45 },
+  "palette": { "veil": "#3B271A", "inkPrimary": "#F5EEE6", "inkSecondary": "#D6B58A", "accent": "#77B9DD", "badgeInk": "#17242B" }
+}
