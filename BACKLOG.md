@@ -874,3 +874,12 @@ of I Want This. Work Studio reads of `label` were read in `Source/` the same day
 `WorkTypeRuntime` (keeps the original null and writes it back unchanged). All guard the empty case on reading; nothing in
 the code suggests the same misalignment. Not tested in game: a scenario with a label-less work type from another mod would
 be the only proof.
+
+**Second question on the same page, 2026-10-06:** a player asked the competitor's creator whether its mod, like Personal Work
+Categories (which it was inspired by), wipes the mechanoid work priorities set in Mech Work Tab after a save and a load. That
+is a question about Work Studio too, and it is not covered above. What the code says: `PriorityMemory` walks
+`PawnsFinder.All_AliveOrDead`, so mechanoids are in its snapshot, and `Patch_WorkSettingsExposeData` rewrites priorities by type
+name after loading. What it does not say: what Mech Work Tab itself stores and when, so a rewrite before ours could play the
+same part as RIMMSQOL's (see the entry above). Worth a scenario: a mechanoid with priorities set in Mech Work Tab, a save, a
+load, with Mech Work Tab as the only other mod, then compare the priorities before and after. Open it only with the
+coexistence set `wsl-deps.avec-mechworktab.map` from the entry above.
