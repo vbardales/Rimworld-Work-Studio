@@ -145,9 +145,28 @@ namespace WorkStudio.PickleSteps
         {
             var def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
             ctx.Require(def != null, $"'{defName}' is not in the database");
-            DefDatabase<WorkTypeDef>.Remove(def);
+            RemoveDef(def);
+            var column = DefDatabase<PawnColumnDef>.GetNamedSilentFail("WorkPriority_" + defName);
+            if (column != null)
+            {
+                RemoveDef(column);
+            }
+
             WorkTypeRuntime.Apply();
             ctx.Assert(DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName) == null, $"'{defName}' is still in the database");
+        }
+
+        /// <summary>DefDatabase.Remove is not public: Work Studio itself reaches it through a publicized reference.</summary>
+        private static void RemoveDef<T>(T def) where T : Def, new()
+        {
+            var remove = typeof(DefDatabase<T>).GetMethod("Remove",
+                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+            if (remove == null)
+            {
+                throw new InvalidOperationException("DefDatabase<" + typeof(T).Name + ">.Remove was not found");
+            }
+
+            remove.Invoke(null, new object[] { def });
         }
 
         [Then("the work type editor lists the work type {string}")]
