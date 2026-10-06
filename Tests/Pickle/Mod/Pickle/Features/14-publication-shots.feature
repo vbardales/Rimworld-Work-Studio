@@ -80,7 +80,6 @@ Feature: images for the Workshop page
     # The sanctuary scene carries a tutorial box, hunger alerts and a long resource list (seen on the 2026-10-06 run). Hidden with
     # Pickle Tools' own steps, NOT with presentation mode: that one would also hide the tab bar this image keeps. The learning
     # helper is closed BEFORE the tab opens, as its author asks.
-    And Nelim's Pickle Tools: the learning helper is hidden
     And Nelim's Pickle Tools: the alerts are hidden
     And Nelim's Pickle Tools: the resource readout is hidden
     # THE SCENE (owner, 2026-10-06: the Work tab image needed to be more scenic): Nelim tidying the pond shore, the very work of the
@@ -105,7 +104,10 @@ Feature: images for the Workshop page
     And Nelim's Pickle Tools: "Nelim" stands at (150, 170) facing West
     And Nelim's Pickle Tools: "Nelim" carries the item "WoodLog"
     And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
-    And Nelim's Pickle Tools: I frame the cell (150, 166) at zoom 9
+    And Nelim's Pickle Tools: I frame the cell (150, 164) at zoom 9
+    # Run 7ef2 showed the learning helper again ("Camera dolly", the lesson the camera move triggers): hidden here, after the frame
+    # move and before the tab opens, instead of at the top of the scenario.
+    And Nelim's Pickle Tools: the learning helper is hidden
     And I open the "Work" tab
     Then the Work tab has a column for "Tidying"
     # The runner starts the game with developer mode on, and its toolbar showed on the 2026-09-25 image.
