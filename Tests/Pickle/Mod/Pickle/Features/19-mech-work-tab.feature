@@ -4,8 +4,8 @@
 # loading; what Mech Work Tab stores itself and when is not read. Not run when written.
 #
 # Pass: wsl-deps.avec-mechworktab.map, in English. Every other pass skips this feature.
-# Its Workshop page was reported removed for a guideline reason on 2026-10-06: if the staging cannot fetch it, the ticket
-# stops before any scenario, and that is the finding.
+# Mech Work Tab is staged from the owner's Windows Workshop subscription (2026-10-06, after the first ticket found no copy of it in
+# the staging). Its Workshop item is under a Steam Workshop protection, not removed.
 @requires:spacemoth.mechtab
 Feature: mechanoid priorities survive a save and a load, with Mech Work Tab
 
