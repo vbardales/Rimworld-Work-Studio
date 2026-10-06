@@ -29,14 +29,15 @@
 # they are", and the only pawn is the fixture's, Nelim, the one colonist.
 #
 # THE PLACES WERE CHOSEN AMONG ALL THE NAMED ONES (SANCTUAIRE-LIEUX.md, read 2026-10-06), by what is being photographed:
-#   - the place of the story is "water-garden", the pond with lilies and ducks: the Work tab (a main tab) and the settings
-#     window stay in it, at the hour of their image, and the map shows around the table, selling the game.
+#   - the place of the story is "water-garden", the pond with lilies and ducks: the Work tab (a main tab) is photographed there, at
+#     its hour, with the map showing around the table. Nelim tidies the brown shore (staged decor, removed after the capture).
 #   - the editor is a wide full-screen window (about 63% of the screen wide, 73% high): "window-backdrop-for-width", the bamboo
 #     field with two smileys sticking out of the top corners, which Pickle Tools made for exactly this and Virginie validated
-#     (2026-10-06). Chosen over "exhibition-zone" (the orange carpet) after looking at both photographs: the bamboo green fills
-#     the margins around the window, the carpet would not. It is the only image that leaves the place of the story.
-#     "window-backdrop-for-height" is NOT validated: do not use it.
-# No place is emptied or created.
+#     (2026-10-06). Chosen over "exhibition-zone" (the orange carpet): the bamboo green fills the margins around the window.
+#   - the settings window is taller than it is wide (about 47% of the screen wide, 65% high): "window-backdrop-for-height", the
+#     backdrop for tall windows, validated by Virginie (2026-10-06). The editor and the settings leave the place of the story.
+#   - the images of the two windows are cropped around the window afterwards (owner, 2026-10-06), with a margin of backdrop.
+# No place is emptied or created; the animals are removed from the two window images only.
 #
 # RUN THESE WITH THE GAME IN ENGLISH. The Workshop page is English, and these images carry the
 # mod's own labels. The @review features are the ones to run in each language.
@@ -82,15 +83,31 @@ Feature: images for the Workshop page
     And Nelim's Pickle Tools: the learning helper is hidden
     And Nelim's Pickle Tools: the alerts are hidden
     And Nelim's Pickle Tools: the resource readout is hidden
+    # THE SCENE (owner, 2026-10-06: the Work tab image needed to be more scenic): Nelim tidying the pond shore, the very work of the
+    # "Tidying" type she just made. Things to haul and filth to clean lie on the brown shore west of the pond (water-garden, x 143-158,
+    # z 168-176; the burrow at (149, 173) is avoided), and she stands among them. The decor belongs to this image only and is removed
+    # after the capture. First attempt, framing to be read on the run.
+    And Nelim's Pickle Tools: all animals are removed
+    And Nelim's Pickle Tools: I place the decor "WoodLog" at (146, 170)
+    And Nelim's Pickle Tools: I place the decor "WoodLog" at (147, 171)
+    And Nelim's Pickle Tools: I place the decor "Steel" at (153, 170)
+    And Nelim's Pickle Tools: I place the decor "ChunkSlagSteel" at (155, 171)
+    And Nelim's Pickle Tools: I place the decor "ChunkGranite" at (145, 172)
+    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (150, 170)
+    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (152, 172)
+    And Nelim's Pickle Tools: I place the decor "Filth_Dirt" at (154, 169)
+    And Nelim's Pickle Tools: "Nelim" stands at (151, 171) facing East
+    And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
+    And Nelim's Pickle Tools: I frame the cell (151, 168) at zoom 9
     And I open the "Work" tab
     Then the Work tab has a column for "Tidying"
-    And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
     # The runner starts the game with developer mode on, and its toolbar showed on the 2026-09-25 image.
     And Nelim's Pickle Tools: developer mode is turned off for the capture
     # No screenshot mode here, on purpose: the Work tab is a main tab, and the bar under it (Architect,
     # Work, Schedule...) is what tells a visitor where the panel comes from. The game does not highlight
     # the open tab. The image is the whole frame, uncropped.
     And I take a screenshot "workshop-2-morning-the-new-column"
+    And Nelim's Pickle Tools: the decor is removed
     And I close all windows but the main tabs, for Work Studio
 
   Scenario: 3, late morning, the settings window
@@ -100,7 +117,8 @@ Feature: images for the Workshop page
     And I open Work Studio's settings through Mod options
     Then window "Dialog_ModSettings" is open
     And the Mod options window is drawing Work Studio's own settings
-    And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
+    And Nelim's Pickle Tools: all animals are removed
+    And Nelim's Pickle Tools: I am at the sanctuary "window-backdrop-for-height"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "workshop-3-late-morning-the-settings"
     And Nelim's Pickle Tools: screenshot mode is disabled
