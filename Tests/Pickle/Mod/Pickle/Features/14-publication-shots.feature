@@ -31,9 +31,9 @@
 # THE PLACES WERE CHOSEN AMONG ALL THE NAMED ONES (SANCTUAIRE-LIEUX.md, read 2026-10-06), by what is being photographed:
 #   - the place of the story is "water-garden", the pond with lilies and ducks: the Work tab (a main tab) is photographed there, at
 #     its hour, with the map showing around the table. Nelim tidies the brown shore (staged decor, removed after the capture).
-#   - the editor is a wide full-screen window (about 63% of the screen wide, 73% high): "window-backdrop-for-width", the bamboo
-#     field with two smileys sticking out of the top corners, which Pickle Tools made for exactly this and Virginie validated
-#     (2026-10-06). Chosen over "exhibition-zone" (the orange carpet): the bamboo green fills the margins around the window.
+#   - the editor is a full-screen window (about 63% of the screen wide, 73% high): "window-backdrop-for-height", the backdrop for tall
+#     frames, like the settings. PUBLISHING.md, 2026-10-06: a full-screen interface window goes on window-backdrop-for-height and is
+#     cropped on the sides, the height of the frame kept whole. (It was on "window-backdrop-for-width" until that rule.)
 #   - the settings window is taller than it is wide (about 47% of the screen wide, 65% high): "window-backdrop-for-height", the
 #     backdrop for tall windows, validated by Virginie (2026-10-06). The editor and the settings leave the place of the story.
 #   - the images of the two windows are cropped around the window afterwards (owner, 2026-10-06), with a margin of backdrop.
@@ -63,7 +63,7 @@ Feature: images for the Workshop page
     Then the task "HaulGeneral" belongs to "Tidying"
     And the task "CleanFilth" belongs to "Tidying"
     And Nelim's Pickle Tools: all animals are removed
-    And Nelim's Pickle Tools: I am at the sanctuary "window-backdrop-for-width"
+    And Nelim's Pickle Tools: I am at the sanctuary "window-backdrop-for-height"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "workshop-1-early-morning-the-editor"
     And Nelim's Pickle Tools: screenshot mode is disabled

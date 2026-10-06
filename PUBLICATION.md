@@ -80,7 +80,7 @@ only place they are written; `14-publication-shots.feature` points here.
 1. **The scene is Nelim's sanctuary**, the fixture `Nelims-tribe` shared by every mod's gallery (`PickleTools/docs/GALERIE.md`,
    `PickleTools/docs/SANCTUAIRE-LIEUX.md`), never the test fixture. It is only present in a pass that stages
    `PickleTools/ScreenshotStudio`: `wsl-deps.sanctuary.map`. Run it in English, the page is English. Choose the place by
-   reading every named one: a wide full-screen window goes on `window-backdrop-for-width` (or `exhibition-zone` for one that needs a plain carpet), a main tab on a place that sells the game
+   reading every named one: a full-screen interface window goes on `window-backdrop-for-height`, cropped on the sides (PUBLISHING.md, 2026-10-06), a main tab on a place that sells the game
    (`water-garden`). Before 2026-10-06 the scene was `nelim-zen-meadow-studio` (`wsl-deps.studio.map`, now removed).
 2. **Two kinds of image, two treatments:**
    - **An option window** (this mod's own windows: the editor, the settings): the game's screenshot mode is on
@@ -105,10 +105,10 @@ only place they are written; `14-publication-shots.feature` points here.
    subfolder). Raw captures stay in the evidence folder of the run (ignored by git) and the chosen ones are copied by hand.
    Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`, one scenario per image.
 8. **The gallery tells one story** (PUBLISHING.md, 2026-10-06): one morning at the sanctuary, in ONE place at three close
-   hours, in the order of the scenarios of the feature. `1-early-morning-the-editor` (8: the editor, a wide full-screen window,
-   so on `window-backdrop-for-width`, the bamboo backdrop Pickle Tools made for it), `2-morning-the-new-column` (9: the Work tab, in the story place `water-garden`),
-   `3-late-morning-the-settings` (10: the settings window, same place). Each name carries its number and its moment. Played on 2026-10-06 (ticket `afa7`, `f3d594f`), read, and kept
-   whole-frame: the bamboo backdrop is meant to be seen around the editor, so it is not cropped.
+   hours, in the order of the scenarios of the feature. `1-early-morning-the-editor` (8: the editor, a full-screen window,
+   so on `window-backdrop-for-height`, cropped on the sides), `2-morning-the-new-column` (9: the Work tab, in the story place `water-garden`),
+   `3-late-morning-the-settings` (10: the settings window, same place). Each name carries its number and its moment. Played on 2026-10-06 (ticket `afa7`, `f3d594f`), read, and re-run for the new
+   backdrop rule, read and cropped on the sides, the height of the frame kept whole.
 
 **Where each image stands (2026-09-25).** Steam shows the first one large; the order is the Work tab first for its
 impact, then the editor, then the settings. Shots in `Art/Gallery/` (old scene, to be replaced), all in English,
