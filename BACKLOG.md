@@ -889,7 +889,7 @@ no label, added the way another mod would leave it and pushed through Work Studi
 drawn: 1 scenario, 1 passed, no error in the game log watched during the scenario, no exception in `Player.log`. That settles
 the empty-label case for Work Studio's own screens. It does not cover the other mod's own UI, nor a type that also lacks
 `labelShort`/`description` when a third mod reads them (they are null in this scenario too, which it did not exercise beyond
-Work Studio). The evidence is `evidence/nolabel-1` (ignored by git).
+Work Studio). The evidence is `evidence/nolabel-2` (ignored by git; replaces `nolabel-1`, same scenario on a later build).
 
 **Played 2026-10-06 (ticket 20261006-145030-471-4dac, WorkStudio `dca09ee`, feature 19, `wsl-deps.avec-mechworktab.map`, English):**
 Mech Work Tab loaded (`Spacemoth.MechTab` confirmed as its packageId in the run's mod list, staged from the owner's Windows
@@ -899,3 +899,9 @@ Hauling keeps it after a save and a load, and after a created type was deleted b
 so this proves Work Studio does not disturb the vanilla values of a mechanoid while Mech Work Tab is loaded, not that Mech Work
 Tab's own storage (if it keeps one) survives. Reading that mod's code would settle it. The question stays open on that point.
 Evidence: `evidence/mechworktab-2` (ignored by git).
+
+**Follow-up, same day (ticket 20261006-162345-777-178a, WorkStudio `68ab826`, feature 20):** the gallery image of the editor showed three vanilla
+types by their raw defName (`BasicWorker`, `PatientBedRest`, `PlantCutting`): they carry a `labelShort` and no `label`, and the
+editor and the drift report read `label` alone. Fixed (`WorkTypeRuntime.DisplayLabel`: label, then short label, then defName). The
+new scenario, "vanilla types that have no label are named by their short label", passed together with the first one (2 passed,
+0 failed, no exception in `Player.log`): "Basic", "Bed rest", "Plant cut".
