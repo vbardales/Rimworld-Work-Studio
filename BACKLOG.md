@@ -890,3 +890,12 @@ drawn: 1 scenario, 1 passed, no error in the game log watched during the scenari
 the empty-label case for Work Studio's own screens. It does not cover the other mod's own UI, nor a type that also lacks
 `labelShort`/`description` when a third mod reads them (they are null in this scenario too, which it did not exercise beyond
 Work Studio). The evidence is `evidence/nolabel-1` (ignored by git).
+
+**Played 2026-10-06 (ticket 20261006-145030-471-4dac, WorkStudio `dca09ee`, feature 19, `wsl-deps.avec-mechworktab.map`, English):**
+Mech Work Tab loaded (`Spacemoth.MechTab` confirmed as its packageId in the run's mod list, staged from the owner's Windows
+subscription; the first attempt found no copy of it). 2 scenarios, 2 passed: a player Lifter named "Hoist" with priority 2 for
+Hauling keeps it after a save and a load, and after a created type was deleted between the save and the load. No exception in
+`Player.log`. **Limit:** the priority is set and read through the game's own `Pawn_WorkSettings`, not through Mech Work Tab's tab,
+so this proves Work Studio does not disturb the vanilla values of a mechanoid while Mech Work Tab is loaded, not that Mech Work
+Tab's own storage (if it keeps one) survives. Reading that mod's code would settle it. The question stays open on that point.
+Evidence: `evidence/mechworktab-2` (ignored by git).
