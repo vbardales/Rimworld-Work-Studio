@@ -883,3 +883,10 @@ name after loading. What it does not say: what Mech Work Tab itself stores and w
 same part as RIMMSQOL's (see the RIMMSQOL entry earlier in this file). Worth a scenario: a mechanoid with priorities set in Mech Work Tab, a save, a
 load, with Mech Work Tab as the only other mod, then compare the priorities before and after. Open it only with the
 coexistence set `wsl-deps.avec-mechworktab.map` proposed in "Mech Work Tab: untested, undeclared".
+
+**Played 2026-10-06 (ticket 20261006-143744-810-92d2, WorkStudio `ef6cefa`, feature 20, default pass, English):** a work type with
+no label, added the way another mod would leave it and pushed through Work Studio's refresh, then the editor and the Work tab
+drawn: 1 scenario, 1 passed, no error in the game log watched during the scenario, no exception in `Player.log`. That settles
+the empty-label case for Work Studio's own screens. It does not cover the other mod's own UI, nor a type that also lacks
+`labelShort`/`description` when a third mod reads them (they are null in this scenario too, which it did not exercise beyond
+Work Studio). The evidence is `evidence/nolabel-1` (ignored by git).
