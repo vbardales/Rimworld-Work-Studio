@@ -17,7 +17,7 @@
 #
 # THE SCENE IS THE SHARED FIXTURE OF EVERY MOD'S GALLERY, Nelim's sanctuary ("Nelims-tribe", PickleTools docs/GALERIE.md and
 # docs/SANCTUAIRE-LIEUX.md), not the test fixture: a Workshop image with the fixture's plain desert behind it is not the one
-# she publishes with. It needs the pass of wsl-deps.sanctuary.map; every other pass skips this feature. (Moved from the
+# she publishes with. It needs the pass of wsl-deps.gallery.map; every other pass skips this feature. (Moved from the
 # "nelim-zen-meadow-studio" fixture on 2026-10-06, after Pickle Tools announced the final fixture.)
 #
 # THE GALLERY TELLS ONE STORY (PUBLISHING.md, 2026-10-06): one MORNING at the sanctuary, in the order of the scenarios below, in

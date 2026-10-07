@@ -183,7 +183,7 @@ Each of those files opens with the list of what to look for in its screenshots. 
 once per language** and the same images serve as the English and French display pass.
 
 The Steam gallery is made by `Mod/Pickle/Features/14-publication-shots.feature`, one scenario per image, played on
-Nelim's sanctuary with `-DepMap wsl-deps.sanctuary.map` in English. The raw captures stay in the run's evidence folder
+Nelim's sanctuary with `-DepMap wsl-deps.gallery.map` in English. The raw captures stay in the run's evidence folder
 (gitignored: they change every run). The chosen ones are copied by hand into `Art/Gallery/`, the only folder of the
 images to upload, numbered `1-`, `2-`... after `0-preview.png`; the rules are in `PUBLICATION.md`. `Art/` is not
 shipped, so none of it reaches subscribers.
