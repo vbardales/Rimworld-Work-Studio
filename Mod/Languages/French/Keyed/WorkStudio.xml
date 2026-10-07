@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
-  <WorkStudio.Settings.Intro>Réorganise l'onglet Travail sans redémarrer la partie : créez vos propres types de travail, déplacez-y les tâches prises dans d'autres types, renommez, réordonnez et masquez les colonnes.</WorkStudio.Settings.Intro>
+  <WorkStudio.Settings.Intro>Réorganise l'onglet Travail sans redémarrer la partie : créez vos propres types de travail, déplacez-y des tâches provenant d'autres types, renommez, réordonnez et masquez les colonnes.</WorkStudio.Settings.Intro>
   <WorkStudio.Settings.OpenEditor>Ouvrir l'éditeur des types de travail</WorkStudio.Settings.OpenEditor>
-  <WorkStudio.Settings.SaveNote>Les priorités de vos colons sont enregistrées par nom de travail : vous pouvez modifier cette configuration entre deux sessions sans les mélanger. Retirer le mod rend simplement leurs types d'origine aux tâches déplacées.</WorkStudio.Settings.SaveNote>
+  <WorkStudio.Settings.SaveNote>Les priorités de travail de la colonie sont enregistrées par nom de travail : vous pouvez modifier cette configuration entre deux sessions sans les mélanger. Retirer le mod rend simplement leurs types d'origine aux tâches déplacées.</WorkStudio.Settings.SaveNote>
 
   <WorkStudio.Settings.Presets>Importer / exporter une configuration</WorkStudio.Settings.Presets>
   <WorkStudio.Settings.ResetAll>Réinitialiser toute la configuration</WorkStudio.Settings.ResetAll>
@@ -43,7 +43,7 @@
   <WorkStudio.Tasks>Tâches</WorkStudio.Tasks>
   <WorkStudio.TasksOf>Tâches de « {0} »</WorkStudio.TasksOf>
   <WorkStudio.NoSelection>Choisissez un type de travail à gauche.</WorkStudio.NoSelection>
-  <WorkStudio.NoTasks>Aucune tâche. La colonne s'affiche quand même, mais aucun colon n'aura rien à y faire.</WorkStudio.NoTasks>
+  <WorkStudio.NoTasks>Aucune tâche. La colonne s'affiche quand même, mais personne n'aura rien à y faire.</WorkStudio.NoTasks>
   <WorkStudio.MoveTip>Déplacer vers un autre type</WorkStudio.MoveTip>
   <WorkStudio.MoveUp>Monter d'un cran</WorkStudio.MoveUp>
   <WorkStudio.MoveDown>Descendre d'un cran</WorkStudio.MoveDown>
@@ -64,12 +64,12 @@
   <WorkStudio.EditTitle>Fiche du type de travail</WorkStudio.EditTitle>
   <WorkStudio.Field.Label>Nom</WorkStudio.Field.Label>
   <WorkStudio.Field.LabelShort>Nom court (en-tête de colonne)</WorkStudio.Field.LabelShort>
-  <WorkStudio.Field.PawnLabel>Nom du colon qui le fait</WorkStudio.Field.PawnLabel>
+  <WorkStudio.Field.PawnLabel>Nom de la personne qui l'effectue</WorkStudio.Field.PawnLabel>
   <WorkStudio.Field.Gerund>Forme en -ant</WorkStudio.Field.Gerund>
   <WorkStudio.Field.Verb>Verbe</WorkStudio.Field.Verb>
   <WorkStudio.Field.Description>Description</WorkStudio.Field.Description>
-  <WorkStudio.Field.AlwaysStartActive>Actif d'office chez un nouveau colon</WorkStudio.Field.AlwaysStartActive>
-  <WorkStudio.Field.RequireCapable>Avertir si plus aucun colon ne peut le faire</WorkStudio.Field.RequireCapable>
+  <WorkStudio.Field.AlwaysStartActive>Actif d'office pour toute nouvelle personne</WorkStudio.Field.AlwaysStartActive>
+  <WorkStudio.Field.RequireCapable>Avertir si plus personne ne peut l'effectuer</WorkStudio.Field.RequireCapable>
   <WorkStudio.Field.Skills>Compétences concernées</WorkStudio.Field.Skills>
   <WorkStudio.Apply>Appliquer</WorkStudio.Apply>
 
