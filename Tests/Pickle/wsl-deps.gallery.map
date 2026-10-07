@@ -1,25 +1,42 @@
-# The showcase pass: the Workshop images, taken on Nelim's sanctuary ("Nelims-tribe"), the fixture shared by every mod's
-# gallery (PickleTools docs/GALERIE.md, docs/SANCTUAIRE-LIEUX.md). Only 14-publication-shots.feature asks for it, and it is
+# The gallery pass: the Workshop images, taken on Nelim's sanctuary ("Nelims-tribe"). Only 14-publication-shots.feature asks for it, and it is
 # skipped in every other pass, so this map is only for that feature:
-#   Run-PickleWsl.ps1 -Mod WorkStudio -DepMap wsl-deps.gallery.map -Filter 14-publication-shots.feature
+#   Submit-PickleRun.ps1 -Mod WorkStudio -DepMap wsl-deps.gallery.map -Filter "14-publication-shots" -Language English
 # Run it in English: the Workshop page is English.
-# THE PAWN LOOK (VenusTouchWaistlines session, formerly TailorMadeWaistlines, 2026-10-07): the four body and clothes mods below make Nelim drawn the way the owner plays her
-# (realistic bodies, visible trousers). Optional for the scene itself, they matter for the pawn. Order is the TMW one: Female Body Variants
-# and Female Apparel Variants BEFORE WDI (WDI declares loadAfter on both), then AB, which needs its seed in config/gallery/. The file name
-# is the name of that folder. Copied from VenusTouchWaistlines/Tests/Pickle/wsl-deps.gallery.map; renamed from wsl-deps.sanctuary.map.
-tiagocc0.FemaleBodyVariants    3798082132
-tiagocc0.FemaleApparelVariants 3799726535
-wdi.realistic.bodies           3527486510
-ab.vplrf                       2986402536
-# Modelled on PickleTools' Tests/Pickle/wsl-deps.gallery.map (studio fixtures, camera, stage decor, coat steps, clear screen),
-# plus the two companions this mod's own steps use (click diagnostics, screenshot mode). Replaces wsl-deps.studio.map,
-# whose fixture "nelim-zen-meadow-studio" is gone from the gallery (2026-10-06).
+#
+# Since 2026-10-08 the sanctuary has a repository of its own, SanctuaryBacklot (docs/GALERIE.md there). This map is its
+# Tests/Pickle/wsl-deps.sanctuary.map (minimum mod list, same order) plus what this mod's own steps use. Two tools, two prefixes in the feature:
+#   - `Nelim's Sanctuary: ...`     the places of the sanctuary (SB, SanctuaryBacklot/docs/steps.md)
+#   - `Nelim's Pickle Tools: ...`  everything else (NPT, PickleTools/docs/steps.md): camera, decor, colonists, animals, clear screen, screenshot mode
+# The fixture "Nelims-tribe" now lives in SanctuaryBacklot/Mod: never stage it from ScreenshotStudio as well (Pickle fails on two fixtures of that name).
+# The file name is the name of the seed folder, Tests/Pickle/config/gallery/ (AB's settings, Venus Touch's).
+
+# The sanctuary itself: fixture and place steps.
+nelim.sanctuarybacklot path:SanctuaryBacklot/Mod
+# What the sanctuary's own suite stages (copied from SanctuaryBacklot's map).
+nelim.pickletools.screenshotstudio path:PickleTools/ScreenshotStudio/Mod
+nelim.pickletools.camerazoom path:PickleTools/CameraZoom/Mod
+nelim.pickletools.stagedecor path:PickleTools/StageDecor/Mod
+nelim.pickletools.coatsteps path:PickleTools/CoatSteps/Mod
+nelim.pickletools.clearscreen path:PickleTools/ClearScreen/Mod
+# The bundle is committed under PickleTools/Mod: this shell replaces it, so the tools above are the only copy of their steps (see StandaloneBase).
+nelim.pickletools   path:PickleTools/Tests/Pickle/StandaloneBase/Mod
+# What this mod's own steps and the feature use: click diagnostics, the game's screenshot mode, "stands at ... facing" and "carries the item".
 nelim.pickletools.clickdiagnostics   path:PickleTools/ClickDiagnostics/Mod
 nelim.pickletools.screenshotmode     path:PickleTools/ScreenshotMode/Mod
-nelim.pickletools.screenshotstudio   path:PickleTools/ScreenshotStudio/Mod
-nelim.pickletools.camerazoom         path:PickleTools/CameraZoom/Mod
-nelim.pickletools.stagedecor         path:PickleTools/StageDecor/Mod
-nelim.pickletools.coatsteps          path:PickleTools/CoatSteps/Mod
-nelim.pickletools.clearscreen        path:PickleTools/ClearScreen/Mod
-# The staging steps of image 2 ("stands at ... facing"): ColonistRace.
 nelim.pickletools.colonistrace       path:PickleTools/ColonistRace/Mod
+
+# Bodies and trousers, as the sanctuary's minimum list has them. Female Body Variants and Female Apparel Variants load BEFORE WDI (else their
+# Naked_*_Female textures shadow WDI's); AB's Visible Pants is indispensable (without it Venus does nothing). Seeds: config/gallery/.
+tiagocc0.FemaleBodyVariants 3798082132
+tiagocc0.FemaleApparelVariants 3799726535
+wdi.realistic.bodies 3527486510
+ab.vplrf 2986402536
+nelim.venustouch.waistlines path:VenusTouchWaistlines/Mod
+# Facial animation: base, experimentals, Vanilla Textures Expanded, Akeron Extras (needs VTE), EyeGenes3 (Nelim's brown eyes), the performance patch, then VFAE.
+Nals.FacialAnimation 1635901197
+nals.facialanimationexperimentals 2581693737
+VanillaExpanded.VTEXE.FacialAnims 2816938779
+Newton.AKNExtras.FacialAnimations 2889716301
+lucius.eyegenes3 3745223213
+astryl.FacialAnimationPerformancePatch 3790129900
+sd.fa.movingvanillaeyes 3753978140

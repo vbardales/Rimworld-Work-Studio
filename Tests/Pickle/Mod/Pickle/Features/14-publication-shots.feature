@@ -15,10 +15,12 @@
 #      2026-09-20 every capture carried Pickle's runner panel in the corner and had to be cropped by
 #      hand; it does not any more.
 #
-# THE SCENE IS THE SHARED FIXTURE OF EVERY MOD'S GALLERY, Nelim's sanctuary ("Nelims-tribe", PickleTools docs/GALERIE.md and
+# THE SCENE IS THE SHARED FIXTURE OF EVERY MOD'S GALLERY, Nelim's sanctuary ("Nelims-tribe", SanctuaryBacklot docs/GALERIE.md and
 # docs/SANCTUAIRE-LIEUX.md), not the test fixture: a Workshop image with the fixture's plain desert behind it is not the one
 # she publishes with. It needs the pass of wsl-deps.gallery.map; every other pass skips this feature. (Moved from the
 # "nelim-zen-meadow-studio" fixture on 2026-10-06, after Pickle Tools announced the final fixture.)
+# Since 2026-10-08 the sanctuary has its own repository, SanctuaryBacklot, which carries the fixture and the place steps. Two prefixes below
+# tell the two tools apart: `Nelim's Sanctuary:` (SB, the places) and `Nelim's Pickle Tools:` (NPT, everything else).
 #
 # THE GALLERY TELLS ONE STORY (PUBLISHING.md, 2026-10-06): one MORNING at the sanctuary, in the order of the scenarios below, in
 # ONE place at three close hours (the rule allows it: what changes between two images is the subject and the story, not the
@@ -43,7 +45,7 @@
 # mod's own labels. The @review features are the ones to run in each language.
 #
 # Copy the chosen captures afterwards, by hand, from the run's evidence folder into Art/Gallery/ as 1-, 2-, 3-... (PUBLISHING.md).
-@review @requires:nelim.pickletools.screenshotmode @requires:nelim.pickletools.screenshotstudio
+@review @requires:nelim.pickletools.screenshotmode @requires:nelim.sanctuarybacklot
 Feature: images for the Workshop page
 
   Background:
@@ -63,7 +65,7 @@ Feature: images for the Workshop page
     Then the task "HaulGeneral" belongs to "Tidying"
     And the task "CleanFilth" belongs to "Tidying"
     And Nelim's Pickle Tools: all animals are removed
-    And Nelim's Pickle Tools: I am at the sanctuary "window-backdrop-for-height"
+    And Nelim's Sanctuary: I am at the sanctuary "window-backdrop-for-height"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "workshop-1-early-morning-the-editor"
     And Nelim's Pickle Tools: screenshot mode is disabled
@@ -103,7 +105,7 @@ Feature: images for the Workshop page
     And Nelim's Pickle Tools: I place the decor "Filth_Trash" at (151, 168)
     And Nelim's Pickle Tools: "Nelim" stands at (150, 170) facing West
     And Nelim's Pickle Tools: "Nelim" carries the item "WoodLog"
-    And Nelim's Pickle Tools: I am at the sanctuary "water-garden"
+    And Nelim's Sanctuary: I am at the sanctuary "water-garden"
     And Nelim's Pickle Tools: I frame the cell (150, 168) at zoom 4
     # Run 7ef2 showed the learning helper again ("Camera dolly", the lesson the camera move triggers): hidden here, after the frame
     # move and before the tab opens, instead of at the top of the scenario.
@@ -127,7 +129,7 @@ Feature: images for the Workshop page
     Then window "Dialog_ModSettings" is open
     And the Mod options window is drawing Work Studio's own settings
     And Nelim's Pickle Tools: all animals are removed
-    And Nelim's Pickle Tools: I am at the sanctuary "window-backdrop-for-height"
+    And Nelim's Sanctuary: I am at the sanctuary "window-backdrop-for-height"
     And Nelim's Pickle Tools: screenshot mode is enabled around the open windows
     And I take a screenshot "workshop-3-late-morning-the-settings"
     And Nelim's Pickle Tools: screenshot mode is disabled
