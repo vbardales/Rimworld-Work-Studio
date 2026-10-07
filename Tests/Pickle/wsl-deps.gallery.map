@@ -3,10 +3,10 @@
 # skipped in every other pass, so this map is only for that feature:
 #   Run-PickleWsl.ps1 -Mod WorkStudio -DepMap wsl-deps.gallery.map -Filter 14-publication-shots.feature
 # Run it in English: the Workshop page is English.
-# THE PAWN LOOK (TailorMadeWaistlines session, 2026-10-07): the four body and clothes mods below make Nelim drawn the way the owner plays her
+# THE PAWN LOOK (VenusTouchWaistlines session, formerly TailorMadeWaistlines, 2026-10-07): the four body and clothes mods below make Nelim drawn the way the owner plays her
 # (realistic bodies, visible trousers). Optional for the scene itself, they matter for the pawn. Order is the TMW one: Female Body Variants
 # and Female Apparel Variants BEFORE WDI (WDI declares loadAfter on both), then AB, which needs its seed in config/gallery/. The file name
-# is the name of that folder. Copied from TailorMadeWaistlines/Tests/Pickle/wsl-deps.gallery.map; renamed from wsl-deps.gallery.map.
+# is the name of that folder. Copied from VenusTouchWaistlines/Tests/Pickle/wsl-deps.gallery.map; renamed from wsl-deps.sanctuary.map.
 tiagocc0.FemaleBodyVariants    3798082132
 tiagocc0.FemaleApparelVariants 3799726535
 wdi.realistic.bodies           3527486510
