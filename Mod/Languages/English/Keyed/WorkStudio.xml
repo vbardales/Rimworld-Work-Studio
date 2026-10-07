@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
-  <WorkStudio.Settings.Intro>Reorganize the Work tab without restarting: create your own work types, move tasks into them from other types, rename, reorder and hide columns.</WorkStudio.Settings.Intro>
+  <WorkStudio.Settings.Intro>Reorganize the Work tab without restarting: create your own work types, move tasks from other types into them, rename, reorder and hide columns.</WorkStudio.Settings.Intro>
   <WorkStudio.Settings.OpenEditor>Open the work type editor</WorkStudio.Settings.OpenEditor>
   <WorkStudio.Settings.SaveNote>Colonist priorities are saved by work name, so you can change this setup between sessions without scrambling them. Removing the mod simply gives moved tasks their original types back.</WorkStudio.Settings.SaveNote>
 
@@ -84,7 +84,7 @@
   <WorkStudio.Icons.HeaderBoth>Icon and label</WorkStudio.Icons.HeaderBoth>
   <WorkStudio.Icons.HeaderBothDesc>The usual header, with the icon added at its foot. Long labels use the icon and a tooltip instead of covering other columns.</WorkStudio.Icons.HeaderBothDesc>
   <WorkStudio.Icons.HeaderIcon>Icon only</WorkStudio.Icons.HeaderIcon>
-  <WorkStudio.Icons.HeaderIconDesc>Narrower columns, since the name is dropped. Hovering a header still says what the column is.</WorkStudio.Icons.HeaderIconDesc>
+  <WorkStudio.Icons.HeaderIconDesc>Narrower columns, since the name is dropped. Hovering a header still tells you what the column is.</WorkStudio.Icons.HeaderIconDesc>
   <WorkStudio.Icons.HeaderLabel>Label only</WorkStudio.Icons.HeaderLabel>
   <WorkStudio.Icons.HeaderLabelDesc>The vanilla header, with no icon on it. The skill list keeps its own.</WorkStudio.Icons.HeaderLabelDesc>
 
