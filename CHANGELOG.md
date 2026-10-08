@@ -5,6 +5,12 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ## [Unreleased]
 
+## [1.2.2] — 2026-10-08
+
+### Changed
+
+- **New preview picture on the Workshop page.** The mod icon now sits in the bottom-left corner of the picture, overflowing it, instead of floating inside. 1.2.1 had the same picture but the page kept the older one, because that publication did not send it. No change to the mod itself.
+
 ## [1.2.1] — 2026-10-08
 
 ### Changed

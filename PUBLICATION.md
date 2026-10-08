@@ -45,14 +45,17 @@ the two fail-fast runtime checks, moved to after the upload, then ran afterwards
   permanent on every subscriber's screen.
 - The next change note starts with its version on a line of its own (`[b]1.3.0[/b]`): the CI refuses it otherwise.
 
-## This update: 1.2.1
+## The 1.2.1 update (published 2026-10-08, kept as history)
 
-Prepared 2026-10-08 on the owner's "go 1.2.1": two fixes (the Fluffy Work Tab button; a work type another mod adds with no label), the
-short labels of the vanilla types in the editor, the wording pass on the English and French texts, the new Preview and ModIcon.
-`CHANGELOG.md` has the `## [1.2.1]` section and the Steam note is the block under `### 1.2.1` below (first line `[b]1.2.1[/b]`).
-Before the dry-run: the owner's review of `FRENCH_REVIEW.md` (`translation_fr` is `unchecked` since the French was rewritten). The dry-run
-of the exact commit, then `publish` with its 40-character SHA, then the owner approves `steam-production`; the regression passes (English
-and French minimal) run after the upload, per the fail-fast policy.
+Published by the CI (run `37789139646`, tag `v1.2.1`) on `a1029b9`, **without** `--preview`: the Workshop page kept the older Preview. The dry-run and the publish are
+recorded in STATUS.md.
+
+## This update: 1.2.2
+
+Prepared 2026-10-08 on the owner's "go 1.2.2": only the Preview changes (the ModIcon in the corner, `Art/Preview.config.json` without its inward
+`translate` override; `Mod/About/Preview.png`, the owner approved it). `CHANGELOG.md` has `## [1.2.2]` and the Steam note is the block under `### 1.2.2`
+(first line `[b]1.2.2[/b]`). The dry-run and the `publish` both need `--preview` (`update_preview=true`), otherwise the picture is not sent; the
+owner approves `steam-production`.
 
 ## Publication policy: fail fast
 
@@ -160,6 +163,17 @@ this file. BBCode. It matches the `## [<version>]` section of `CHANGELOG.md`; ke
 on 2026-09-25 that the 1.2.0 note, as shown on the Workshop page, does not say which version it is: the block below is
 kept as it was published, and the rule holds from the next version. A published note can only be changed by hand on the
 Steam page, so it is not edited here after the fact.
+
+### 1.2.2
+
+```
+[b]1.2.2[/b]
+
+[b]Changed[/b]
+[list]
+[*] New preview picture: the mod icon now sits in the corner of the picture. No change to the mod itself.
+[/list]
+```
 
 ### 1.2.1
 
