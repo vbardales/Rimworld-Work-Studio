@@ -2,7 +2,7 @@
 
 This document records what the Workshop page needs but the repository records nowhere else. Written once, for
 this update and for whoever ships the next one. This is not the first publication — the item
-(3792836684) already exists, published as 1.0.0 and updated to 1.0.1 — so the first-upload steps of
+(3792836684) already exists, published as 1.0.0 and subsequently updated through 1.2.1 — so the first-upload steps of
 AUDIT.md's `tested -> prepublished` do not all apply; what follows is scoped to an update.
 
 ## The 1.2.0 update (published 2026-09-25, kept as history)
@@ -36,7 +36,7 @@ workflow ("Steam description" below). See `Rimworld-Release-Admin/docs/OPERATION
 `publish` with its full 40-character SHA, and only the owner approves `steam-production`.
 
 **Published 2026-09-25** by `publish-tag.yml` (tag `v1.2.0`, runs in STATUS.md): the description and the change note went with it, and
-the two fail-fast runtime checks, moved to after the upload, then ran afterwards (STATUS.md has their verdicts). What is still open:
+the two fail-fast runtime checks, which had been moved to after the upload, ran afterward (STATUS.md has their verdicts). What is still open:
 
 - The Workshop images of `Art/Gallery/` were uploaded by hand by the owner on 2026-10-08, in the order of their names (`0-` is
   the Preview). All three were validated first (table under "Workshop screenshots").
@@ -171,7 +171,7 @@ Steam page, so it is not edited here after the fact.
 
 [b]Changed[/b]
 [list]
-[*] New preview picture: the mod icon now sits in the corner of the picture. No change to the mod itself.
+[*] The Workshop Preview now shows the mod icon in its corner. No change to the mod itself.
 [/list]
 ```
 
