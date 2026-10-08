@@ -5,9 +5,18 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ## [Unreleased]
 
+## [1.2.1] — 2026-10-08
+
+### Changed
+
+- **The editor and the drift report name a work type by its short label when it has no full label.** The vanilla types that carry only a short label (Cook, Hunt, Construct, Plant cut...) now read that way in the editor, as they do in the Work tab columns, instead of by their raw `defName`.
+- **Wording pass on the English and French texts:** the settings, the reset confirmation, the saved setups, the drift report, the icon descriptions and the hidden MainButtons shortcut. The French is rewritten without a gendered pawn word (`personne`, `colonie`) where the text speaks of anybody.
+- **New preview picture and mod icon.**
+
 ### Fixed
 
 - **With Fluffy's Work Tab, the Work types button sits clear of that tab's own controls.** It was drawn on top of its "Expand all priorities" toggle, which took the click, expanded the table and widened the window instead of opening the editor. Fluffy's Work Tab is still declared incompatible: a type created here is absent from its column list.
+- **A work type another mod adds with no label no longer shows as a blank or a raw `defName`.** Work Studio names it by its short label, or by its `defName` when it has neither, in the editor and in the drift report. Covered by a test that adds such a type and reads the editor.
 
 ## [1.2.0] — 2026-09-25
 

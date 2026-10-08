@@ -38,8 +38,8 @@ workflow ("Steam description" below). See `Rimworld-Release-Admin/docs/OPERATION
 **Published 2026-09-25** by `publish-tag.yml` (tag `v1.2.0`, runs in STATUS.md): the description and the change note went with it, and
 the two runtime checks that fail-fast moved after the upload ran afterwards (STATUS.md has their verdicts). What is still open:
 
-- Upload the Workshop images of `Art/Gallery/` by hand, in the order of their names (`0-` is the Preview, already on the page).
-  all three are validated: `1-early-morning-the-editor` (2026-10-07), `2-morning-the-new-column` (2026-10-08) and `3-late-morning-the-settings` (table under "Workshop screenshots"). No tool of the chain sends a gallery.
+- The Workshop images of `Art/Gallery/` were uploaded by hand by the owner on 2026-10-08, in the order of their names (`0-` is
+  the Preview). All three were validated first (table under "Workshop screenshots").
 - Decide the two open design points STATUS.md lists (icons on by default; the long renamed header
   spilling into its neighbours in capture 07b) — not blocking, but worth a look before they are
   permanent on every subscriber's screen.
@@ -151,6 +151,25 @@ this file. BBCode. It matches the `## [<version>]` section of `CHANGELOG.md`; ke
 on 2026-09-25 that the 1.2.0 note, as shown on the Workshop page, does not say which version it is: the block below is
 kept as it was published, and the rule holds from the next version. A published note can only be changed by hand on the
 Steam page, so it is not edited here after the fact.
+
+### 1.2.1
+
+```
+[b]1.2.1[/b]
+
+[b]Changed[/b]
+[list]
+[*] A work type that has only a short label now reads that way in the editor (Cook, Hunt, Construct...), as it does in the Work tab columns, instead of by its internal name.
+[*] Wording pass on the English and French texts: settings, reset confirmation, saved setups, drift report, icon descriptions and the hidden MainButtons shortcut.
+[*] New preview picture and mod icon.
+[/list]
+
+[b]Fixed[/b]
+[list]
+[*] With Fluffy's Work Tab, the Work types button no longer sits on top of that tab's "Expand all priorities" toggle, which took the click and widened the window instead of opening the editor. Fluffy's Work Tab is still declared incompatible.
+[*] A work type another mod adds with no label no longer shows as a blank or an internal name: it takes its short label, or its internal name when it has neither.
+[/list]
+```
 
 ### 1.2.0
 
