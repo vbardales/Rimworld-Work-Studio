@@ -59,7 +59,6 @@ namespace WorkStudio
             return Settings.customTypes.FirstOrDefault(e => e.id == defName);
         }
 
-        /// <summary>Original work type of a task, before any reassignment.</summary>
         /// <summary>
         /// The name to show for a type. Several vanilla types (BasicWorker, PatientBedRest, PlantCutting) carry
         /// a <c>labelShort</c> and no <c>label</c>, and so do some types of other mods: reading <c>label</c> alone
@@ -75,6 +74,7 @@ namespace WorkStudio
             return type.labelShort.NullOrEmpty() ? type.defName : type.labelShort.CapitalizeFirst();
         }
 
+        /// <summary>Original work type of a task, before any reassignment.</summary>
         public static WorkTypeDef OriginalTypeOf(WorkGiverDef giver)
         {
             Capture();
