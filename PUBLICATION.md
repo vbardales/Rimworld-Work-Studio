@@ -39,8 +39,7 @@ workflow ("Steam description" below). See `Rimworld-Release-Admin/docs/OPERATION
 the two runtime checks that fail-fast moved after the upload ran afterwards (STATUS.md has their verdicts). What is still open:
 
 - Upload the Workshop images of `Art/Gallery/` by hand, in the order of their names (`0-` is the Preview, already on the page).
-  `1-early-morning-the-editor` (2026-10-07) and `3-late-morning-the-settings` are validated; `2-morning-the-new-column` waits for the
-  owner (table under "Workshop screenshots"). No tool of the chain sends a gallery.
+  all three are validated: `1-early-morning-the-editor` (2026-10-07), `2-morning-the-new-column` (2026-10-08) and `3-late-morning-the-settings` (table under "Workshop screenshots"). No tool of the chain sends a gallery.
 - Decide the two open design points STATUS.md lists (icons on by default; the long renamed header
   spilling into its neighbours in capture 07b) — not blocking, but worth a look before they are
   permanent on every subscriber's screen.
@@ -116,7 +115,7 @@ all in English, type `Tidying`, scene = the sanctuary:
 | --- | --- | --- | --- |
 | `0-preview.png` | the Preview | 590 KB | byte copy of `Mod/About/Preview.png` |
 | `1-early-morning-the-editor.png` | option window | 1320x1080, 1.2 MB | validated by the owner 2026-10-07 (run `cbb5`, `evidence/gallery-8`, on `window-backdrop-for-height`) |
-| `2-morning-the-new-column.png` | interface window | 1920x1080, 3.2 MB as PNG: over the 2 MB limit, convert to JPEG 95 once validated | NO VALID CANDIDATE (owner, 2026-10-08): the file there is the old run `678f`; the later runs `bc2c` (`gallery-7`), `ec68` (`gallery-9`) and `894d` (`gallery-10`) were judged invalid, the last one for the sweating face. To redo once the game's temperature is lowered, with the face steps |
+| `2-morning-the-new-column.jpg` | interface window | 1920x1080, JPEG 95, 593 KB (the PNG was 2.8 MB) | validated by the owner 2026-10-08 (run `e3ef`, `evidence/gallery-13`: Nelim smiling, carrying a log) |
 | `3-late-morning-the-settings.png` | option window | 1120x1000, 1.0 MB | approved, cropped (run `87ce`, `evidence/gallery-3`) |
 
 The raw captures stay in the evidence folders of those runs (ignored by git). The older images (2026-09-18, 2026-09-20 and
