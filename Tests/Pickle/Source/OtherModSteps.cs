@@ -178,6 +178,33 @@ namespace WorkStudio.PickleSteps
                 $"'{defName}' is named '{actual}', expected '{expected}' (label '{def.label}', labelShort '{def.labelShort}')");
         }
 
+        /// <summary>
+        /// Language-independent form of the naming check: the name is neither the raw defName nor invented, it is one of the texts the
+        /// game ships for the type (its label or its short label, capitalised). In English BasicWorker has a short label only ("Basic"); in
+        /// French the game translates its label too ("Manutention"), so an English expectation fails there (min-fr-122, run fd10).
+        /// </summary>
+        [Then("Work Studio names the work type {string} with a text of the game, not its defName")]
+        public void NamesTypeWithGameText(PickleContext ctx, string defName)
+        {
+            var def = Driver.WorkType(ctx, defName);
+            var actual = WorkTypeRuntime.DisplayLabel(def);
+            ctx.Assert(actual != def.defName,
+                $"'{defName}' is named by its raw defName (label '{def.label}', labelShort '{def.labelShort}')");
+            var texts = new List<string>();
+            if (!def.label.NullOrEmpty())
+            {
+                texts.Add(def.LabelCap.ToString());
+            }
+
+            if (!def.labelShort.NullOrEmpty())
+            {
+                texts.Add(def.labelShort.CapitalizeFirst());
+            }
+
+            ctx.Assert(texts.Any(t => string.Equals(t, actual, StringComparison.Ordinal)),
+                $"'{defName}' is named '{actual}', which is none of the game's texts for it: {string.Join(", ", texts)}");
+        }
+
         [Then("the work type editor lists the work type {string}")]
         public void EditorLists(PickleContext ctx, string defName)
         {

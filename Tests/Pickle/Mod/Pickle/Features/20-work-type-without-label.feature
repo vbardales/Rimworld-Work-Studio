@@ -23,8 +23,9 @@ Feature: a work type written without a label does not break the screens
     And the other mod's work type "PickleLabelless" is taken out again
 
   # Found on the 2026-10-06 gallery image: the editor listed three vanilla types by their raw defName, because they carry a
-  # labelShort and no label. The name now falls back to the short label, as the Work tab columns do.
+  # labelShort and no label. The name now falls back to the short label, as the Work tab columns do. The check does not spell the names:
+  # in French the game translates the label as well (BasicWorker is "Manutention", run fd10 of 2026-10-08, English expectation red).
   Scenario: vanilla types that have no label are named by their short label
-    Then Work Studio names the work type "BasicWorker" "Basic"
-    And Work Studio names the work type "PatientBedRest" "Bed rest"
-    And Work Studio names the work type "PlantCutting" "Plant cut"
+    Then Work Studio names the work type "BasicWorker" with a text of the game, not its defName
+    And Work Studio names the work type "PatientBedRest" with a text of the game, not its defName
+    And Work Studio names the work type "PlantCutting" with a text of the game, not its defName
