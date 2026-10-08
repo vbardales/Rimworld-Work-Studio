@@ -1,7 +1,7 @@
 ---
 localization: complete
 translation_en: complete
-translation_fr: unchecked
+translation_fr: complete
 mod:          Work Studio
 packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
@@ -16,7 +16,7 @@ showcase:     complete
 tested_on:    2026-09-21
 workshop:     3792836684
 remaining:
-  - "unverified: French review by Virginie (TRANSLATIONS.md section 3). FRENCH_REVIEW.md at the repository root, regenerated 2026-10-07 from revision 1cee9a9 after the six retouches of her review by scripts/Make-FrenchReview.ps1: 78 texts, Keyed and DefInjected, the editor labels included. translation_fr stays unchecked until she fills the review line; the in-game French pass of the current build (short type names since 2026-10-06) is a separate runtime check, not run since 0926-min-fr on 16a99bb."
+  - "verified 2026-10-08: French review by Virginie (TRANSLATIONS.md section 3), on her word in chat: validated, on revision 1cee9a9 of FRENCH_REVIEW.md (78 texts) after the corrections she had asked for in two passes (neutral wording without gendered pawn words, the save note, the drift texts, the English work type name). The review line of FRENCH_REVIEW.md is hers to fill; this entry records her validation. The in-game French pass of the current build (short type names since 2026-10-06) is a separate runtime check, not run since 0926-min-fr on 16a99bb: after the upload, per fail-fast."
   - "reviewed 2026-10-06: the two files the 2026-10-05 pass had not read, Source/UI/Dialog_WorkTypes.cs (v1.0.0..HEAD) and Source/UI/Dialog_EditWorkType.cs, read by hand while waiting on the queue (not a /code-review run): no correctness finding. Notes, not defects: the label layout caches (truncatedMiddle, laidOut) key on text and width only and never shrink; Text.CalcSize depends on the font, which every caller sets to Small first."
   - "gallery 2026-10-08, all three images validated by the owner: Art/Gallery/ holds 0-preview.png, 1-early-morning-the-editor.png (window-backdrop-for-height, cropped on the sides to 1320x1080, validated 2026-10-07), from run cbb5 (evidence/gallery-8); 2-morning-the-new-column.jpg (Nelim carrying a log on the shore of water-garden, smiling: ColonistRace face kit smile then expression normal, eyes at the base colour, 1920x1080 as JPEG 95, 593 KB because the PNG was 2.8 MB), validated 2026-10-08, from run e3ef (evidence/gallery-13); and 3-late-morning-the-settings.png (window-backdrop-for-height, cropped), from run 87ce (evidence/gallery-3). The earlier tries of image 2 (runs 678f, bc2c, ec68, 894d, badc) were invalid or superseded and their evidence folders were deleted on 2026-10-08. The gallery was uploaded to the Steam page by the owner on 2026-10-08. Since 2026-10-06 the editor names the vanilla types by their short label (Cook, Hunt...), instead of the raw defName."
   - "reviewed 2026-10-05: /code-review at low effort on v1.0.0..c8e02c6 (full SHA c8e02c647a9190ac4f58365376033f5a6ec48496), 66 files, no finding. Test and fixture hunks skipped. Not read: Source/UI/Dialog_WorkTypes.cs (538 changed lines) and Source/UI/Dialog_EditWorkType.cs; a medium or high pass would cover them."
@@ -436,6 +436,8 @@ check at all was never established either way in this codebase
 it would necessarily have been visible in play.
 
 ## Translation audit (TRANSLATIONS.md)
+
+- French review, 2026-10-08: reviewer Virginie, revision 1cee9a9, validated after two passes of corrections (neutral wording, save note, drift texts, English `work type name`); regenerated report names that revision.
 
 At audit time the mod shipped no `Defs` and no `DefInjected` folder — every player-facing string
 was code-owned, so this was a pure Keyed audit. That changed 2026-09-17 with the MainButtonDef
