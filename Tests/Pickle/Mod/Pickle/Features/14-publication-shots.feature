@@ -115,6 +115,8 @@ Feature: images for the Workshop page
     And Nelim's Pickle Tools: "Nelim" stands at (150, 170) facing West
     And Nelim's Pickle Tools: "Nelim" carries the item "WoodLog"
     # Run 894d showed her eyes shut mid-blink with a flush: a calm expression is set. Her eyes keep the base colour (owner, 2026-10-08); the eye colour step stays out until the sweat is gone.
+    And Nelim's Pickle Tools: "Nelim" face kit is "smile"
+    # The kit first, then "normal", which wipes the heat (sweat, flush) off the face (NPT, 2026-10-08; not tested together before this run).
     And Nelim's Pickle Tools: "Nelim" facial expression is "normal"
     And Nelim's Sanctuary: I am at the sanctuary "water-garden"
     And Nelim's Pickle Tools: I frame the cell (150, 168) at zoom 4
