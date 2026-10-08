@@ -27,8 +27,17 @@
 # place). Nelim tidies her colony's chores. EARLY MORNING (8): she opens the editor and makes a work type of her own,
 # "Tidying" (1). MORNING (9): the new column is there in the Work tab, with no restart (2). LATE MORNING (10): she looks at
 # the settings (3). The image names carry the number and the moment, so the order reads without opening the feature.
-# One scenario is one image. Nothing is spawned or staged: the shots are the mod's own windows, "screen captures of what
-# they are", and the only pawn is the fixture's, Nelim, the one colonist.
+# One scenario is one image. The two window shots (1 and 3) are the mod's own windows, "screen captures of what they are", and
+# nothing is staged; only image 2 has a staged scene (decor and a log in Nelim's arms), removed after its capture. The only
+# pawn is the fixture's, Nelim, the one colonist.
+#
+# THE SHOT PLAN (PUBLISHING.md, 2026-10-06: one line per image; each image is read against it after the run):
+#   1. early morning, hour 8   | window-backdrop-for-height | the editor with "Tidying" selected, two tasks moved into it | a full-screen
+#      option window, cropped on the sides, backdrop around it | nothing alive: the window is the subject | "she makes a type of her own".
+#   2. morning, hour 9         | water-garden, the brown shore | the Work tab with the new column | Nelim carrying a log among logs, rock, metal
+#      and scraps, framed tight (zoom 4 on (150, 168)), the tab at the foot | Nelim, the only colonist | "the column is there, no restart".
+#   3. late morning, hour 10   | window-backdrop-for-height | the settings window, Mod options | a tall option window, cropped on the sides
+#      | nothing alive | "and it is all in the settings".
 #
 # THE PLACES WERE CHOSEN AMONG ALL THE NAMED ONES (SANCTUAIRE-LIEUX.md, read 2026-10-06), by what is being photographed:
 #   - the place of the story is "water-garden", the pond with lilies and ducks: the Work tab (a main tab) is photographed there, at

@@ -35,23 +35,16 @@ Steam change note is the fenced block under `### 1.2.0` below, the release notes
 workflow ("Steam description" below). See `Rimworld-Release-Admin/docs/OPERATIONS.md`: a dry-run of the exact commit first,
 `publish` with its full 40-character SHA, and only the owner approves `steam-production`.
 
-**Before the actual Steam upload, still to do:**
+**Published 2026-09-25** by `publish-tag.yml` (tag `v1.2.0`, runs in STATUS.md): the description and the change note went with it, and
+the two runtime checks that fail-fast moved after the upload ran afterwards (STATUS.md has their verdicts). What is still open:
 
-- Run the publish with `update_description` on. The live description already says only what the template says about
-  Compact Work Tab (the dry-run of 2026-09-25 shows no such sentence on the page), so the description would change
-  by one line: the new bullet about icons. The rest of its diff is list formatting only (the renderer indents each
-  `[*]` and drops the space after it). RimWorld does not resend `About.xml`'s description on an update, so without
-  the option the page keeps the old text.
-- Nothing blocks the upload any more on the two open runtime checks: under the fail-fast policy below they run
-  **after** the publication. They are `02-work-tab-button.feature` against `wsl-deps.incompat-fluffy-worktab.map`, and the
-  full `wsl-deps.avec-enhanced-work-tab.map` set, filed as small tickets through the TicketDispatcher; neither has run
-  since the fixes they are meant to confirm.
-- Upload the Workshop images of `Art/Gallery/` in the order of their names (`0-` is the Preview, already on the page). The
-  three files there come from the run of `14-publication-shots.feature` on the sanctuary (2026-10-06, `afa7`): to upload
-  once the owner has looked at them.
+- Upload the Workshop images of `Art/Gallery/` by hand, in the order of their names (`0-` is the Preview, already on the page).
+  `1-early-morning-the-editor` (2026-10-07) and `3-late-morning-the-settings` are validated; `2-morning-the-new-column` waits for the
+  owner (table under "Workshop screenshots"). No tool of the chain sends a gallery.
 - Decide the two open design points STATUS.md lists (icons on by default; the long renamed header
   spilling into its neighbours in capture 07b) — not blocking, but worth a look before they are
   permanent on every subscriber's screen.
+- The next change note starts with its version on a line of its own (`[b]1.3.0[/b]`): the CI refuses it otherwise.
 
 ## Publication policy: fail fast
 
@@ -77,15 +70,18 @@ queued behind thirty other sessions' tickets.
 **The rules**, decided with the owner on 2026-09-24. They apply to every Workshop image of this mod and are the
 only place they are written; `14-publication-shots.feature` points here.
 
-1. **The scene is Nelim's sanctuary**, the fixture `Nelims-tribe` shared by every mod's gallery (`PickleTools/docs/GALERIE.md`,
-   `PickleTools/docs/SANCTUAIRE-LIEUX.md`), never the test fixture. It is only present in a pass that stages
-   `PickleTools/ScreenshotStudio`: `wsl-deps.gallery.map`. Run it in English, the page is English. Choose the place by
-   reading every named one: a full-screen interface window goes on `window-backdrop-for-height`, cropped on the sides (PUBLISHING.md, 2026-10-06), a main tab on a place that sells the game
-   (`water-garden`). Before 2026-10-06 the scene was `nelim-zen-meadow-studio` (`wsl-deps.studio.map`, now removed).
+1. **The scene is Nelim's sanctuary**, the fixture `Nelims-tribe` shared by every mod's gallery, never the test fixture. Since
+   2026-10-08 it lives in its own repository, SanctuaryBacklot (`docs/GALERIE.md`, `docs/SANCTUAIRE-LIEUX.md`); the pass that stages it,
+   with the mods that dress the pawn, is `wsl-deps.gallery.map`. Run it in English, the page is English. Two prefixes in the feature
+   tell the tools apart: `Nelim's Sanctuary:` (the places) and `Nelim's Pickle Tools:` (everything else). Choose the place by
+   reading every named one: a full-screen interface window goes on `window-backdrop-for-height`, cropped on the sides (PUBLISHING.md,
+   2026-10-06), a main tab on a place that sells the game (`water-garden`). Before 2026-10-06 the scene was
+   `nelim-zen-meadow-studio` (`wsl-deps.studio.map`, now removed).
 2. **Two kinds of image, two treatments:**
    - **An option window** (this mod's own windows: the editor, the settings): the game's screenshot mode is on
-     (HUD and Pickle panels hidden) and the image is **cropped tight around the window**, its rectangle plus 16 px
-     of margin on every side. PNG.
+     (HUD and Pickle panels hidden), the window sits on `window-backdrop-for-height`, and the image is **cropped on the sides**
+     around the window, with a margin of backdrop, **the height of the frame kept whole** (1080 px; PUBLISHING.md, 2026-10-06).
+     PNG.
    - **An interface window** (a game window this mod changes, such as the Work tab, a main tab): the **full
      interface**, screenshot mode off, **no crop**, the whole 1920x1080 frame, so the tab bar under it (Architect,
      Work, Schedule...) says where the panel comes from. The game never highlights the open tab, so do not count on
@@ -110,19 +106,18 @@ only place they are written; `14-publication-shots.feature` points here.
    `3-late-morning-the-settings` (10: the settings window, same place). Each name carries its number and its moment. Played on 2026-10-06 (ticket `afa7`, `f3d594f`), read, and re-run for the new
    backdrop rule, read and cropped on the sides, the height of the frame kept whole.
 
-**Where each image stands (2026-09-25).** Steam shows the first one large; the order is the Work tab first for its
-impact, then the editor, then the settings. Shots in `Art/Gallery/` (old scene, to be replaced), all in English,
-type `Tidying`:
+**Where each image stands (2026-10-08).** The gallery tells one story in the order of its names (rule 8). Files of `Art/Gallery/`,
+all in English, type `Tidying`, scene = the sanctuary:
 
 | File | Kind | Size | State |
 | --- | --- | --- | --- |
-| `01-the-new-column.jpg` | interface window | 1920x1080, 0.75 MB | seen by the owner 2026-09-25 ("c'est beau") |
-| `02-the-editor.png` | option window | 1210x790, 0.24 MB | captured 2026-09-24, cropped to the window + 16 px |
-| `03-the-settings.png` | option window | 930x730, 0.16 MB | same |
+| `0-preview.png` | the Preview | 590 KB | byte copy of `Mod/About/Preview.png` |
+| `1-early-morning-the-editor.png` | option window | 1320x1080, 1.2 MB | validated by the owner 2026-10-07 (run `cbb5`, `evidence/gallery-8`, on `window-backdrop-for-height`) |
+| `2-morning-the-new-column.png` | interface window | 1920x1080, 3.2 MB as PNG: over the 2 MB limit, convert to JPEG 95 once validated | waiting for the owner: the file there is the run `678f`; the candidate is run `bc2c` (`evidence/gallery-7`, Nelim carrying a log); runs `ec68` and `894d` (`gallery-9`, `gallery-10`) add the pawn-look mods, face expression still to settle |
+| `3-late-morning-the-settings.png` | option window | 1120x1000, 1.0 MB | approved, cropped (run `87ce`, `evidence/gallery-3`) |
 
-The Work tab shot comes from `docs/runs/2026-09-24.md`; the editor and settings from the same feature, same map. The
-older images (2026-09-18 and 2026-09-20: they predated the two-line labels and the duplicate-row defNames, or sat on the
-fixture desert) were deleted on 2026-09-25, so that the folder can be uploaded as it is.
+The raw captures stay in the evidence folders of those runs (ignored by git). The older images (2026-09-18, 2026-09-20 and
+2026-09-24) were deleted, so that the folder can be uploaded as it is.
 
 `Preview.png` and `ModIcon.png` (in `Mod/About/`) ship with the mod. The Preview was regenerated and
 visually reviewed on 2026-09-22 at 896×504 and 545,873 bytes. Its text-free source, deterministic
