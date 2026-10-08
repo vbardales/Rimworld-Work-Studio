@@ -113,7 +113,7 @@ all in English, type `Tidying`, scene = the sanctuary:
 | --- | --- | --- | --- |
 | `0-preview.png` | the Preview | 590 KB | byte copy of `Mod/About/Preview.png` |
 | `1-early-morning-the-editor.png` | option window | 1320x1080, 1.2 MB | validated by the owner 2026-10-07 (run `cbb5`, `evidence/gallery-8`, on `window-backdrop-for-height`) |
-| `2-morning-the-new-column.png` | interface window | 1920x1080, 3.2 MB as PNG: over the 2 MB limit, convert to JPEG 95 once validated | waiting for the owner: the file there is the run `678f`; the candidate is run `bc2c` (`evidence/gallery-7`, Nelim carrying a log); runs `ec68` and `894d` (`gallery-9`, `gallery-10`) add the pawn-look mods, face expression still to settle |
+| `2-morning-the-new-column.png` | interface window | 1920x1080, 3.2 MB as PNG: over the 2 MB limit, convert to JPEG 95 once validated | NO VALID CANDIDATE (owner, 2026-10-08): the file there is the old run `678f`; the later runs `bc2c` (`gallery-7`), `ec68` (`gallery-9`) and `894d` (`gallery-10`) were judged invalid, the last one for the sweating face. To redo once the game's temperature is lowered, with the face steps |
 | `3-late-morning-the-settings.png` | option window | 1120x1000, 1.0 MB | approved, cropped (run `87ce`, `evidence/gallery-3`) |
 
 The raw captures stay in the evidence folders of those runs (ignored by git). The older images (2026-09-18, 2026-09-20 and
