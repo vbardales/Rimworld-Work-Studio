@@ -1,11 +1,11 @@
 # Publication
 
-What the Workshop page needs and this repository does not record anywhere else. Written once, for
+This document records what the Workshop page needs but the repository records nowhere else. Written once, for
 this update and for whoever ships the next one. This is not the first publication — the item
-(3792836684) already exists, published as 1.0.0 and updated to 1.0.1 — so the first-envoi steps of
+(3792836684) already exists, published as 1.0.0 and updated to 1.0.1 — so the first-upload steps of
 AUDIT.md's `tested -> prepublished` do not all apply; what follows is scoped to an update.
 
-## This update: 1.2.0
+## The 1.2.0 update (published 2026-09-25, kept as history)
 
 Prepared 2026-09-22 as "1.1.0", on the owner's word that the mod is stable enough to push, **with two
 `done -> tested` items still open** (see `STATUS.md`): the button-click fix under Work Tab has not
@@ -36,7 +36,7 @@ workflow ("Steam description" below). See `Rimworld-Release-Admin/docs/OPERATION
 `publish` with its full 40-character SHA, and only the owner approves `steam-production`.
 
 **Published 2026-09-25** by `publish-tag.yml` (tag `v1.2.0`, runs in STATUS.md): the description and the change note went with it, and
-the two runtime checks that fail-fast moved after the upload ran afterwards (STATUS.md has their verdicts). What is still open:
+the two fail-fast runtime checks, moved to after the upload, then ran afterwards (STATUS.md has their verdicts). What is still open:
 
 - The Workshop images of `Art/Gallery/` were uploaded by hand by the owner on 2026-10-08, in the order of their names (`0-` is
   the Preview). All three were validated first (table under "Workshop screenshots").
@@ -44,6 +44,15 @@ the two runtime checks that fail-fast moved after the upload ran afterwards (STA
   spilling into its neighbours in capture 07b) — not blocking, but worth a look before they are
   permanent on every subscriber's screen.
 - The next change note starts with its version on a line of its own (`[b]1.3.0[/b]`): the CI refuses it otherwise.
+
+## This update: 1.2.1
+
+Prepared 2026-10-08 on the owner's "go 1.2.1": two fixes (the Fluffy Work Tab button; a work type another mod adds with no label), the
+short labels of the vanilla types in the editor, the wording pass on the English and French texts, the new Preview and ModIcon.
+`CHANGELOG.md` has the `## [1.2.1]` section and the Steam note is the block under `### 1.2.1` below (first line `[b]1.2.1[/b]`).
+Before the dry-run: the owner's review of `FRENCH_REVIEW.md` (`translation_fr` is `unchecked` since the French was rewritten). The dry-run
+of the exact commit, then `publish` with its 40-character SHA, then the owner approves `steam-production`; the regression passes (English
+and French minimal) run after the upload, per the fail-fast policy.
 
 ## Publication policy: fail fast
 

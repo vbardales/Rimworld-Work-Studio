@@ -3,7 +3,7 @@
 
   <WorkStudio.Settings.Intro>Réorganisez l'onglet Travail sans redémarrer la partie : créez vos propres types de travail, déplacez-y des tâches provenant d'autres types, renommez, réordonnez et masquez les colonnes.</WorkStudio.Settings.Intro>
   <WorkStudio.Settings.OpenEditor>Ouvrir l'éditeur des types de travail</WorkStudio.Settings.OpenEditor>
-  <WorkStudio.Settings.SaveNote>Les priorités de travail des colons sont enregistrées par nom de travail : vous pouvez modifier cette configuration entre deux sessions sans les mélanger. Retirer le mod rend simplement leur type d'origine aux tâches déplacées.</WorkStudio.Settings.SaveNote>
+  <WorkStudio.Settings.SaveNote>Les priorités de travail sont enregistrées par nom de type de travail ; cette configuration peut donc être modifiée entre deux sessions sans les mélanger. Retirer le mod rend simplement leur type d'origine aux tâches déplacées.</WorkStudio.Settings.SaveNote>
 
   <WorkStudio.Settings.Presets>Importer / exporter une configuration</WorkStudio.Settings.Presets>
   <WorkStudio.Settings.ResetAll>Réinitialiser toute la configuration</WorkStudio.Settings.ResetAll>
@@ -28,8 +28,8 @@
   <WorkStudio.Drift.Title>Work Studio — votre liste de mods a changé</WorkStudio.Drift.Title>
   <WorkStudio.Drift.Intro>Depuis le dernier démarrage, les travaux disponibles ont changé. Votre configuration est intacte : rien n'a été effacé.</WorkStudio.Drift.Intro>
   <WorkStudio.Drift.GoneTypes>Types de travail disparus : {0}. Les tâches que vous y aviez rangées sont reparties dans leur type d'origine.</WorkStudio.Drift.GoneTypes>
-  <WorkStudio.Drift.MissingTasks>Tâches introuvables, dont votre configuration se souvient : {0}. Elles reprendront leur place si le mod qui les fournit revient.</WorkStudio.Drift.MissingTasks>
-  <WorkStudio.Drift.NewTypes>Nouveaux types de travail : {0}. Ils sont placés selon leur priorité propre ; ils ne figurent donc pas nécessairement à l'endroit attendu dans l'ordre que vous avez défini.</WorkStudio.Drift.NewTypes>
+  <WorkStudio.Drift.MissingTasks>Tâches introuvables dont la configuration garde la trace : {0}. Elles reprendront leur place si le mod qui les fournit revient.</WorkStudio.Drift.MissingTasks>
+  <WorkStudio.Drift.NewTypes>Nouveaux types de travail : {0}. Ils sont placés selon leur propre priorité et ne figurent donc pas nécessairement à l'emplacement attendu dans l'ordre défini.</WorkStudio.Drift.NewTypes>
   <WorkStudio.Drift.AndMore>et {0} de plus</WorkStudio.Drift.AndMore>
 
   <WorkStudio.Types>Types de travail</WorkStudio.Types>

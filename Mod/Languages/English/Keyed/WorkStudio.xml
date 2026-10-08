@@ -3,7 +3,7 @@
 
   <WorkStudio.Settings.Intro>Reorganize the Work tab without restarting: create your own work types, move tasks from other types into them, rename, reorder and hide columns.</WorkStudio.Settings.Intro>
   <WorkStudio.Settings.OpenEditor>Open the work type editor</WorkStudio.Settings.OpenEditor>
-  <WorkStudio.Settings.SaveNote>Each colonist's work priorities are saved by work name, so you can change this setup between sessions without scrambling them. Removing the mod simply returns moved tasks to their original types.</WorkStudio.Settings.SaveNote>
+  <WorkStudio.Settings.SaveNote>Each colonist's work priorities are saved by work type name, so you can change this setup between sessions without scrambling them. Removing the mod simply returns moved tasks to their original types.</WorkStudio.Settings.SaveNote>
 
   <WorkStudio.Settings.Presets>Import / export a setup</WorkStudio.Settings.Presets>
   <WorkStudio.Settings.ResetAll>Reset the whole setup</WorkStudio.Settings.ResetAll>
