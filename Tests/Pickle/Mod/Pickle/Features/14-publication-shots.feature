@@ -105,8 +105,7 @@ Feature: images for the Workshop page
     And Nelim's Pickle Tools: I place the decor "Filth_Trash" at (151, 168)
     And Nelim's Pickle Tools: "Nelim" stands at (150, 170) facing West
     And Nelim's Pickle Tools: "Nelim" carries the item "WoodLog"
-    # Run 894d showed her eyes shut mid-blink with a flush: the face is set, the way the owner plays her (brown eyes, EyeGenes; a calm look).
-    And Nelim's Pickle Tools: "Nelim" eye colour is rgb (92, 58, 34)
+    # Run 894d showed her eyes shut mid-blink with a flush: a calm expression is set. Her eyes keep the base colour (owner, 2026-10-08); the eye colour step stays out until the sweat is gone.
     And Nelim's Pickle Tools: "Nelim" facial expression is "normal"
     And Nelim's Sanctuary: I am at the sanctuary "water-garden"
     And Nelim's Pickle Tools: I frame the cell (150, 168) at zoom 4
