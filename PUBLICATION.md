@@ -100,6 +100,9 @@ only place they are written; `14-publication-shots.feature` points here.
    then `1-`, `2-`, `3-`... in the order they go on the page, nothing else** (no older versions, no raw captures, no
    subfolder). Raw captures stay in the evidence folder of the run (ignored by git) and the chosen ones are copied by hand.
    Produced by `Tests/Pickle/Mod/Pickle/Features/14-publication-shots.feature`, one scenario per image.
+   A capture proposed for the owner to judge goes there too while it is judged, as `<index>-candidate-<name>.png` (for example
+   `2-candidate-morning-the-new-column.png`, with a run id suffix when there are several), not committed; the rejected ones are removed,
+   the chosen one becomes `<index>-<name>.png`.
 8. **The gallery tells one story** (PUBLISHING.md, 2026-10-06): one morning at the sanctuary, in ONE place at three close
    hours, in the order of the scenarios of the feature. `1-early-morning-the-editor` (8: the editor, a full-screen window,
    so on `window-backdrop-for-height`, cropped on the sides), `2-morning-the-new-column` (9: the Work tab, in the story place `water-garden`),
