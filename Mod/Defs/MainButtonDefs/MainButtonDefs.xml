@@ -11,7 +11,7 @@
   <MainButtonDef>
     <defName>WorkStudio_Settings</defName>
     <label>Work Studio</label>
-    <description>Open Work Studio's settings: the work type editor, import/export, and the whole-setup reset. Hidden by default; reveal it with a MainButtons customization mod such as RIMMSQOL.</description>
+    <description>Open Work Studio's settings: the work type editor, import/export tools, and full setup reset. This shortcut is hidden by default; reveal it with a MainButtons customization mod such as RIMMSQOL.</description>
     <workerClass>WorkStudio.MainButtonWorker_OpenSettings</workerClass>
     <buttonVisible>false</buttonVisible>
     <validWithoutMap>true</validWithoutMap>

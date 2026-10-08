@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
-  <WorkStudio.Settings.Intro>Réorganise l'onglet Travail sans redémarrer la partie : créez vos propres types de travail, déplacez-y des tâches provenant d'autres types, renommez, réordonnez et masquez les colonnes.</WorkStudio.Settings.Intro>
+  <WorkStudio.Settings.Intro>Réorganisez l'onglet Travail sans redémarrer la partie : créez vos propres types de travail, déplacez-y des tâches provenant d'autres types, renommez, réordonnez et masquez les colonnes.</WorkStudio.Settings.Intro>
   <WorkStudio.Settings.OpenEditor>Ouvrir l'éditeur des types de travail</WorkStudio.Settings.OpenEditor>
-  <WorkStudio.Settings.SaveNote>Les priorités de travail de la colonie sont enregistrées par nom de travail : vous pouvez modifier cette configuration entre deux sessions sans les mélanger. Retirer le mod rend simplement leurs types d'origine aux tâches déplacées.</WorkStudio.Settings.SaveNote>
+  <WorkStudio.Settings.SaveNote>Les priorités de travail des colons sont enregistrées par nom de travail : vous pouvez modifier cette configuration entre deux sessions sans les mélanger. Retirer le mod rend simplement leur type d'origine aux tâches déplacées.</WorkStudio.Settings.SaveNote>
 
   <WorkStudio.Settings.Presets>Importer / exporter une configuration</WorkStudio.Settings.Presets>
   <WorkStudio.Settings.ResetAll>Réinitialiser toute la configuration</WorkStudio.Settings.ResetAll>
-  <WorkStudio.Settings.ConfirmResetAll>Effacer toute votre configuration ? Les types personnalisés disparaîtront et chaque tâche retrouvera son type d'origine. Pensez à l'exporter d'abord si vous voulez pouvoir y revenir.</WorkStudio.Settings.ConfirmResetAll>
+  <WorkStudio.Settings.ConfirmResetAll>Effacer toute votre configuration ? Les types personnalisés seront supprimés et chaque tâche retrouvera son type d'origine. Exportez-la d'abord si vous souhaitez pouvoir la restaurer plus tard.</WorkStudio.Settings.ConfirmResetAll>
 
   <WorkStudio.Presets.Title>Configurations enregistrées</WorkStudio.Presets.Title>
   <WorkStudio.Presets.Export>Exporter la configuration actuelle</WorkStudio.Presets.Export>
   <WorkStudio.Presets.ExportName>Nom de la configuration</WorkStudio.Presets.ExportName>
   <WorkStudio.Presets.DefaultName>Ma configuration</WorkStudio.Presets.DefaultName>
-  <WorkStudio.Presets.None>Aucune configuration enregistrée. Celles que vous exporterez iront dans :\n{0}</WorkStudio.Presets.None>
+  <WorkStudio.Presets.None>Aucune configuration n'est encore enregistrée. Les configurations exportées seront enregistrées ici :\n{0}</WorkStudio.Presets.None>
   <WorkStudio.Presets.ImportTip>Cliquez pour importer cette configuration.</WorkStudio.Presets.ImportTip>
   <WorkStudio.Presets.DeleteTip>Supprimer ce fichier</WorkStudio.Presets.DeleteTip>
   <WorkStudio.Presets.ConfirmImport>Importer « {0} » ? Votre configuration actuelle sera entièrement remplacée.</WorkStudio.Presets.ConfirmImport>
@@ -29,7 +29,7 @@
   <WorkStudio.Drift.Intro>Depuis le dernier démarrage, les travaux disponibles ont changé. Votre configuration est intacte : rien n'a été effacé.</WorkStudio.Drift.Intro>
   <WorkStudio.Drift.GoneTypes>Types de travail disparus : {0}. Les tâches que vous y aviez rangées sont reparties dans leur type d'origine.</WorkStudio.Drift.GoneTypes>
   <WorkStudio.Drift.MissingTasks>Tâches introuvables, dont votre configuration se souvient : {0}. Elles reprendront leur place si le mod qui les fournit revient.</WorkStudio.Drift.MissingTasks>
-  <WorkStudio.Drift.NewTypes>Nouveaux types de travail : {0}. Ils se placent selon leur propre priorité, donc pas forcément là où vous les attendez dans l'ordre que vous aviez réglé.</WorkStudio.Drift.NewTypes>
+  <WorkStudio.Drift.NewTypes>Nouveaux types de travail : {0}. Ils sont placés selon leur priorité propre ; ils ne figurent donc pas nécessairement à l'endroit attendu dans l'ordre que vous avez défini.</WorkStudio.Drift.NewTypes>
   <WorkStudio.Drift.AndMore>et {0} de plus</WorkStudio.Drift.AndMore>
 
   <WorkStudio.Types>Types de travail</WorkStudio.Types>
@@ -68,24 +68,24 @@
   <WorkStudio.Field.Gerund>Forme en -ant</WorkStudio.Field.Gerund>
   <WorkStudio.Field.Verb>Verbe</WorkStudio.Field.Verb>
   <WorkStudio.Field.Description>Description</WorkStudio.Field.Description>
-  <WorkStudio.Field.AlwaysStartActive>Actif d'office pour toute nouvelle personne</WorkStudio.Field.AlwaysStartActive>
-  <WorkStudio.Field.RequireCapable>Avertir si plus personne ne peut l'effectuer</WorkStudio.Field.RequireCapable>
+  <WorkStudio.Field.AlwaysStartActive>Toujours actif pour toute nouvelle personne</WorkStudio.Field.AlwaysStartActive>
+  <WorkStudio.Field.RequireCapable>Avertir si aucune personne ne peut l'effectuer</WorkStudio.Field.RequireCapable>
   <WorkStudio.Field.Skills>Compétences concernées</WorkStudio.Field.Skills>
   <WorkStudio.Apply>Appliquer</WorkStudio.Apply>
 
   <!-- Icônes de compétence et de type de travail, reprises de SkillIcons le 2026-09-18. -->
   <WorkStudio.Icons.Section>Icônes</WorkStudio.Icons.Section>
   <WorkStudio.Icons.Skills>Icônes dans la liste des compétences</WorkStudio.Icons.Skills>
-  <WorkStudio.Icons.SkillsDesc>Dessine une icône devant chaque compétence, dans l'onglet du personnage.</WorkStudio.Icons.SkillsDesc>
+  <WorkStudio.Icons.SkillsDesc>Affiche une icône devant chaque compétence dans l'onglet du personnage.</WorkStudio.Icons.SkillsDesc>
   <WorkStudio.Icons.WorkTypes>Icônes sur les colonnes de l'onglet Travail</WorkStudio.Icons.WorkTypes>
-  <WorkStudio.Icons.WorkTypesDesc>Dessine une icône au pied de chaque en-tête de colonne de l'onglet Travail.</WorkStudio.Icons.WorkTypesDesc>
+  <WorkStudio.Icons.WorkTypesDesc>Affiche une icône au pied de chaque en-tête de colonne de l'onglet Travail.</WorkStudio.Icons.WorkTypesDesc>
   <WorkStudio.Icons.HeaderMode>Ce que montre un en-tête de colonne</WorkStudio.Icons.HeaderMode>
   <WorkStudio.Icons.HeaderModeUnavailable>Disponible une fois les icônes de colonnes activées.</WorkStudio.Icons.HeaderModeUnavailable>
   <WorkStudio.Icons.HeaderBoth>Icône et libellé</WorkStudio.Icons.HeaderBoth>
   <WorkStudio.Icons.HeaderBothDesc>L'en-tête habituel, avec l'icône ajoutée à son pied. Les libellés longs utilisent l'icône et une infobulle plutôt que de couvrir les autres colonnes.</WorkStudio.Icons.HeaderBothDesc>
   <WorkStudio.Icons.HeaderIcon>Icône seule</WorkStudio.Icons.HeaderIcon>
-  <WorkStudio.Icons.HeaderIconDesc>Colonnes plus étroites, puisque le nom disparaît. Survoler un en-tête dit toujours de quoi il s'agit.</WorkStudio.Icons.HeaderIconDesc>
+  <WorkStudio.Icons.HeaderIconDesc>Colonnes plus étroites, puisque le nom disparaît. Le survol d'un en-tête indique toujours ce que représente la colonne.</WorkStudio.Icons.HeaderIconDesc>
   <WorkStudio.Icons.HeaderLabel>Libellé seul</WorkStudio.Icons.HeaderLabel>
-  <WorkStudio.Icons.HeaderLabelDesc>L'en-tête vanilla, sans icône. La liste des compétences garde les siennes.</WorkStudio.Icons.HeaderLabelDesc>
+  <WorkStudio.Icons.HeaderLabelDesc>L'en-tête de base, sans icône. La liste des compétences conserve les siennes.</WorkStudio.Icons.HeaderLabelDesc>
 
 </LanguageData>

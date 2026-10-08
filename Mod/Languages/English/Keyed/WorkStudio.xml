@@ -3,17 +3,17 @@
 
   <WorkStudio.Settings.Intro>Reorganize the Work tab without restarting: create your own work types, move tasks from other types into them, rename, reorder and hide columns.</WorkStudio.Settings.Intro>
   <WorkStudio.Settings.OpenEditor>Open the work type editor</WorkStudio.Settings.OpenEditor>
-  <WorkStudio.Settings.SaveNote>Colonist priorities are saved by work name, so you can change this setup between sessions without scrambling them. Removing the mod simply gives moved tasks their original types back.</WorkStudio.Settings.SaveNote>
+  <WorkStudio.Settings.SaveNote>Each colonist's work priorities are saved by work name, so you can change this setup between sessions without scrambling them. Removing the mod simply returns moved tasks to their original types.</WorkStudio.Settings.SaveNote>
 
   <WorkStudio.Settings.Presets>Import / export a setup</WorkStudio.Settings.Presets>
   <WorkStudio.Settings.ResetAll>Reset the whole setup</WorkStudio.Settings.ResetAll>
-  <WorkStudio.Settings.ConfirmResetAll>Erase your whole setup? Custom types will be gone and every task will return to its original type. Export it first if you want to be able to come back to it.</WorkStudio.Settings.ConfirmResetAll>
+  <WorkStudio.Settings.ConfirmResetAll>Erase your whole setup? Custom types will be deleted, and every task will return to its original type. Export it first if you may want to restore it later.</WorkStudio.Settings.ConfirmResetAll>
 
   <WorkStudio.Presets.Title>Saved setups</WorkStudio.Presets.Title>
   <WorkStudio.Presets.Export>Export the current setup</WorkStudio.Presets.Export>
   <WorkStudio.Presets.ExportName>Setup name</WorkStudio.Presets.ExportName>
   <WorkStudio.Presets.DefaultName>My setup</WorkStudio.Presets.DefaultName>
-  <WorkStudio.Presets.None>No saved setup yet. The ones you export will go to:\n{0}</WorkStudio.Presets.None>
+  <WorkStudio.Presets.None>No saved setups yet. Exported setups will be saved to:\n{0}</WorkStudio.Presets.None>
   <WorkStudio.Presets.ImportTip>Click to import this setup.</WorkStudio.Presets.ImportTip>
   <WorkStudio.Presets.DeleteTip>Delete this file</WorkStudio.Presets.DeleteTip>
   <WorkStudio.Presets.ConfirmImport>Import "{0}"? Your current setup will be replaced entirely.</WorkStudio.Presets.ConfirmImport>
@@ -29,7 +29,7 @@
   <WorkStudio.Drift.Intro>The available work has changed since the last startup. Your setup is intact: nothing was erased.</WorkStudio.Drift.Intro>
   <WorkStudio.Drift.GoneTypes>Work types that are gone: {0}. The tasks you had filed under them went back to their original types.</WorkStudio.Drift.GoneTypes>
   <WorkStudio.Drift.MissingTasks>Tasks your setup still remembers but cannot find: {0}. They will fall back into place if the mod that provides them comes back.</WorkStudio.Drift.MissingTasks>
-  <WorkStudio.Drift.NewTypes>New work types: {0}. They sit according to their own priority, so not necessarily where you would expect them in the order you had set.</WorkStudio.Drift.NewTypes>
+  <WorkStudio.Drift.NewTypes>New work types: {0}. They are placed according to their own priority, so they may not appear where you expect in the order you set.</WorkStudio.Drift.NewTypes>
   <WorkStudio.Drift.AndMore>and {0} more</WorkStudio.Drift.AndMore>
 
   <WorkStudio.Types>Work types</WorkStudio.Types>
@@ -68,7 +68,7 @@
   <WorkStudio.Field.Gerund>Gerund form</WorkStudio.Field.Gerund>
   <WorkStudio.Field.Verb>Verb</WorkStudio.Field.Verb>
   <WorkStudio.Field.Description>Description</WorkStudio.Field.Description>
-  <WorkStudio.Field.AlwaysStartActive>Always active on a new colonist</WorkStudio.Field.AlwaysStartActive>
+  <WorkStudio.Field.AlwaysStartActive>Always active for new colonists</WorkStudio.Field.AlwaysStartActive>
   <WorkStudio.Field.RequireCapable>Warn when no colonist can do it</WorkStudio.Field.RequireCapable>
   <WorkStudio.Field.Skills>Relevant skills</WorkStudio.Field.Skills>
   <WorkStudio.Apply>Apply</WorkStudio.Apply>
@@ -80,12 +80,12 @@
   <WorkStudio.Icons.WorkTypes>Icons on Work tab columns</WorkStudio.Icons.WorkTypes>
   <WorkStudio.Icons.WorkTypesDesc>Draws an icon at the foot of each Work tab column header.</WorkStudio.Icons.WorkTypesDesc>
   <WorkStudio.Icons.HeaderMode>What a column header shows</WorkStudio.Icons.HeaderMode>
-  <WorkStudio.Icons.HeaderModeUnavailable>Available once icons on Work tab columns are switched on.</WorkStudio.Icons.HeaderModeUnavailable>
+  <WorkStudio.Icons.HeaderModeUnavailable>Available when icons on Work tab columns are enabled.</WorkStudio.Icons.HeaderModeUnavailable>
   <WorkStudio.Icons.HeaderBoth>Icon and label</WorkStudio.Icons.HeaderBoth>
   <WorkStudio.Icons.HeaderBothDesc>The usual header, with the icon added at its foot. Long labels use the icon and a tooltip instead of covering other columns.</WorkStudio.Icons.HeaderBothDesc>
   <WorkStudio.Icons.HeaderIcon>Icon only</WorkStudio.Icons.HeaderIcon>
-  <WorkStudio.Icons.HeaderIconDesc>Narrower columns, since the name is dropped. Hovering a header still tells you what the column is.</WorkStudio.Icons.HeaderIconDesc>
+  <WorkStudio.Icons.HeaderIconDesc>Narrower columns, since the name is dropped. Hovering over a header still tells you what the column is.</WorkStudio.Icons.HeaderIconDesc>
   <WorkStudio.Icons.HeaderLabel>Label only</WorkStudio.Icons.HeaderLabel>
-  <WorkStudio.Icons.HeaderLabelDesc>The vanilla header, with no icon on it. The skill list keeps its own.</WorkStudio.Icons.HeaderLabelDesc>
+  <WorkStudio.Icons.HeaderLabelDesc>The standard header, with no icon. The skill list keeps its own.</WorkStudio.Icons.HeaderLabelDesc>
 
 </LanguageData>

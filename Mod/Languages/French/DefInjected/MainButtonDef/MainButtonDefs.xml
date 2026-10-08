@@ -2,6 +2,6 @@
 <LanguageData>
 
   <WorkStudio_Settings.label>Work Studio</WorkStudio_Settings.label>
-  <WorkStudio_Settings.description>Ouvre les réglages de Work Studio : l'éditeur des types de travail, l'import/export et la réinitialisation complète de la configuration. Masqué par défaut ; révélez-le avec un mod de personnalisation des boutons principaux comme RIMMSQOL.</WorkStudio_Settings.description>
+  <WorkStudio_Settings.description>Ouvrir les réglages de Work Studio : l'éditeur des types de travail, les outils d'import/export et la réinitialisation complète de la configuration. Ce raccourci est masqué par défaut ; affichez-le avec un mod de personnalisation des boutons principaux tel que RIMMSQOL.</WorkStudio_Settings.description>
 
 </LanguageData>
