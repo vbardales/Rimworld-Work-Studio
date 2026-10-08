@@ -7,7 +7,7 @@ packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
 visibility:   public
 detached:     yes
-stage:        prepublished
+stage:        published
 licence:      open
 licence_at:   this mod's own code is MIT and nothing of Achtung! is redistributed, but the technique came from it and it is a named debt, so the source's licence decides: MIT, LICENSE-achtung.txt
 settings_audit: complete
@@ -16,6 +16,7 @@ showcase:     complete
 tested_on:    2026-09-21
 workshop:     3792836684
 remaining:
+  - "stage 2026-10-08: prepublished -> published, on the owner's remark that the item is published (1.2.1 and 1.2.2 are live, tags v1.2.1 and v1.2.2, change notes on the page). My earlier line said back to published only after the regression passes; fail-fast puts those after the upload and the stage follows the upload. Passes on the 1.2.2 build: minimal English 2d84 green (51 passed, 0 failed, 11 skipped); minimal French fd10 red on one test expectation (English name where the French game translates the label), the check was made language independent and replayed: English e3c6 green, French 2a96 still to read. A red there is a defect of the published version, said as such."
   - "published 2026-10-08 as 1.2.2 (Preview only) through publish-tag.yml: publish run 37798803232 on cf88dfe5b417f886e8d38c2c643c4faea48fed3d with update_preview, approved by the owner, jobs publish and tag-and-release success; tag v1.2.2 and the GitHub release (not a pre-release) at 15:16 UTC; the public change-note page lists 1.2.2 dated 8 Oct 8:16am with the text of PUBLICATION.md. The owner looked at the page and confirmed it is OK (2026-10-08). Stage stays prepublished until the minimal English and French passes on this build are green."
   - "verified 2026-10-08: final dry-run of 1.2.2 on cf88dfe5b417f886e8d38c2c643c4faea48fed3d, run 37798634612, update_preview on: green, log read: version 1.2.2 above v1.2.1, change note starting [b]1.2.2[/b] with the reviewer wording, preview to send 586494 bytes sha256 ca6a4100, DRY RUN: nothing was sent to Steam. It replaces the dry-runs on 322f048 (37796547883) and 380f6c9 (37798466242): the code-review fix (doc comment of OriginalTypeOf, DLL byte-identical) and the review wording changed the SHA. Publish with this SHA and --preview."
   - "stage 2026-10-08: done -> prepublished on the owner's word (passe en prepublished), before the publish of 1.2.2, as AUDIT.md step 11 asks. 1.2.1 had been published with stage done (a miss, same as Anima Song 2026-09-29). Grounds: fail-fast policy of 2026-09-25; gallery ready and validated by the owner (Art/Gallery, 4 files); dry-run of 1.2.2 green on 322f048 (run 37796547883); PUBLICATION.md, CHANGELOG and the Steam note ready; French validated on 1cee9a9. Gaps written down: the minimal English and French non-regression passes on the 1.2.1/1.2.2 build are not run (they run after the upload), and the two design points (icons on by default, long renamed header) are still open. Back to published only after those passes are green."
