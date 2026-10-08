@@ -7,7 +7,7 @@ packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
 visibility:   public
 detached:     yes
-stage:        done
+stage:        prepublished
 licence:      open
 licence_at:   this mod's own code is MIT and nothing of Achtung! is redistributed, but the technique came from it and it is a named debt, so the source's licence decides: MIT, LICENSE-achtung.txt
 settings_audit: complete
@@ -16,6 +16,7 @@ showcase:     complete
 tested_on:    2026-09-21
 workshop:     3792836684
 remaining:
+  - "stage 2026-10-08: done -> prepublished on the owner's word (passe en prepublished), before the publish of 1.2.2, as AUDIT.md step 11 asks. 1.2.1 had been published with stage done (a miss, same as Anima Song 2026-09-29). Grounds: fail-fast policy of 2026-09-25; gallery ready and validated by the owner (Art/Gallery, 4 files); dry-run of 1.2.2 green on 322f048 (run 37796547883); PUBLICATION.md, CHANGELOG and the Steam note ready; French validated on 1cee9a9. Gaps written down: the minimal English and French non-regression passes on the 1.2.1/1.2.2 build are not run (they run after the upload), and the two design points (icons on by default, long renamed header) are still open. Back to published only after those passes are green."
   - "verified 2026-10-08: dry-run of 1.2.2 (Preview only) on 322f048c427e6ee66a4011e5cf197a37854b0673, run 37796547883, update_preview on: green, log read: version 1.2.2 above the highest tag v1.2.1, change note starting [b]1.2.2[/b], preview to send Mod/About/Preview.png 586494 bytes sha256 ca6a4100, the page now holds 545873 bytes (sha256 e705a44d, the 1.2.0 Preview, which confirms 1.2.1 did not send one), DRY RUN: nothing was sent to Steam. Next: publish with that SHA and --preview, approved by the owner."
   - "published 2026-10-08 as 1.2.1 through publish-tag.yml: publish run 37789139646 on a1029b9087269f71772d421d0d877ce608c00591 (option update_description), approved by the owner, jobs publish and tag-and-release both success; tag v1.2.1 and the GitHub release (not a pre-release) created by the CI at 14:15 UTC; the public change-note page lists an entry 1.2.1 dated 8 Oct 7:14am. Not yet checked by eye: the description and the four gallery images on the live page. Under fail-fast, the minimal English and French regression passes on this build are still to run: until they do, nothing here claims them."
   - "verified 2026-10-08: dry-run of 1.2.1 on a1029b9087269f71772d421d0d877ce608c00591, run 37788660994 (publish-tag.yml, mode dry-run, update_description on): green, log read: version 1.2.1, change note from PUBLICATION.md starting [b]1.2.1[/b], description 5318 characters sha256 a8b385c7, the page already has this description (nothing would change), gallery of 4 files listed (uploaded by hand), no build project so Mod/ ships as tracked, DRY RUN: nothing was sent to Steam. Next: publish with that exact SHA, approved by the owner."
