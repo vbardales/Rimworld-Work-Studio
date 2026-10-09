@@ -22,7 +22,7 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 ### Fixed
 
 - **With Fluffy's Work Tab, the Work types button sits clear of that tab's own controls.** It was drawn on top of its "Expand all priorities" toggle, which took the click, expanded the table and widened the window instead of opening the editor. Fluffy's Work Tab is still declared incompatible: a type created here is absent from its column list.
-- **A work type another mod adds with no label no longer shows as a blank or a raw `defName`.** Work Studio names it by its short label, or by its `defName` when it has neither, in the editor and in the drift report. Covered by a test that adds such a type and reads the editor.
+- **A work type added by another mod with no label no longer shows as a blank or a raw `defName`.** Work Studio names it by its short label, or by its `defName` when it has neither, in the editor and in the drift report. Covered by a test that adds such a type and reads the editor.
 
 ## [1.2.0] — 2026-09-25
 

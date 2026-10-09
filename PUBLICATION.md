@@ -50,12 +50,12 @@ the two fail-fast runtime checks, which had been moved to after the upload, ran 
 Published by the CI (run `37789139646`, tag `v1.2.1`) on `a1029b9`, **without** `--preview`: the Workshop page kept the older Preview. The dry-run and the publish are
 recorded in STATUS.md.
 
-## This update: 1.2.2
+## The 1.2.2 update (published 2026-10-08, kept as history)
 
-Prepared 2026-10-08 on the owner's "go 1.2.2": only the Preview changes (the ModIcon in the corner, `Art/Preview.config.json` without its inward
-`translate` override; `Mod/About/Preview.png`, the owner approved it). `CHANGELOG.md` has `## [1.2.2]` and the Steam note is the block under `### 1.2.2`
-(first line `[b]1.2.2[/b]`). The dry-run and the `publish` both need `--preview` (`update_preview=true`), otherwise the picture is not sent; the
-owner approves `steam-production`.
+Published 2026-10-08 on `cf88dfe5b417f886e8d38c2c643c4faea48fed3d` by `publish-tag.yml` (run `37798803232`, `update_preview=true`, approved by the owner).
+Only the Preview changed (the ModIcon in the corner, `Art/Preview.config.json` without its inward `translate` override; `Mod/About/Preview.png`).
+Tag `v1.2.2` and the GitHub release were created by the CI. `CHANGELOG.md` has `## [1.2.2]` and the Steam note is the block under `### 1.2.2`.
+A Preview-only update needs `--preview` (`update_preview=true`) on the dry-run and the `publish`, otherwise the picture is not sent.
 
 ## Publication policy: fail fast
 
@@ -171,7 +171,7 @@ Steam page, so it is not edited here after the fact.
 
 [b]Changed[/b]
 [list]
-[*] The Workshop Preview now shows the mod icon in its corner. No change to the mod itself.
+[*] The Workshop Preview now shows the mod icon in its bottom-left corner. No change to the mod itself.
 [/list]
 ```
 
@@ -190,7 +190,7 @@ Steam page, so it is not edited here after the fact.
 [b]Fixed[/b]
 [list]
 [*] With Fluffy's Work Tab, the Work types button no longer sits on top of that tab's "Expand all priorities" toggle, which took the click and widened the window instead of opening the editor. Fluffy's Work Tab is still declared incompatible.
-[*] A work type another mod adds with no label no longer shows as a blank or an internal name: it takes its short label, or its internal name when it has neither.
+[*] A work type added by another mod with no label no longer shows as a blank or an internal name: it takes its short label, or its internal name when it has neither.
 [/list]
 ```
 
@@ -244,8 +244,7 @@ link to a still-updating item is fine to post, but check the linked item is the 
 
 - Commit `Mod/About/PublishedFileId.txt` immediately if it ever changes (it should not, for an
   update to an existing item) — losing it before a commit makes the next envoi create a second item.
-- Do not create the tag or the release by hand: `publish-tag.yml` creates `v1.2.0` and the GitHub release (with the
-  `## [1.2.0]` section of `CHANGELOG.md`) once the upload has succeeded, and refuses to start if the tag exists.
+- Do not create the tag or the release by hand: `publish-tag.yml` creates `v<version>` and the matching GitHub release after a successful upload, and refuses to start if the tag exists.
 - Then check the public page: title, new update time, the change note, the description if it was sent, and upload the
   images of `Art/Gallery/` by hand (no tool of the chain can send a gallery).
 
@@ -253,12 +252,3 @@ link to a still-updating item is fine to post, but check the linked item is the 
 09:09 as 1.1.0: it is right, and it stays (the owner's word, 2026-09-25). `v1.1.1` has no tag: the 12:00 upload was of
 about `c27b8af`, and a tag is not created after the fact. `publish-tag.yml` only looks at the tag of the version it
 publishes.
-
-**To adopt at the next publication (CI/CD setup, 2026-09-25, nothing forced):** the standard is now that the description is
-written once, in Markdown, in a fenced `markdown` block under `## Steam description` of this file; the CI converts it to
-BBCode and generates the `<description>` of `Mod/About/About.xml` from it, and a dry-run or publish stops if the two differ.
-That replaces `Mod/README.template.md` as the source and the hand-kept `About.xml` text of 2026-09-25. It goes through
-`generate-publish-workflow.sh ... --description-markdown PUBLICATION.md --description-heading '^## Steam description$'
---about-from-description --replace`, then `node .github/scripts/sync-about-description.mjs` (read the diff before `--write`),
-and needs a new dry-run since it changes the SHA. The CI also refuses a change note whose first line does not carry the
-version (`[b]1.3.0[/b]`), which the rule above already asks for.
