@@ -7,7 +7,7 @@ packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
 visibility:   public
 detached:     yes
-stage:        published
+stage:        published[1.2.2]
 licence:      open
 licence_at:   this mod's own code is MIT and nothing of Achtung! is redistributed, but the technique came from it and it is a named debt, so the source's licence decides: MIT, LICENSE-achtung.txt
 settings_audit: complete
