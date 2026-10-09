@@ -1,9 +1,6 @@
 # Publication
 
-This document records what the Workshop page needs but the repository records nowhere else. Written once, for
-this update and for whoever ships the next one. This is not the first publication — the item
-(3792836684) already exists, published as 1.0.0 and subsequently updated through 1.2.1 — so the first-upload steps of
-AUDIT.md's `tested -> prepublished` do not all apply; what follows is scoped to an update.
+This document records what the Workshop page needs but the repository records nowhere else, for whoever ships the next update. The item (3792836684) already exists: published as 1.0.0 and updated through 1.2.2, so the first-upload steps of AUDIT.md's `tested -> prepublished` do not all apply; what follows is scoped to an update.
 
 ## The 1.2.0 update (published 2026-09-25, kept as history)
 
