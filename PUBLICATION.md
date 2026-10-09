@@ -104,7 +104,22 @@ checkboxes for mature/adult content are answered No.
 The publish workflow reads the note of the version it publishes from the fenced block under `### <version>` of
 this file. BBCode. It matches the `## [<version>]` section of `CHANGELOG.md`; keep the two in step.
 
-**Every note starts with its version number, on a line of its own** (`[b]1.3.0[/b]`), then the sections: the CI refuses a note whose first line does not carry exactly the version. Add the block of the next version here before its dry-run, in this shape:  ### 1.3.0  ``` [b]1.3.0[/b]  [b]Changed[/b] [list] [*] ... [/list] ```  Notes of versions already published (1.2.0 to 1.2.2) are in `docs/runs/publication-history.md`. A published note can only be changed by hand on the Steam page, so it is never edited here after the fact.
+**Every note starts with its version number, on a line of its own** (`[b]1.3.0[/b]`), then the sections: the CI refuses a note
+whose first line does not carry exactly the version. Add the block of the next version here before its dry-run, in this shape:
+
+### 1.3.0
+
+```
+[b]1.3.0[/b]
+
+[b]Changed[/b]
+[list]
+[*] ...
+[/list]
+```
+
+Notes of versions already published (1.2.0 to 1.2.2) are in `docs/runs/publication-history.md`. A published note can only be
+changed by hand on the Steam page, so it is never edited here after the fact.
 
 ## Steam description
 
