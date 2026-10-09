@@ -50,3 +50,5 @@ other runs), and every report of a set once a newer run of the same set on the s
 `STATUS.md` or a day file still points to is repointed first, never just deleted.
 
 Sizes seen on 2026-09-23: a full report 0.9-1.2 GB; kept as above, 8-32 MB.
+
+Cleaned 2026-10-09 (published): `status-history.md`, `publication-history.md`, `testing-history.md` and `backlog-history.md` hold what left STATUS.md, PUBLICATION.md, TESTING.md and BACKLOG.md. Evidence folders named in older lines of this folder and deleted as superseded are listed in STATUS.md.

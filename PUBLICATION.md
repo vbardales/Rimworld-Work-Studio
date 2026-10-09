@@ -107,7 +107,7 @@ this file. BBCode. It matches the `## [<version>]` section of `CHANGELOG.md`; ke
 **Every note starts with its version number, on a line of its own** (`[b]1.3.0[/b]`), then the sections: the CI refuses a note
 whose first line does not carry exactly the version. Add the block of the next version here before its dry-run, in this shape:
 
-### 1.3.0
+### x.y.z (the version being published)
 
 ```
 [b]1.3.0[/b]
