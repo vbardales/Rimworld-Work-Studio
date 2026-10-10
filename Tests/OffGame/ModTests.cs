@@ -84,6 +84,7 @@ internal static class Program
         TheTypeIdsAreNeverReused();
         TheIconPatchTargets();
         TheIconNames();
+        TheIconSettings();
         ThePickleStepTable();
     }
 
@@ -559,6 +560,129 @@ internal static class Program
         var loadedHidden = (System.Collections.IList)settingsType.GetField("hiddenTypes").GetValue(incoming);
         Check("the loaded settings carry one custom type back", loadedCustomTypes.Count == 1);
         Check("the loaded settings carry the hidden type back", loadedHidden.Contains("Cleaning"));
+    }
+
+    // --- the icon settings: defaults, persistence, clamping, and what an export leaves out --------
+
+    // The three display preferences (skill icons, column icons, header mode) are written by
+    // WorkStudioSettings.ExposeData and deliberately left out of ExposeConfig, so that importing
+    // someone else's setup never changes what the importer's own screen draws. What the settings
+    // window does with them in game is Pickle's 21-icons.feature; here is the file contract.
+    private static void TheIconSettings()
+    {
+        Console.WriteLine();
+        Console.WriteLine("the icon settings, off the game's file-path machinery:");
+
+        string tempRoot = Path.Combine(Path.GetTempPath(), "workstudio-icons-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempRoot);
+
+        try
+        {
+            RunIconSettings(tempRoot);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("DIAG: " + e);
+            Skip("the icon settings: " + Innermost(e).GetType().Name + " - " + Innermost(e).Message);
+        }
+        finally
+        {
+            try { Directory.Delete(tempRoot, true); } catch { /* best effort */ }
+        }
+    }
+
+    private static void RunIconSettings(string tempRoot)
+    {
+        Type settingsType = ModType("WorkStudio.WorkStudioSettings", true);
+        Type iconsType = ModType("WorkStudio.WorkTypeIcons", true);
+        if (settingsType == null || iconsType == null)
+        {
+            Skip("the icon settings: WorkStudioSettings or WorkTypeIcons not found");
+            return;
+        }
+
+        FieldInfo skill = settingsType.GetField("showSkillIcons");
+        FieldInfo columns = settingsType.GetField("showWorkTypeIcons");
+        FieldInfo mode = settingsType.GetField("workTabHeaderMode");
+        int both = (int)iconsType.GetField("HeaderIconAndLabel").GetValue(null);
+        int iconOnly = (int)iconsType.GetField("HeaderIconOnly").GetValue(null);
+        int labelOnly = (int)iconsType.GetField("HeaderLabelOnly").GetValue(null);
+
+        object fresh = Activator.CreateInstance(settingsType);
+        Check("first use: skill icons are on", (bool)skill.GetValue(fresh));
+        Check("first use: column icons are on", (bool)columns.GetValue(fresh));
+        Check("first use: the header shows the icon and the label", (int)mode.GetValue(fresh) == both);
+        Check("the three header modes are 0, 1 and 2, in the order the settings window lists them",
+            both == 0 && iconOnly == 1 && labelOnly == 2);
+
+        MethodInfo expose = settingsType.GetMethod("ExposeData", BindingFlags.Public | BindingFlags.Instance);
+
+        object chosen = Activator.CreateInstance(settingsType);
+        skill.SetValue(chosen, false);
+        columns.SetValue(chosen, false);
+        mode.SetValue(chosen, labelOnly);
+
+        string path = Path.Combine(tempRoot, "icons.xml");
+        Scribe.saver.InitSaving(path, "workStudioSettings");
+        try { expose.Invoke(chosen, null); }
+        finally { Scribe.saver.FinalizeSaving(); }
+
+        string xml = File.ReadAllText(path);
+        Check("the file carries the three choices", xml.Contains("showSkillIcons") && xml.Contains("showWorkTypeIcons")
+              && xml.Contains("workTabHeaderMode"));
+
+        object back = LoadIconSettings(settingsType, expose, path);
+        Check("persistence: skill icons stay off", !(bool)skill.GetValue(back));
+        Check("persistence: column icons stay off", !(bool)columns.GetValue(back));
+        Check("persistence: the header mode stays label only", (int)mode.GetValue(back) == labelOnly);
+
+        // A value written by hand, or by a later version, outside the three modes: it must land on
+        // the nearest mode rather than reach a switch that has no branch for it.
+        string tooHigh = Path.Combine(tempRoot, "too-high.xml");
+        File.WriteAllText(tooHigh, xml.Replace(
+            "<workTabHeaderMode>" + labelOnly + "</workTabHeaderMode>", "<workTabHeaderMode>9</workTabHeaderMode>"));
+        Check("the hand-edited file really holds 9", File.ReadAllText(tooHigh).Contains("<workTabHeaderMode>9<"));
+        Check("validation: 9 is held to the last mode",
+            (int)mode.GetValue(LoadIconSettings(settingsType, expose, tooHigh)) == labelOnly);
+
+        string tooLow = Path.Combine(tempRoot, "too-low.xml");
+        File.WriteAllText(tooLow, xml.Replace(
+            "<workTabHeaderMode>" + labelOnly + "</workTabHeaderMode>", "<workTabHeaderMode>-4</workTabHeaderMode>"));
+        Check("the hand-edited file really holds -4", File.ReadAllText(tooLow).Contains("<workTabHeaderMode>-4<"));
+        Check("validation: -4 is held to the first mode",
+            (int)mode.GetValue(LoadIconSettings(settingsType, expose, tooLow)) == both);
+
+        // An older file with none of the three keys: the defaults apply (upgrade from before 1.2.0).
+        string older = Path.Combine(tempRoot, "older.xml");
+        File.WriteAllText(older, xml
+            .Replace("<showSkillIcons>False</showSkillIcons>", "")
+            .Replace("<showWorkTypeIcons>False</showWorkTypeIcons>", "")
+            .Replace("<workTabHeaderMode>" + labelOnly + "</workTabHeaderMode>", ""));
+        Check("the older file really lacks the three keys", !File.ReadAllText(older).Contains("showSkillIcons")
+              && !File.ReadAllText(older).Contains("workTabHeaderMode"));
+        object upgraded = LoadIconSettings(settingsType, expose, older);
+        Check("upgrade: a file without the keys keeps skill icons on", (bool)skill.GetValue(upgraded));
+        Check("upgrade: a file without the keys keeps column icons on", (bool)columns.GetValue(upgraded));
+        Check("upgrade: a file without the keys shows the icon and the label", (int)mode.GetValue(upgraded) == both);
+
+        // An export is the setup, not the screen: the three choices stay out of it.
+        MethodInfo exposeConfig = settingsType.GetMethod("ExposeConfig", BindingFlags.Public | BindingFlags.Instance);
+        string exported = Path.Combine(tempRoot, "export.xml");
+        Scribe.saver.InitSaving(exported, "workStudioConfig");
+        try { exposeConfig.Invoke(chosen, null); }
+        finally { Scribe.saver.FinalizeSaving(); }
+        string exportXml = File.ReadAllText(exported);
+        Check("an export does not carry the icon choices", !exportXml.Contains("showSkillIcons")
+              && !exportXml.Contains("showWorkTypeIcons") && !exportXml.Contains("workTabHeaderMode"));
+    }
+
+    private static object LoadIconSettings(Type settingsType, MethodInfo expose, string path)
+    {
+        object loaded = Activator.CreateInstance(settingsType);
+        Scribe.loader.InitLoading(path);
+        try { expose.Invoke(loaded, null); }
+        finally { Scribe.loader.FinalizeLoading(); }
+        return loaded;
     }
 
     // --- Keyed coverage, both languages ----------------------------------------------------------

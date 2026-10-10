@@ -272,6 +272,32 @@ own list offers this def, reveal it, verify the persisted choice and real main-b
 that button, then hide and forget the choice. It repeats activation at 150% interface scale. The
 attached screenshots leave only the visual result for a person to judge.
 
+## The icons and their three settings
+
+**Proves** what the description promises: an icon before each skill in the character tab, an icon at
+the foot of each Work tab column, and three settings that choose what shows (skill icons, column
+icons, and what a column header shows: icon and label, icon only, label only). Written 2026-10-10
+after an audit found no scenario for them; **written from the code, not played yet**.
+
+- **Off game** (`Tests/OffGame`, `TheIconSettings`): the defaults on first use, the three choices
+  surviving a save and a load, a header mode outside 0 to 2 held to the nearest one, a file with none
+  of the three keys (an install from before they existed) keeping the defaults, and an export that
+  leaves the three choices out, so that importing someone else's setup never changes what your own
+  screen draws.
+- **In game** (`21-icons.feature`): a probe counts what Work Studio hands to `GUI.DrawTexture`
+  while the real tab is open, and what its header prefix answers to the game. Skill icons on: some are
+  drawn in the Character tab; off: none, and the column icons are unaffected. Column icons on, icon
+  and label: a work type icon is drawn and the game still draws the label; icon only: Work Studio
+  takes the header over (the label is not drawn, the tooltip carries the name); label only, or column
+  icons off: no work type icon. The three choices survive being re-read from disk.
+- **Pictures** (`21b-icons-visual.feature`, `@review`): the skill list, the Work tab in each of the
+  three header modes, and the settings window with the column icons off, for a person to read. A
+  scenario that passes proves the trip, not that the picture is right.
+
+The Work tab scenarios assume the tab draws its headers through `PawnColumnWorker.DoHeader`. A pass
+that replaces the tab (Better Work Tab, Enhanced Work Tab) may draw them another way: read a red
+there before calling it a defect, and play the feature on `sans-facultatifs` first.
+
 ## Automated off game
 
 `Tests/OffGame/` instances the shipped `Mod/Assemblies/WorkStudio.dll` against the installed
