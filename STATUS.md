@@ -7,8 +7,7 @@ packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
 visibility:   public
 detached:     yes
-stage:        published[1.2.2]
-workflow_stage: published[1.2.2]
+workflow_stage: followUp[1.2.2]
 licence:      open
 licence_at:   this mod's own code is MIT and nothing of Achtung! is redistributed, but the technique came from it and it is a named debt, so the source's licence decides: MIT, LICENSE-achtung.txt
 settings_audit: complete
@@ -27,9 +26,11 @@ workshop:     3792836684
   - "WSL cleaned 2026-10-09 (read-only check, nothing removed): the WSL steamcmd cache holds two items of this mod's passes, Compact Work Tab 3250322299 and Fluffy Work Tab 3552152340 (3 MB), and both are still named by SkillIcons wsl-deps maps (avec-compactworktab, avec-krypt-worktab), so they stay. Better Work Tab, Enhanced Work Tab, Mech Work Tab, RIMMSQOL and Work Type Tag come from the owner's Windows subscriptions, not from the WSL cache. Branch ci/steam-login-and-description-guard: no CI/CD session reachable (TicketManager relayed to Virginie 2026-10-09), deleted 2026-10-09 on the owner's word after the CI/CD session confirmed main supersedes it (local; origin already gone)."
   - "evidence kept (evidence/ and Tests/Pickle/evidence/, ignored by git): min-en-122, min-fr-122, naming-en-122, naming-fr-122 (1.2.2 build); gallery-3, gallery-8, gallery-13 (the sources of gallery images 3, 1, 2); 0925-ewt-full, 0926-better-work-tab, 0926-incompat-compact-worktab, 0926-rimmsqol, 0926-work-type-tag, 0927-fluffy-full (latest full pass of each optional set, 1.2.0 to 1.2.1 builds); mechworktab-2. Deleted 2026-10-09 as superseded: the ten 2026-09-23-* folders, 0925-fluffy-button-5, 0926-min-en, 0926-min-en-replay, 0926-min-fr, 0926-13-settings-fix, nolabel-2, bug2-bills-3. Earlier status text: docs/runs/status-history.md and git history of this file."
 session:      01a0c844-1b24-7b61-8615-7c2ee4ae1b69
-updated: 2026-10-09
+remaining: []
+updated: 2026-10-10
+protocols_read_sha: 06263cb0d19e6e3cf21e0145cad5ce348d9a4a69
 ---
 
 # Work Studio — status
 
-Published item 3792836684, stage `published[1.2.2]`. Everything open is in `remaining` above; run lines are in `docs/runs/`; the dated sections of this file up to 2026-10-09 (preview regeneration, audits, settings and translation audits, in-game passes of September, detachment, icons) are summarised in `docs/runs/status-history.md` and kept in full in git (this file at 139fcf1).
+Published item 3792836684, state `followUp[1.2.2]`. Everything open is in `remaining` above; run lines are in `docs/runs/`; the dated sections of this file up to 2026-10-09 (preview regeneration, audits, settings and translation audits, in-game passes of September, detachment, icons) are summarised in `docs/runs/status-history.md` and kept in full in git (this file at 139fcf1).
