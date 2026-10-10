@@ -73,7 +73,7 @@ namespace WorkStudio.PickleSteps
                 $"'{nickname}' works these types but never goes through their bill tasks: {string.Join(", ", missing)}");
         }
 
-        [When("a fuelled campfire with the bill {string} stands next to {string}")]
+        [When("a fuelled campfire with the Work Studio bill {string} stands next to {string}")]
         public void CampfireWithBill(PickleContext ctx, string recipeName, string nickname)
         {
             var pawn = Colonist(ctx, nickname);
@@ -107,7 +107,7 @@ namespace WorkStudio.PickleSteps
             ctx.Require(campfire.BillStack.Count == 1, $"the campfire holds {campfire.BillStack.Count} bills");
         }
 
-        [Then("right-clicking the campfire offers {string} an option about the bill {string}")]
+        [Then("right-clicking the campfire offers {string} a Work Studio option about the bill {string}")]
         public void MenuOffersBillOption(PickleContext ctx, string nickname, string recipeName)
         {
             var pawn = Colonist(ctx, nickname);

@@ -12,7 +12,7 @@ Feature: mechanoid priorities survive a save and a load, with Mech Work Tab
   Background:
     Given the save "test-colony" is loaded
     And a colonist "Keeper" exists
-    And a mechanoid of kind "Mech_Lifter" named "Hoist" belongs to the player
+    And the Work Studio test colony owns a mechanoid of kind "Mech_Lifter" named "Hoist"
     And I set the mechanoid "Hoist" to priority 2 for "Hauling"
 
   Scenario: a mechanoid's priority is the same after a save and a load

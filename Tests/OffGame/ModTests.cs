@@ -1153,6 +1153,8 @@ internal static class Program
         "I wait for {string} to have job {string}",
         "a colonist {string} exists",
         "game speed is {word}",
+        "I set the hour to {int}",
+        "I set the weather to {string}",
         "mod {string} is loaded",
         "mod {string} loads after {string}",
         "the save {string} is loaded",
@@ -1200,7 +1202,12 @@ internal static class Program
         const string ToolPrefix = "Nelim's Pickle Tools: ";
         var shared = new List<string>();
         string toolsRoot = Path.GetFullPath(Path.Combine(root, "..", "PickleTools"));
-        string[] toolNames = { "ClickDiagnostics", "RimmsqolSteps", "InterfaceScale", "ScreenshotMode" };
+        // The gallery pass (wsl-deps.gallery.map) stages the sanctuary and the tools below for 14-publication-shots.feature.
+        string[] toolNames =
+        {
+            "ClickDiagnostics", "RimmsqolSteps", "InterfaceScale", "ScreenshotMode",
+            "ScreenshotStudio", "CameraZoom", "StageDecor", "CoatSteps", "ClearScreen", "ColonistRace"
+        };
         foreach (string toolName in toolNames)
         {
             string toolSource = Path.Combine(toolsRoot, toolName, "Source");
@@ -1208,15 +1215,25 @@ internal static class Program
             int before = shared.Count;
             foreach (string file in Directory.GetFiles(toolSource, "*.cs"))
             {
-                foreach (Match m in Regex.Matches(File.ReadAllText(file),
-                             "\\[(?:When|Then|Given)\\(\"([^\"]*)\""))
-                {
-                    shared.Add(m.Groups[1].Value);
-                }
+                shared.AddRange(DeclaredSteps(file));
             }
 
             Console.WriteLine("    " + (shared.Count - before) + " step(s) read from PickleTools/" + toolName);
             Check("the shared tool " + toolName + " declares steps", shared.Count > before);
+        }
+
+        // The sanctuary has a repository of its own (SanctuaryBacklot, the "Nelim's Sanctuary: " places).
+        string sanctuarySource = Path.GetFullPath(Path.Combine(root, "..", "SanctuaryBacklot", "Source"));
+        if (Directory.Exists(sanctuarySource))
+        {
+            int before = shared.Count;
+            foreach (string file in Directory.GetFiles(sanctuarySource, "*.cs"))
+            {
+                shared.AddRange(DeclaredSteps(file));
+            }
+
+            Console.WriteLine("    " + (shared.Count - before) + " step(s) read from SanctuaryBacklot");
+            Check("SanctuaryBacklot declares steps", shared.Count > before);
         }
 
         Regex[] known = declared.Concat(PickleBuiltIns).Concat(shared).Select(StepPattern).ToArray();
@@ -1255,12 +1272,26 @@ internal static class Program
             unknown.Count == 0);
     }
 
+    /// <summary>The step texts a shared tool source declares: a literal, or its file's Prefix constant plus a literal; the escaped parentheses of a regex are not part of the step.</summary>
+    private static IEnumerable<string> DeclaredSteps(string file)
+    {
+        string text = File.ReadAllText(file);
+        Match prefixMatch = Regex.Match(text, @"const string Prefix\s*=\s*""([^""]*)""");
+        string prefix = prefixMatch.Success ? prefixMatch.Groups[1].Value : "";
+        foreach (Match m in Regex.Matches(text, @"\[(?:When|Then|Given)\((Prefix\s*\+\s*)?""([^""]*)"""))
+        {
+            string step = (m.Groups[1].Success ? prefix : "") + m.Groups[2].Value;
+            yield return step.Replace("\\\\", "");
+        }
+    }
+
     /// <summary>Cucumber's placeholders, as the regex Pickle matches a scenario line with.</summary>
     private static Regex StepPattern(string step)
     {
         string pattern = Regex.Escape(step)
             .Replace("\\{string}", "\"[^\"]*\"")
             .Replace("\\{int}", "-?\\d+")
+            .Replace("\\{float}", "-?\\d+(?:\\.\\d+)?")
             .Replace("\\{word}", "\\S+")
             .Replace("\\(s\\)", "s?");
         return new Regex("^" + pattern + "$");

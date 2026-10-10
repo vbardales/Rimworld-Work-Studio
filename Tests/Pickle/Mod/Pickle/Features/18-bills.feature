@@ -15,8 +15,8 @@ Feature: bills at a workbench still reach the colonists
 
   Scenario: a campfire bill is offered for prioritizing
     When I set "Keeper" to priority 1 for "Cooking"
-    And a fuelled campfire with the bill "CookMealSimple" stands next to "Keeper"
-    Then right-clicking the campfire offers "Keeper" an option about the bill "CookMealSimple"
+    And a fuelled campfire with the Work Studio bill "CookMealSimple" stands next to "Keeper"
+    Then right-clicking the campfire offers "Keeper" a Work Studio option about the bill "CookMealSimple"
 
   Scenario: bill tasks stay reachable after a task is moved into a created type
     When I create the work type "Pickle kitchen"

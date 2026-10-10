@@ -29,7 +29,7 @@ namespace WorkStudio.PickleSteps
             return pawn;
         }
 
-        [Given("a mechanoid of kind {string} named {string} belongs to the player")]
+        [Given("the Work Studio test colony owns a mechanoid of kind {string} named {string}")]
         public void SpawnMech(PickleContext ctx, string kindName, string name)
         {
             var kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(kindName);
@@ -90,7 +90,7 @@ namespace WorkStudio.PickleSteps
             }
         }
 
-        [Given("I start watching the game log for errors")]
+        [Given("I start watching the game log for Work Studio errors")]
         public void WatchLog(PickleContext ctx)
         {
             errors.Clear();
@@ -101,7 +101,7 @@ namespace WorkStudio.PickleSteps
             }
         }
 
-        [Then("the game log held no error since I started watching")]
+        [Then("the game log held no Work Studio error since I started watching")]
         public void NoErrors(PickleContext ctx)
         {
             if (watching)

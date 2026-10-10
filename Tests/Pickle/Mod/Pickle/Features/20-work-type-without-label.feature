@@ -7,7 +7,7 @@ Feature: a work type written without a label does not break the screens
 
   Background:
     Given the save "test-colony" is loaded
-    And I start watching the game log for errors
+    And I start watching the game log for Work Studio errors
 
   Scenario: the editor and the Work tab draw with a type that has no label
     Given another mod added the work type "PickleLabelless" with no label
@@ -17,7 +17,7 @@ Feature: a work type written without a label does not break the screens
     When I close the work type editor
     And I open the "Work" tab
     And I let the Work Studio interface draw
-    Then the game log held no error since I started watching
+    Then the game log held no Work Studio error since I started watching
     # Out again, so the scenarios played after this one do not meet it in the database.
     When I close all windows but the main tabs, for Work Studio
     And the other mod's work type "PickleLabelless" is taken out again
