@@ -7,7 +7,7 @@ packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
 visibility:   public
 detached:     yes
-workflow_stage: mountPreview[1.2.2]
+workflow_stage: writeTests[1.2.2]
 licence:      open
 licence_at:   this mod's own code is MIT and nothing of Achtung! is redistributed, but the technique came from it and it is a named debt, so the source's licence decides: MIT, LICENSE-achtung.txt
 settings_audit: complete
@@ -27,13 +27,16 @@ remaining:
   - "2026-10-10: unverified - scenarios 18, 19 and 20 had their step names changed (the word Work Studio added, audit 7.b fix) and have not been replayed in game; the PickleSteps DLL was rebuilt. The Pickle sets rimmsqol, work-type-tag, mechworktab, incompat-compact-worktab and incompat-fluffy-worktab were not replayed on 1.2.2 (queued then cancelled)."
   - "2026-10-10: defect - Mod/About/About.xml holds em dashes (description), flagged by the new Check-Status rule; the description comes from Mod/README.template.md, so both change together and ship with the next version. Not corrected by the audit."
   - "2026-10-10: unverified - protocols_read_sha stays at 06263cb0: Mark-ProtocolsRead.ps1 refuses while PUBLISHING.md of the protocols repository has uncommitted changes (another session); mark again once it is committed."
+  - "2026-10-10: defect - the icons promised by the description (skill list icons, Work tab column icons, the three settings showIcons, showWorkTypeIcons and the header mode) have no scenario in TESTING.md, no Pickle scenario and no off-game test of their effect, persistence or defaults: AUDIT.md 7.a (one scenario per promised behaviour) and MOD_SETTINGS.md section 4 not met. settings_audit stays complete only on the other options."
+  - "2026-10-10: unverified - the optional-set passes rimmsqol, work-type-tag, mechworktab, incompat-compact-worktab and incompat-fluffy-worktab last ran on 16a99bb (2026-09-26/27), before the code change 68ab826 (2026-10-06); two of them carry a red (the reset-confirmation dialog left open, fixed in the test tree and replayed green in the minimal set only). AUDIT.md 8.a: a code commit reopens them. Better Work Tab and Enhanced Work Tab were replayed 2026-10-10 (green)."
+  - "2026-10-10: unverified - STATUS.md carries no dated record of the dependency audit (AUDIT.md 4.g) and no remote nor upstream_mod_remotes field (1.h); the echo decision (10.a): the echo draws three boards and a figure, which the editor image of the gallery shows, so keep is the likely call, to confirm."
 updated: 2026-10-10
 protocols_read_sha: 06263cb0d19e6e3cf21e0145cad5ce348d9a4a69
 ---
 
 # Work Studio — status
 
-Published item 3792836684, state `mountPreview[1.2.2]` (audit 2026-10-10, see below). Everything open is in `remaining` above; run lines are in `docs/runs/`; the dated sections of this file up to 2026-10-09 (preview regeneration, audits, settings and translation audits, in-game passes of September, detachment, icons) are summarised in `docs/runs/status-history.md` and kept in full in git (this file at 139fcf1).
+Published item 3792836684, state `writeTests[1.2.2]` (audit 2026-10-10, see below). Everything open is in `remaining` above; run lines are in `docs/runs/`; the dated sections of this file up to 2026-10-09 (preview regeneration, audits, settings and translation audits, in-game passes of September, detachment, icons) are summarised in `docs/runs/status-history.md` and kept in full in git (this file at 139fcf1).
 
 ## Current notes (2026-10-10)
 
@@ -44,3 +47,4 @@ Published item 3792836684, state `mountPreview[1.2.2]` (audit 2026-10-10, see be
 
 - 2026-10-10 audit (AUDIT.md section 16) on 0bd5640, working tree clean: followUp[1.2.2] -> writeTests[1.2.2]. Established: build of Source is byte-identical to Mod/Assemblies/WorkStudio.dll (sha256 eb180f45...), 0 warnings; Check-DefInjected 2 keys 0 errors; About.xml, dependencies (Harmony hard, Fluffy incompatible, guarded ModsConfig.IsActive for Enhanced and Fluffy), no LoadFolders needed (single version 1.6); description in About.xml follows Mod/README.template.md and ends with the Source code line; ATTRIBUTION copies equal; Art/ minimal set, gallery 0-3 contiguous (3.3 MB, each under 2 MB), 0-preview.png byte copy of Preview.png; root clean. Not established: the off-game suite is red (two defects above) so criterion 7.b fails; the code review is stale (12.a; the publication review is per x.y line since 2026-10-10, now checked by the linter); items in the unverified entry above. The live Pickle non-regression tickets (seven optional-set passes) are valid on the unchanged Mod/ and continue; the stage goes back to followUp once the defects are fixed and the suite is green.
 - 2026-10-10 correction after the audit: the off-game defect and the LICENSE defect are fixed (commit of the same day: off-game 156 PASS, 0 FAIL; Mod/LICENSE equals the root LICENSE, a change to Mod/ that ships with the next version). 7.b now holds, so the first unmet criterion is 10.a / 10.f: echo_review_sha is not recorded and social_preview_sha256 was never recorded; stage mountPreview[1.2.2]. Non-regression 2026-10-10: Better Work Tab 8879 and Enhanced Work Tab 502c green (docs/runs/2026-10-10.md).
+- 2026-10-10 full audit, second pass (supersedes the stage of the correction above): writeTests[1.2.2]. Checked and green: steps 1 to 3 (repository, sources, derived images fresher than their sources, build identical), 4 (About.xml, only reference to a third-party type is the guarded Work Type Tag lookup, no unguarded type, Check-DefRefs, Check-ConfigErrors, Check-TypeRefs, Check-XmlFields all clean), 5 (hidden shortcut and settings door covered by off-game and Pickle 13), 6 (76 EN and 76 FR keys, none missing or empty, placeholders equal, no gendered pawn text, no plural-bearing count, French read in full), 7.b to 7.d (off-game 156 PASS, XML checks, 62 Pickle scenarios, every @requires has a map), 9 (three captures opened and read), 10 (Preview 896x504, 586 KB, contrast at least 9.8:1, badge 1.6 equals supportedVersions, ModIcon 128x128 readable at 32 px, 268 px read, source palette 2 families Vmean 0.395). Failing: 7.a (icons), 8.a (optional passes), see remaining. Not done here: Pickle replays, the French agreement was read but Virginie reviewed 1cee9a9, 11 to 13 are history of an item already published.
