@@ -1,6 +1,6 @@
 Reorganize the Work tab from inside the game, without restarting.
 
-- Create your own work types and fill them with tasks taken from other types — pull “tend animals” out of Handling, or separate cooking from serving.
+- Create your own work types and fill them with tasks taken from other types: pull “tend animals” out of Handling, or separate cooking from serving.
 - Rename, reorder and hide columns, including vanilla columns.
 - Drag and drop at two levels: the order of work types and the order of tasks within a type.
 - Use the up/down arrows as an alternative to dragging, including on Steam Deck.
@@ -11,7 +11,7 @@ Everything applies immediately. No def file to write and no restart required.
 
 # YOUR PRIORITIES ARE SAFE
 
-RimWorld stores colonist priorities in a list indexed by position, without recording which work type each value belongs to. Adding or removing a work type — yours, or one supplied by another mod — can therefore shift the whole list.
+RimWorld stores colonist priorities in a list indexed by position, without recording which work type each value belongs to. Adding or removing a work type (yours, or one supplied by another mod) can therefore shift the whole list.
 
 Work Studio stores priorities by defName in the save and restores them against the correct work type when loading. This protects vanilla and modded work types alike.
 
@@ -47,7 +47,7 @@ THANKS
 
 Andreas Pardeike (pardeike / Brrainz), and [Achtung!](https://steamcommunity.com/sharedfiles/filedetails/?id=730936602), whose MIT-licensed DynamicWorkTypes.cs is the reason work types can be changed without a restart.
 
-Above all, 0。0, who pointed at that technique publicly and explained where to find it — without that pointer this mod would not exist at all.
+Above all, 0。0, who pointed at that technique publicly and explained where to find it, and without that pointer this mod would not exist at all.
 
 Densevoid and [Personal Work Categories](https://steamcommunity.com/sharedfiles/filedetails/?id=2722053051), where the pointer was shared.
 
