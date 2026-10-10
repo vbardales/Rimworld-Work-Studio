@@ -174,7 +174,13 @@ namespace WorkStudio.PickleSteps
         public void CleanUpIcons(PickleContext ctx)
         {
             StopProbe();
-            Find.Selector?.ClearSelection();
+
+            // A scenario of 01-loading runs at the main menu, with no map and no selector: asking
+            // Find.Selector there throws, and a throwing hook fails the scenario it follows.
+            if (Current.ProgramState == ProgramState.Playing)
+            {
+                Find.Selector.ClearSelection();
+            }
         }
 
         // ------------------------------------------------------------------------ the tabs
