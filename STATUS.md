@@ -7,7 +7,7 @@ packageId:    nelim.workstudio
 repo:         Rimworld-Work-Studio
 visibility:   public
 detached:     yes
-workflow_stage: playTests[1.2.2]
+workflow_stage: playTests[1.2.3]
 licence:      open
 licence_at:   this mod's own code is MIT and nothing of Achtung! is redistributed, but the technique came from it and it is a named debt, so the source's licence decides: MIT, LICENSE-achtung.txt
 settings_audit: complete
@@ -32,7 +32,7 @@ remaining:
   - "2026-10-10: unverified - STATUS.md carries no dated record of the dependency audit (AUDIT.md 4.g) and no remote nor upstream_mod_remotes field (1.h); the echo decision (10.a): the echo draws three boards and a figure, which the editor image of the gallery shows, so keep is the likely call, to confirm."
   - "2026-10-10: feature - in the header mode icon and label (the default) the icon at the foot of each column collides with the second row of labels (French capture of run 0082: Pompier, Médecin, Nourrice, Forgeron sit on their icon); legible but untidy. A design call for the owner: icon only avoids it, or the icon moves below the label rows."
 updated: 2026-10-10
-protocols_read_sha: 59cff5448b7ac1ac1bd75135057ccdabfc3ee8e6
+protocols_read_sha: b4a73cf0998fa5914b1d5e52b0817a8fe77abab3
 ---
 
 # Work Studio — status
@@ -50,3 +50,5 @@ Published item 3792836684, state `writeTests[1.2.2]` (audit 2026-10-10, see belo
 - 2026-10-10 correction after the audit: the off-game defect and the LICENSE defect are fixed (commit of the same day: off-game 156 PASS, 0 FAIL; Mod/LICENSE equals the root LICENSE, a change to Mod/ that ships with the next version). 7.b now holds, so the first unmet criterion is 10.a / 10.f: echo_review_sha is not recorded and social_preview_sha256 was never recorded; stage mountPreview[1.2.2]. Non-regression 2026-10-10: Better Work Tab 8879 and Enhanced Work Tab 502c green (docs/runs/2026-10-10.md).
 - 2026-10-10 full audit, second pass (supersedes the stage of the correction above): writeTests[1.2.2]. Checked and green: steps 1 to 3 (repository, sources, derived images fresher than their sources, build identical), 4 (About.xml, only reference to a third-party type is the guarded Work Type Tag lookup, no unguarded type, Check-DefRefs, Check-ConfigErrors, Check-TypeRefs, Check-XmlFields all clean), 5 (hidden shortcut and settings door covered by off-game and Pickle 13), 6 (76 EN and 76 FR keys, none missing or empty, placeholders equal, no gendered pawn text, no plural-bearing count, French read in full), 7.b to 7.d (off-game 156 PASS, XML checks, 62 Pickle scenarios, every @requires has a map), 9 (three captures opened and read), 10 (Preview 896x504, 586 KB, contrast at least 9.8:1, badge 1.6 equals supportedVersions, ModIcon 128x128 readable at 32 px, 268 px read, source palette 2 families Vmean 0.395). Failing: 7.a (icons), 8.a (optional passes), see remaining. Not done here: Pickle replays, the French agreement was read but Virginie reviewed 1cee9a9, 11 to 13 are history of an item already published.
 - 2026-10-10 third pass, after the protocols of 2026-10-10 were read (8.c: one initial ticket plays everything, then each red alone; non-regression after the commit; 8.m: one code review at the end of playTests): 7.a now met (icon scenarios exist), 7.b green, so the retained stage is playTests[1.2.2]. Open at this stage: 8.f (conditional passes on the current build), 8.d (21b captures to open), 8.h (settings in English and French), 8.m (code review).
+
+- 2026-10-10 evening: the three Work tab sets read (1010c on 97d19f5, docs/runs): mechworktab green 69/78; Compact and Fluffy red only on the column-icon scenarios, because both replace the Work tab (owner: known limit, not a defect). Code review prepared: one defect found and fixed in 0c224b7 (icon-only header tooltip of a type with no label, WorkTypeIcons.cs). Scenarios that read the header carry `@column-icons`; the new tooltip scenario is played alone by ticket 20261010-220802-680-e86b on sans-facultatifs; Compact and Fluffy sets play with `!@column-icons` from now on. Next version is 1.2.3 (CHANGELOG Unreleased). Still to do after the ticket: record it, replay the five header scenarios on the final build, then the code review at c8e02c6..HEAD and `code_review_sha`. Not done: the `build/` rename (the protocol scripts accept both names; it touches Source/Directory.Build.props and the CI scripts, to do with the next Source change).
