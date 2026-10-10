@@ -84,6 +84,8 @@ would be worse than importing nothing.
 - **Compact Work Tab is compatible.** It patches the vanilla work-priority column workers in
   place and recalculates their header layout from the current table. It neither owns nor restores
   a separate column list, so types created, hidden or reordered here remain the table it draws.
+  One known limit: it draws the column headers itself, so the Work tab column icons do not
+  appear with it. The skill icons in the character tab are unaffected.
 - **Hidden types stay active.** Hiding removes the column, not the job. To stop a job, set its
   priority to zero as usual.
 

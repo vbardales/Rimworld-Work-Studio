@@ -5,6 +5,14 @@ This file serves the repository and the writing of Steam patch notes; RimWorld d
 
 ## [Unreleased]
 
+### Fixed
+
+- **The tooltip of an icon-only Work tab header names the type even when the type has no label.** Vanilla types that carry only a short label (basic work, bed rest, plant cutting) and some types of other mods showed an empty title.
+
+### Known limits
+
+- Compact Work Tab and Fluffy's Work Tab draw their own table, so the Work tab column icons do not appear with them. The skill icons in the character tab do.
+
 ## [1.2.2] — 2026-10-08
 
 ### Changed

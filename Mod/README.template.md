@@ -5,7 +5,7 @@ Reorganize the Work tab from inside the game, without restarting.
 - Drag and drop at two levels: the order of work types and the order of tasks within a type.
 - Use the up/down arrows as an alternative to dragging, including on Steam Deck.
 - Import and export setups between games.
-- Icons for each skill and each work type, in the character tab and at the foot of each Work tab column. Three settings choose what shows.
+- Icons for each skill and each work type, in the character tab and at the foot of each Work tab column. Three settings choose what shows. Compact Work Tab and Fluffy's Work Tab draw their own table, so the Work tab column icons do not appear with them (the skill icons do).
 
 Everything applies immediately. No def file to write and no restart required.
 

@@ -175,7 +175,7 @@ namespace WorkStudio
             }
 
             TooltipHandler.TipRegion(rect,
-                () => type.label.CapitalizeFirst() + "\n\n" + type.description,
+                () => WorkTypeRuntime.DisplayLabel(type) + "\n\n" + type.description,
                 type.shortHash);
             return false;
         }

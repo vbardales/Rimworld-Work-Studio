@@ -34,6 +34,7 @@ namespace WorkStudio.PickleSteps
         private static int skillDraws;
         private static int workTypeDraws;
         private static readonly Dictionary<string, bool> headerLeftToTheGame = new Dictionary<string, bool>();
+        private static readonly Dictionary<int, string> tooltipOf = new Dictionary<int, string>();
 
         // ------------------------------------------------------------------------ the settings
 
@@ -128,6 +129,7 @@ namespace WorkStudio.PickleSteps
             skillDraws = 0;
             workTypeDraws = 0;
             headerLeftToTheGame.Clear();
+            tooltipOf.Clear();
 
             probe = new Harmony(ProbeId);
 
@@ -144,6 +146,11 @@ namespace WorkStudio.PickleSteps
             var header = AccessTools.Method(typeof(WorkTypeIcons), nameof(WorkTypeIcons.HeaderPrefix));
             ctx.Require(header != null, "WorkTypeIcons.HeaderPrefix no longer exists: update the probe");
             probe.Patch(header, postfix: new HarmonyMethod(typeof(IconSteps), nameof(AfterHeader)));
+
+            var tip = AccessTools.Method(typeof(TooltipHandler), nameof(TooltipHandler.TipRegion),
+                new[] { typeof(Rect), typeof(Func<string>), typeof(int) });
+            ctx.Require(tip != null, "TooltipHandler.TipRegion(Rect, Func<string>, int) no longer exists: update the probe");
+            probe.Patch(tip, postfix: new HarmonyMethod(typeof(IconSteps), nameof(AfterTip)));
         }
 
         public static void CountDraw(Texture image)
@@ -162,6 +169,14 @@ namespace WorkStudio.PickleSteps
             {
                 headerLeftToTheGame[type.defName] = __result;
             }
+        }
+
+        /// <summary>Keeps the text of each lazy tooltip by its unique id; a header's id is its type's short hash.</summary>
+        public static void AfterTip(Func<string> textGetter, int uniqueId)
+        {
+            if (textGetter == null) return;
+            try { tooltipOf[uniqueId] = textGetter(); }
+            catch (Exception) { /* another mod's tooltip is not this probe's business */ }
         }
 
         private static void StopProbe()
@@ -237,6 +252,20 @@ namespace WorkStudio.PickleSteps
 
         [Then("Work Studio took over the Work tab header of {string}")]
         public void HeaderTakenOver(PickleContext ctx, string defName) => AssertHeader(ctx, defName, false);
+
+        [Then("the Work Studio tooltip of the Work tab header of {string} starts with the name the game gives that work type")]
+        public void HeaderTooltipNamesTheType(PickleContext ctx, string defName)
+        {
+            var type = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
+            ctx.Require(type != null, $"no work type '{defName}'");
+            ctx.Require(tooltipOf.TryGetValue(type.shortHash, out var text),
+                $"Work Studio set no tooltip on the header of '{defName}' while the probe ran: the header is not taken over");
+            var name = WorkTypeRuntime.DisplayLabel(type);
+            ctx.Assert(text.StartsWith(name),
+                $"the tooltip of the header of '{defName}' starts with '{FirstLine(text)}', expected '{name}'");
+        }
+
+        private static string FirstLine(string text) => text.Split((char)10)[0];
 
         private static void AssertHeader(PickleContext ctx, string defName, bool leftToTheGame)
         {

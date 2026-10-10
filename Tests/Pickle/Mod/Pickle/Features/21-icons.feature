@@ -10,6 +10,10 @@
 # The header answer is the game's: "left to the game" means Work Studio drew its icon and let the vanilla
 # label draw too; "took over" means icon only, the vanilla label is not drawn (the tooltip carries the name).
 #
+# Scenarios tagged @column-icons need the vanilla Work tab: Compact Work Tab and Fluffy Work Tab draw their own table, so
+# Work Studio's header worker is never called there and no column icon exists (a known limit, run 1010c of 2026-10-10).
+# The two sets that stage them play the suite with !@column-icons.
+#
 # The off-game half (defaults, persistence, a mode out of range held to the nearest, a file without the
 # keys, an export that leaves the choices out) is Tests/OffGame, TheIconSettings. Written 2026-10-10 from the
 # code, not run: every step of the probe is new.
@@ -47,6 +51,7 @@ Feature: the icons, and the three settings that choose them
     Then Work Studio drew a skill icon
     And I close the Work Studio Character tab
 
+  @column-icons
   Scenario: a column header carries an icon and keeps its label
     When I turn the Work Studio column icons on
     And I set the Work Studio column header to "icon and label"
@@ -57,6 +62,7 @@ Feature: the icons, and the three settings that choose them
     And Work Studio left the Work tab header of "Cooking" to the game
     And I close all windows but the main tabs, for Work Studio
 
+  @column-icons
   Scenario: with the column icons off no header carries an icon
     When I turn the Work Studio column icons off
     And I start counting the icons Work Studio draws
@@ -66,6 +72,7 @@ Feature: the icons, and the three settings that choose them
     And Work Studio left the Work tab header of "Cooking" to the game
     And I close all windows but the main tabs, for Work Studio
 
+  @column-icons
   Scenario: the column icons stay on when only the skill icons are turned off
     When I turn the Work Studio skill icons off
     And I turn the Work Studio column icons on
@@ -76,6 +83,7 @@ Feature: the icons, and the three settings that choose them
     Then Work Studio drew a work type icon
     And I close all windows but the main tabs, for Work Studio
 
+  @column-icons
   Scenario: icon only takes the header over
     When I turn the Work Studio column icons on
     And I set the Work Studio column header to "icon only"
@@ -86,6 +94,7 @@ Feature: the icons, and the three settings that choose them
     And Work Studio took over the Work tab header of "Cooking"
     And I close all windows but the main tabs, for Work Studio
 
+  @column-icons
   Scenario: label only draws the game's own header and no icon
     When I turn the Work Studio column icons on
     And I set the Work Studio column header to "label only"
@@ -94,6 +103,18 @@ Feature: the icons, and the three settings that choose them
     And I let the Work Studio icons draw for a moment
     Then Work Studio drew no work type icon
     And Work Studio left the Work tab header of "Cooking" to the game
+    And I close all windows but the main tabs, for Work Studio
+
+  # The tooltip of a header Work Studio took over names the type: PlantCutting has a short label and no label, and the
+  # tooltip printed an empty title until 1.2.3.
+  @column-icons
+  Scenario: icon only gives a type with no label its short name in the tooltip
+    When I turn the Work Studio column icons on
+    And I set the Work Studio column header to "icon only"
+    And I start counting the icons Work Studio draws
+    And I open the "Work" tab
+    And I let the Work Studio icons draw for a moment
+    Then the Work Studio tooltip of the Work tab header of "PlantCutting" starts with the name the game gives that work type
     And I close all windows but the main tabs, for Work Studio
 
   # The nearest thing to a restart one process can do: the setters write the file the way leaving the Mod

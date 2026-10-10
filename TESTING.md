@@ -367,6 +367,8 @@ without `-DepsMap` is recorded as `sans-facultatifs`. Every map of this suite, t
 | `incompat-fluffy-worktab` | Whether `Fluffy.WorkTab`, which `About.xml` declares **incompatible**, still is |
 | `incompat-compact-worktab` | Coexistence with Compact Work Tab. The filename is historical: direct inspection of its 1.6 assembly showed that it patches the current vanilla columns in place and does not own a competing list, so the incorrect `incompatibleWith` entry was removed on 2026-09-22 |
 
+**The two Work tab replacers skip the column icons.** Compact Work Tab and Fluffy's Work Tab draw their own table, so the header worker of Work Studio is never called and no column icon exists (run 1010c of 2026-10-10: five scenarios of `21-icons` red in both sets). It is a known limit, written in the README and the description. The scenarios that read the header carry `@column-icons`, and these two sets play the suite with `!@column-icons` in the filter; the skill icon scenarios still play.
+
 **The incompatibility set is read green-is-good.** Feature 15 asserts the stable mechanism rather
 than expecting an ordinary scenario to fail: after Work Studio creates a runtime type, that type
 exists in the live Work table but is absent from `WorkTab.Controller.allColumns`, the startup-time
