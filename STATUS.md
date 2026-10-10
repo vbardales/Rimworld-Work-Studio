@@ -25,6 +25,8 @@ remaining:
   - "2026-10-10: unverified - code review. code_review_sha is c8e02c6 (the 2026-10-05 /code-review, low effort); commits after it are not reviewed. The 2026-10-06 hand read covered Dialog_WorkTypes.cs and Dialog_EditWorkType.cs only."
   - "2026-10-10: unverified - echo_review_sha absent (AUDIT.md 10.a, the field is a commit sha since 2026-10-10), social_preview_sha256 absent (10.f; the repository is public and og:image points to an uploaded image, but its hash was never recorded; Mod/About/Preview.png is ca6a4100...), tested_on still 2026-09-21 although runs went on to 2026-10-09, FRENCH_REVIEW.md predates the Repository type line of Make-FrenchReview.ps1 (text unchanged, regenerate), TEST_SCENARIOS.md absent (TESTING.md carries the scenarios), French agreements not re-read sentence by sentence in this audit."
   - "2026-10-10: unverified - scenarios 18, 19 and 20 had their step names changed (the word Work Studio added, audit 7.b fix) and have not been replayed in game; the PickleSteps DLL was rebuilt. The Pickle sets rimmsqol, work-type-tag, mechworktab, incompat-compact-worktab and incompat-fluffy-worktab were not replayed on 1.2.2 (queued then cancelled)."
+  - "2026-10-10: defect - Mod/About/About.xml holds em dashes (description), flagged by the new Check-Status rule; the description comes from Mod/README.template.md, so both change together and ship with the next version. Not corrected by the audit."
+  - "2026-10-10: unverified - protocols_read_sha stays at 06263cb0: Mark-ProtocolsRead.ps1 refuses while PUBLISHING.md of the protocols repository has uncommitted changes (another session); mark again once it is committed."
 updated: 2026-10-10
 protocols_read_sha: 06263cb0d19e6e3cf21e0145cad5ce348d9a4a69
 ---
