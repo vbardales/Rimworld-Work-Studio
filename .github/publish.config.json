@@ -10,6 +10,9 @@
   "forbidPaths": [],
   "previewFile": "About/Preview.png",
   "galleryDir": "Art/Gallery",
+  "build": {
+    "project": "Source/WorkStudio.csproj"
+  },
   "description": {
     "file": "Mod/README.template.md",
     "format": "markdown"
