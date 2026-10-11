@@ -61,24 +61,10 @@ the mod first. Feature files need no build.
 ## Run
 
 - **In game**: dev mode on, debug actions menu, *Pickle*. Tick the Work Studio suite, *Run selected*.
-- **Scripted**: `.\Tests\Pickle\Run-Pickle.ps1` drives the game that is already open. It cannot
-  start one, on purpose — see below.
-- **Unattended**: `RimWorldWin64.exe "-pickle-run=Work Studio - Pickle tests"`. The filter is the
-  companion mod's name, exactly. Reports land in `PickleReports` beside the saves. This is also
-  what a build made since the running game started needs, since the assemblies are read at startup.
+- **Ticket**: `Rimworld-Ticket-Dispatcher/scripts/Submit-PickleRun.ps1 -Mod WorkStudio` files a run; the Ticket Manager runs it headless in WSL (see PICKLE.md in the protocols repository). A session never runs the suite itself.
+- **After a build**: the running game must be restarted by a person. A build made since the running game started needs a restart, since the assemblies are read at startup.
 
-**Starting the game is a person's job, never a script's.** `Run-Pickle.ps1` had a `-Launch` switch
-guarded by a `Get-Process` check, and on 2026-09-20 that guard let a launch through against a game
-that was still coming up: a game starting is not yet a process, so no check of this kind can see
-it. The second instance cut off what the first was doing — the same evening, one killed SkillIcons'
-run, which died without writing a report and left nothing in the next one to explain the gap. The
-switch was removed rather than hardened. The script now has no `Start-Process` at all: with no game
-open it prints the unattended command above and stops.
-
-The machine has one RimWorld and that RimWorld has one Pickle runner, so two sessions starting a
-run at the same time destroy each other silently. The script takes
-`%LOCALAPPDATA%\rimworld-pickle-run.lock` first, with `CreateNew` so the file system arbitrates,
-and gives it back in a `finally`. Start a run any other way and nothing holds that lock.
+**Starting the game is a person's job, never a script's.** The old `Run-Pickle.ps1` had a `-Launch` switch whose guard let a second launch through on 2026-09-20 and killed another mod's run. The script was deleted on 2026-10-11: the machine lock and the run outcome now belong to the dispatcher.
 
 `PickleReports` likewise holds one report for the whole machine: `summary.md` and `junit.xml` are
 rewritten by whichever suite ran last, whatever mod it belonged to. Read the outcome back from
