@@ -4,6 +4,11 @@ import { spawnSync } from 'node:child_process';
 import { chmod, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { delimiter, join } from 'node:path';
+import { existsSync } from 'node:fs';
+
+// On Windows a bare 'bash' can be the WSL launcher, which cannot read C: paths: prefer Git Bash.
+const gitBash = 'C:/Program Files/Git/bin/bash.exe';
+const bash = process.platform === 'win32' && existsSync(gitBash) ? gitBash : 'bash';
 
 const script = join(import.meta.dirname, '..', 'scripts', 'build-check.sh');
 const git = (cwd, ...args) => spawnSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args], { cwd, encoding: 'utf8' });
@@ -25,7 +30,7 @@ async function setup({ build, requirePaths }) {
   await writeFile(log, '');
   const summary = join(bin, 'summary');
   await writeFile(summary, '');
-  const run = (env = {}, ...args) => spawnSync('bash', [script, ...args], { cwd, encoding: 'utf8', env: { ...process.env, PATH: `${bin}${delimiter}${process.env.PATH}`, STUB_LOG: log, GITHUB_STEP_SUMMARY: summary, ...env } });
+  const run = (env = {}, ...args) => spawnSync(bash, [script, ...args], { cwd, encoding: 'utf8', env: { ...process.env, PATH: `${bin}${delimiter}${process.env.PATH}`, STUB_LOG: log, GITHUB_STEP_SUMMARY: summary, ...env } });
   return { cwd, run, log, summary };
 }
 
