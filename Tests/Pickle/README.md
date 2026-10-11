@@ -66,19 +66,7 @@ the mod first. Feature files need no build.
 
 **Starting the game is a person's job, never a script's.** The old `Run-Pickle.ps1` had a `-Launch` switch whose guard let a second launch through on 2026-09-20 and killed another mod's run. The script was deleted on 2026-10-11: the machine lock and the run outcome now belong to the dispatcher.
 
-`PickleReports` likewise holds one report for the whole machine: `summary.md` and `junit.xml` are
-rewritten by whichever suite ran last, whatever mod it belonged to. Read the outcome back from
-`http://localhost:27750/state`, which names the mod each scenario belongs to — a scenario the
-running game has never played reads `Pending` there, and no report can tell you that. The script
-also moves the previous report into `PickleReports-archive` before starting, under the hour it was
-written, keeping the last `-KeepReports` runs; that is a reprieve, not storage, so copy out what
-you need to keep.
-
-The script refuses a run whose assemblies are newer than the running game — they are read at
-startup, so an older game tests the previous build while you read the new build's source. It also
-reports any `.pickle-backup` left in `Config/` by a scenario that died before restoring the
-settings it saved: those are the real settings, waiting to be put back, and they belong to whatever
-mod is audited next as much as to this one.
+The dispatcher reads each run's outcome per mod from the runner's `/state`, and refuses a game older than the build. A scenario that died leaves a `.pickle-backup` in `Config/`: see below.
 
 Scenario 02 clicks real buttons through OS input: the pointer moves on its own while it runs.
 
