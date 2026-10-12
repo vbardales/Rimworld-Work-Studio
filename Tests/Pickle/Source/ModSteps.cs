@@ -54,6 +54,19 @@ namespace WorkStudio.PickleSteps
             ctx.Assert(owners.Contains(WorkStudioMod.HarmonyId), $"'{name}' carries no Work Studio patch; owners: {string.Join(", ", owners)}");
         }
 
+        // Log.Messages is the game's live queue: the game, or another mod, can append while this
+        // step walks it, and the walk then throws "Collection was modified" (seen once in 79 on
+        // 2026-10-11, a red that said nothing about the mod). Copy it, and copy again when the
+        // copy itself collides with a writer.
+        private static List<LogMessage> SnapshotLog()
+        {
+            for (var attempt = 0; ; attempt++)
+            {
+                try { return Log.Messages.ToList(); }
+                catch (InvalidOperationException) when (attempt < 20) { }
+            }
+        }
+
         [Then("the game log holds nothing from Work Studio since startup")]
         public void LogSilent(PickleContext ctx)
         {
@@ -63,7 +76,7 @@ namespace WorkStudio.PickleSteps
             // with no prefix of ours, and the only thing of ours in it is the namespace in the
             // stack trace. A check that cannot see the failure it exists for is a permanent green;
             // Pickle had three of those found today, all showing up the same way.
-            var lines = Log.Messages
+            var lines = SnapshotLog()
                 .Where(m => m.text != null &&
                             (m.text.Contains("[Work Studio]") || m.text.Contains("WorkStudio.")))
                 .ToList();
