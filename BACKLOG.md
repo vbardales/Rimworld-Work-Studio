@@ -861,3 +861,10 @@ Seen 2026-10-10 (run 1010c on 97d19f5): with `incompat-compact-worktab` and `inc
 Decision of the owner (2026-10-10): a known limit, not a defect. Written in the README, the description and the CHANGELOG (Unreleased); the scenarios carry `@column-icons` and those two sets play with `!@column-icons`.
 
 The correction, if it is ever wanted: draw the icon from the table those mods own. Compact Work Tab patches the vanilla column workers in place, so its headers should come back through `PawnColumnWorker.DoHeader` once the cause is found (a patch of another method, or a different worker class); Fluffy's tab owns its own table (`WorkTab.Controller`), so it would need a patch on its header drawing, with a hard dependency on a mod this one declares incompatible. Settle before coding: whether Compact really bypasses `DoHeader` (read its 1.6 assembly), and whether Fluffy is worth it at all, since Work Studio is declared incompatible with it. Not started.
+
+## After publication: Workshop comments to answer (2026-10-14)
+
+Do not answer before the next version is published (owner, 2026-10-14).
+
+- **Bone, "Is there anyway to hide an entire category?"** Ask what they mean before answering: a work type (a column), or the group a colour or collapse category draws together (a GrimWorks-style category, see the entries above)? Check what Work Studio can do today (the editor hides single work types; no category notion of its own) and answer from that; if it cannot, decide whether it is worth a feature.
+- **Ali50, "Thank you for the quick work! Will update immediately!"** A thank-you for the 1.2.x fix, no answer needed beyond a short thanks once the next version is out.
