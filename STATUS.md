@@ -32,7 +32,7 @@ remaining:
   - "2026-10-10: unverified - STATUS.md carries no dated record of the dependency audit (AUDIT.md 4.g) and no remote nor upstream_mod_remotes field (1.h); the echo decision (10.a): the echo draws three boards and a figure, which the editor image of the gallery shows, so keep is the likely call, to confirm."
   - "2026-10-10: feature - in the header mode icon and label (the default) the icon at the foot of each column collides with the second row of labels (French capture of run 0082: Pompier, Médecin, Nourrice, Forgeron sit on their icon); legible but untidy. A design call for the owner: icon only avoids it, or the icon moves below the label rows."
 updated: 2026-10-10
-protocols_read_sha: a5c7cf48b349ae00e7d28fd643e852dc860dfaf2
+protocols_read_sha: 1eba2baf4d52f146b4fe4f01d90bdd9f0988979e
 ---
 
 # Work Studio — status

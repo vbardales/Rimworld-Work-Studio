@@ -8,8 +8,8 @@
       Must stay in a Directory.Build.props: NuGet restore reads this property before the
       csproj.
     -->
-    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\.build\obj\</BaseIntermediateOutputPath>
-    <BaseOutputPath>$(MSBuildThisFileDirectory)..\.build\bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\build\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)..\build\bin\</BaseOutputPath>
   </PropertyGroup>
 
 </Project>

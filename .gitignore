@@ -1,7 +1,7 @@
 # Build intermediates.
 # Directory.Build.props sends them outside the mod folder: they must never end up in here,
 # since the whole folder goes to the Workshop as is.
-.build/
+build/
 Source/obj/
 Source/bin/
 

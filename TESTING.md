@@ -313,7 +313,7 @@ file paths, chiefly).
 ```powershell
 dotnet build Source/WorkStudio.csproj -c Release
 dotnet build Tests/OffGame/WorkStudio.Tests.csproj -c Release
-.build/offgame/bin/Release/net48/WorkStudio.Tests.exe
+build/offgame/bin/Release/net48/WorkStudio.Tests.exe
 ```
 
 ## Automated in game: Pickle
