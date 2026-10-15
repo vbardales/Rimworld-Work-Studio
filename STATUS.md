@@ -19,6 +19,7 @@ code_review_sha: c8e02c647a9190ac4f58365376033f5a6ec48496
 workshop:     3792836684
 session:      01a0c844-1b24-7b61-8615-7c2ee4ae1b69
 remaining:
+  - "2026-10-15: unverified - build identity (AUDIT.md 3.b, 12.d): a clean build of Source (dotnet 8.0.424) gives WorkStudio.dll sha256 e746ecbf..., not the committed 3435bc88... (identical on 2026-10-11). The same result comes from a clean worktree of 0c224b7, so the sources did not change: the toolchain or a floating package (Krafs.Rimworld.Ref 1.6.*, Publicizer 2.*, Harmony 2.*) did. The committed DLL is the one every Pickle ticket played, so it is not replaced now (a Mod/ change would reopen 8.m and the passes); to settle before prepareRelease: pin the package versions, rebuild, replay a small ticket, commit the DLL with the sources."
   - "2026-10-10: feature - two points the owner has not decided: the Skill icons are on by default; a long renamed Work tab header spills into its neighbours (BACKLOG.md, 'An overlong header of a type without an icon shows two letters'). Not blocking."
   - "2026-10-10: defect - RIMMSQOL's DefMapSaveStateFix.Postfix throws loading a save written with one more custom work type than the game has (BACKLOG.md, 'Whether Work Studio can shield RIMMSQOL's save-load crash'). Either Work Studio pre-empts it or it is RIMMSQOL's own bug."
   - "2026-10-10: unverified - Mech Work Tab's own storage across a save (Work Studio does not disturb the vanilla priorities, evidence/mechworktab-2, BACKLOG.md) and the category UI with a custom work type."
@@ -32,7 +33,7 @@ remaining:
   - "2026-10-10: unverified - STATUS.md carries no dated record of the dependency audit (AUDIT.md 4.g) and no remote nor upstream_mod_remotes field (1.h); the echo decision (10.a): the echo draws three boards and a figure, which the editor image of the gallery shows, so keep is the likely call, to confirm."
   - "2026-10-10: feature - in the header mode icon and label (the default) the icon at the foot of each column collides with the second row of labels (French capture of run 0082: Pompier, Médecin, Nourrice, Forgeron sit on their icon); legible but untidy. A design call for the owner: icon only avoids it, or the icon moves below the label rows."
 updated: 2026-10-10
-protocols_read_sha: 1eba2baf4d52f146b4fe4f01d90bdd9f0988979e
+protocols_read_sha: e733386f133716f60efbad53c37602935eda7050
 ---
 
 # Work Studio — status
