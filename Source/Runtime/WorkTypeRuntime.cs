@@ -147,6 +147,7 @@ namespace WorkStudio
             var seeds = ComputeInheritance();
 
             RebuildDefs();
+            FluffyWorkTabCompat.Invalidate();
             RebuildWorkColumns();
             ClearBackstoryCaches();
 
