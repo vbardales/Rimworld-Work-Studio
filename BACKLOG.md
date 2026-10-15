@@ -861,3 +861,13 @@ Seen 2026-10-10 (run 1010c on 97d19f5): with `incompat-compact-worktab` and `inc
 Decision of the owner (2026-10-10): a known limit, not a defect. Written in the README, the description and the CHANGELOG (Unreleased); the scenarios carry `@column-icons` and those two sets play with `!@column-icons`.
 
 The correction, if it is ever wanted: draw the icon from the table those mods own. Compact Work Tab patches the vanilla column workers in place, so its headers should come back through `PawnColumnWorker.DoHeader` once the cause is found (a patch of another method, or a different worker class); Fluffy's tab owns its own table (`WorkTab.Controller`), so it would need a patch on its header drawing, with a hard dependency on a mod this one declares incompatible. Settle before coding: whether Compact really bypasses `DoHeader` (read its 1.6 assembly), and whether Fluffy is worth it at all, since Work Studio is declared incompatible with it. Not started.
+
+## Fluffy's Work Tab: two scenarios red on the 0c224b7 build (2026-10-15)
+
+Run 1014-fluffy-reds (ticket 20261014-122241-663-94f9, set incompat-fluffy-worktab, English), 3 scenarios replayed alone: 1 passed, 2 failed. Same build is green on sans-facultatifs (1011b) and Compact is green (1014-compact, 184 played, 169 passed, 0 failed), so the cause is specific to Fluffy.
+
+- "a save written with two types, loaded with one": "the game did not keep priority 3 for Pickle second (WorkStudio_Type2) on 'Keeper': it reads 0 right after the call", raw DefMap value=3. It passed under Fluffy in 0927-fluffy-full (older build).
+- "bill tasks stay reachable after a task is moved into a created type": 'Keeper' never goes through DoBillsCookCampfire, DoBillsButcherFlesh, DoBillsBrew. The scenario did not exist in 0927.
+- "a hediff survives a save and reload" was red in 1012b (InvalidCastException, thing id 69887 loaded as Apparel_CollarShirt) and green here: unstable, probably a test-ordering effect, not a mod defect.
+
+Open question for the owner: known limit like the column icons, or a defect to chase (read Fluffy's priority path against WorkTypeRuntime)?
