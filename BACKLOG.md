@@ -802,6 +802,14 @@ created live, mid-game, which is exactly the case this creator flags. So the ope
 Mech Work Tab", most likely not, but "does a Work Studio type made mid-game show in the mechanoid work tab without a
 restart", which still wants its own scenario to answer rather than inferring it from someone else's mod.
 
+## Mech Work Tab: custom work types missing from the mechanoid tab (player request, 2026-11-15)
+
+Workshop comment by shuun11328 (2026-11-15, on Work Studio): with Mech Work Tab loaded, the custom categories made in Work Studio do not appear in the Mech Work Tab, so the player cannot use their own organisation for mechanoids. Asked: make them available there, same categories and priorities as colonists. This is the case the competitor's creator flagged on 2026-09-29 (above), now reported by a real player, and it is not a defect of either mod alone.
+
+**Cause, read 2026-11-18 from the decompiled `MechTab.dll` 1.6 (`DefGenerator_GenerateImpliedDefs_MechsWork`, Workshop 3268299107):** Mech Work Tab builds its columns once, at def generation: one `PawnColumnDef` named `MechWorkPriority_<defName>` per `WorkTypeDef` that is `visible` and listed in `RaceProps.mechEnabledWorkTypes` of at least one mechanoid race, inserted into the `PawnTableDef`s `SM_PawnTable_MechsWork` and `SM_PawnTable_MechsWorkSlim` after the copy-paste column. A Work Studio type is created later, at runtime, and no mechanoid race lists it in `mechEnabledWorkTypes`, so it gets no column and mechs cannot take it. It is a one-time build, so a type made mid-game stays invisible until the next load even for a type that would qualify.
+
+**Possible fix (not started, owner has not decided):** a guarded integration (`ModsConfig.IsActive("Spacemoth.MechTab")`, no hard dependency), done when a type is created, renamed or deleted: add the type to `mechEnabledWorkTypes` of the mechanoid races that can do at least one of its work givers (`canBeDoneByMechs`), and add or remove its `MechWorkPriority_<defName>` column (`workerClass` `SM_MechTab.SM_PawnColumnWorker_WorkPriority`, `workType`, `sortable`, `moveWorkTypeLabelDown` alternating) in both tables, then rebuild the tables. Open questions: what a moved work giver does to a mech's priority for the type it left; Mech Work Tab's `SM_PawnColumnWorker_WorkPriority` and the table cache (`PawnTable.SetDirty`); whether the vanilla mechanoid gizmos and work tab (Biotech) also need the type; the same refresh for Fluffy and the other Work tabs is already done by Work Studio. Touches `Source/`, so it reopens 8.m and the code review (`code_review_sha`), and needs a Pickle scenario on `wsl-deps.avec-mechworktab.map` that reads the column through the real tab.
+
 ## Category UI misaligned when it holds a custom work type: untested
 
 Seen 2026-10-01, same competitor page (Work Type Editor, workshopId 3809535580), two comments by one user (machine-read
